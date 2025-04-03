@@ -9,13 +9,17 @@ stream-workflow:
     start-job:
       stages:
         - name: Get stream info
-          uses: tasks/get_stream_info@v1
-          with:
-            name: "${{ params.stream }}"
+          echo: "Start getting stream info"
+#          uses: tasks/get_stream_info@v1
+#          with:
+#            name: "${{ params.stream }}"
     main-job:
       stages:
-        - name: Start process
+        - name: Start stream
+          echo: "Start running stream"
     end-job:
       stages:
         - name: Clear log
+          echo: "Clear logging"
         - name: Alert
+          echo: "Alert with mail or noti-services"

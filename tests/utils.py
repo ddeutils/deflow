@@ -26,6 +26,7 @@ def dotenv_setting() -> None:
         env_str: str = dedent(
             f"""
             WORKFLOW_CONF_ROOT_PATH={OUTSIDE_PATH.absolute()}
+            WORKFLOW_CORE_ROOT_PATH=D:/korawica/Work/dev02_miniproj/fastflow
             WORKFLOW_CORE_REGISTRY=fastflow
             WORKFLOW_CORE_CONF_PATH=fastflow/templates
             WORKFLOW_CORE_TIMEZONE=Asia/Bangkok
@@ -39,8 +40,12 @@ def dotenv_setting() -> None:
             WORKFLOW_CORE_MAX_JOB_EXEC_TIMEOUT=600
             WORKFLOW_CORE_MAX_CRON_PER_WORKFLOW=5
             WORKFLOW_CORE_MAX_QUEUE_COMPLETE_HIST=16
+            WORKFLOW_LOG_PATH=={(OUTSIDE_PATH / "logs").absolute()}
             WORKFLOW_LOG_ENABLE_WRITE=false
+            WORKFLOW_AUDIT_PATH=={(OUTSIDE_PATH / "audits").absolute()}
             WORKFLOW_AUDIT_ENABLE_WRITE=true
+            FASTFLOW_ROOT_PATH={OUTSIDE_PATH.absolute()}
+            FASTFLOW_CONF_PATH=tests/conf
             """
         ).strip()
         env_path.write_text(env_str)
