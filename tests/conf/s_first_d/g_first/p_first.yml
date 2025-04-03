@@ -1,0 +1,9 @@
+group:
+  name: g_first
+  type: bronze
+  stream:
+    name: s_first_d
+type: 1
+loading_type: "F"
+extras:
+  limit: 1000

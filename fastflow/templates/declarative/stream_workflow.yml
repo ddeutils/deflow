@@ -1,2 +1,21 @@
 stream-workflow:
   type: Workflow
+  desc: |
+    Stream workflow that run all process groups.
+  params:
+    stream: str
+    run_mode: str
+  jobs:
+    start-job:
+      stages:
+        - name: Get stream info
+          uses: tasks/get_stream_info@v1
+          with:
+            name: "${{ params.stream }}"
+    main-job:
+      stages:
+        - name: Start process
+    end-job:
+      stages:
+        - name: Clear log
+        - name: Alert

@@ -25,7 +25,7 @@ classifiers = [
 ]
 requires-python = ">=3.9.13"
 dependencies = [
-    "ddeutil-workflow",
+    "ddeutil-workflow==0.0.40",
     "python-dotenv==1.1.0",
 ]
 dynamic = ["version"]
