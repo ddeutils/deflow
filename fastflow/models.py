@@ -1,9 +1,7 @@
-from typing import TYPE_CHECKING, Literal
+from typing import Literal
 
 from pydantic import BaseModel, Field
-
-if TYPE_CHECKING:
-    from typing_extensions import Self
+from typing_extensions import Self
 
 from .conf import config
 from .utils import get_process
