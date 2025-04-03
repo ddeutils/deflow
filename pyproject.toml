@@ -30,6 +30,9 @@ dependencies = [
 ]
 dynamic = ["version"]
 
+[project.scripts]
+fastflow = "fastflow.__main__:main"
+
 [tool.hatch.version]
 scheme = "standard"
 source = "code"
