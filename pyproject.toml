@@ -51,7 +51,7 @@ packages = ["fastflow"]
 
 [tool.shelf.version]
 version = "./fastflow/__about__.py"
-changelog = "./docs/CHANGELOG.md"
+changelog = "./docs/changelog.md"
 commit_subject_format = "{emoji} {subject}"
 commit_msg_format = "- {subject}"
 

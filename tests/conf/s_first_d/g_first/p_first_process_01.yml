@@ -1,0 +1,11 @@
+stream:
+  name: s_first_d
+  audit_date_type: D
+  data_date_type: D
+group:
+  name: g_first
+  type: bronze
+type: 1
+loading_type: "F"
+extras:
+  limit: 1000
