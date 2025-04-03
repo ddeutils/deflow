@@ -1,0 +1,8 @@
+databricks:
+  type: Connection
+  ir: AutoResolveIntegrationRuntime
+  service: AzureSQLDatabase
+  host: host.windows.net
+  database: database
+  user: user-name
+  secret: secret-name

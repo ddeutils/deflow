@@ -40,9 +40,9 @@ def dotenv_setting() -> None:
             WORKFLOW_CORE_MAX_JOB_EXEC_TIMEOUT=600
             WORKFLOW_CORE_MAX_CRON_PER_WORKFLOW=5
             WORKFLOW_CORE_MAX_QUEUE_COMPLETE_HIST=16
-            WORKFLOW_LOG_PATH=={(OUTSIDE_PATH / "logs").absolute()}
+            WORKFLOW_LOG_PATH={(OUTSIDE_PATH / "logs").absolute()}
             WORKFLOW_LOG_ENABLE_WRITE=false
-            WORKFLOW_AUDIT_PATH=={(OUTSIDE_PATH / "audits").absolute()}
+            WORKFLOW_AUDIT_PATH={(OUTSIDE_PATH / "audits").absolute()}
             WORKFLOW_AUDIT_ENABLE_WRITE=true
             FASTFLOW_CORE_ROOT_PATH={OUTSIDE_PATH.absolute()}
             FASTFLOW_CORE_CONF_PATH=tests/conf

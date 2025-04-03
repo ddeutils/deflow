@@ -1,0 +1,7 @@
+s_first_d:
+  type: Stream
+  frequency:
+    type: daily
+    offset: 1
+  date_frequency:
+    type: daily
