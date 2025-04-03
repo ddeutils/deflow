@@ -1,7 +1,7 @@
-from fastflow.conf import Process
+from fastflow.models import Process
 
 
-def test_conf_process():
+def test_models_process():
     process = Process.model_validate(
         {
             "name": "process-name",
