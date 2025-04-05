@@ -10,7 +10,7 @@ license = "MIT"
 authors = [ { name = "ddeutils", email = "korawich.anu@gmail.com" } ]
 keywords = [ 'framework', 'declarative', 'workflow' ]
 classifiers = [
-    "Topic :: Utilities",
+    "Topic :: Data Framework",
     "Natural Language :: English",
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -55,6 +55,9 @@ version = "./deflow/__about__.py"
 changelog = "./docs/changelog.md"
 commit_subject_format = "{emoji} {subject}"
 commit_msg_format = "- {subject}"
+
+[tool.shelf.git]
+commit_prefix_force_fix = true
 
 [tool.coverage.run]
 branch = true

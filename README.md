@@ -6,6 +6,7 @@ A Lightweight Declarative Data Workflow Framework that build on the
 ## 📦 Installation
 
 ```shell
+pip install -U deflow
 ```
 
 ## 💬 Contribute
