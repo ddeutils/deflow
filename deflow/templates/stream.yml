@@ -20,7 +20,9 @@ stream-workflow:
 
         - name: Get priority group
           id: priority-group
-          echo: "Priority Group"
+          uses: tasks/get-priority-group@v1
+          with:
+            stream: ${{ stages.get-stream.outputs.name }}
 
         - name: For-each priority
           foreach: ${{ stages.priority-group.outputs.items }}
