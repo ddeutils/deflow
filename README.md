@@ -9,6 +9,26 @@ A **Lightweight Declarative Data Workflow Framework** (DeFlow) that build on the
 pip install -U deflow
 ```
 
+## 🍻 Usage
+
+The data pipeline config will store with this file structure:
+
+```text
+conf/
+ ├─ conn/
+ │   ├─ c_conn_01.yml
+ │   ╰─ c_conn_02.yml
+ ╰─ stream/
+     ╰─ s_stream_01/
+         ├─ s_stream_01.yml
+         ├─ g_group_01.tier.priority/
+         │   ├─ p_proces_01.yml
+         │   ╰─ p_proces_02.yml
+         ╰─ g_group_02.tier.priority/
+             ├─ p_proces_01.yml
+             ╰─ p_proces_02.yml
+```
+
 ## 💬 Contribute
 
 I do not think this project will go around the world because it has specific propose,

@@ -11,10 +11,19 @@ deflow init
 The output project structure that was auto created from the initialize command:
 
 ```text
-conf
-    - c
-    - s
-    - s_stream_name
+conf/
+ ├─ conn/
+ │   ├─ c_conn_01.yml
+ │   ╰─ c_conn_02.yml
+ ╰─ stream/
+     ╰─ s_stream_01/
+         ├─ s_stream_01.yml
+         ├─ g_group_01.tier.priority/
+         │   ├─ p_proces_01.yml
+         │   ╰─ p_proces_02.yml
+         ╰─ g_group_02.tier.priority/
+             ├─ p_proces_01.yml
+             ╰─ p_proces_02.yml
 ```
 
 ## Running Flow

@@ -31,16 +31,18 @@ class Group(BaseModel):
 
 class Dependency(BaseModel):
     name: str
-    offset: int = 1
+    offset: int = Field(default=1)
 
 
 class Connection(BaseModel):
-    ir: str
+    ir: Optional[str] = Field(default=None)
     service: str
     host: str
     database: str
     user: str
-    secret: str
+    secret: str = Field(
+        description="A secret key for getting from any secret manager service.",
+    )
 
 
 class System(BaseModel):
