@@ -10,7 +10,7 @@ license = "MIT"
 authors = [ { name = "ddeutils", email = "korawich.anu@gmail.com" } ]
 keywords = [ 'framework', 'declarative', 'workflow' ]
 classifiers = [
-    "Topic :: Data Framework",
+    "Topic :: Framework",
     "Natural Language :: English",
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
