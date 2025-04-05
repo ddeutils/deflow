@@ -1,8 +1,14 @@
 # Getting Started
 
+## Initialize
+
+Start initialize local data framework with the `init` CLI.
+
 ```shell
-fastflow init
+deflow init
 ```
+
+The output project structure that was auto created from the initialize command:
 
 ```text
 conf
