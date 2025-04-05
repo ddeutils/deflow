@@ -26,8 +26,8 @@ def dotenv_setting() -> None:
         env_str: str = dedent(
             f"""
             WORKFLOW_CONF_ROOT_PATH={OUTSIDE_PATH.absolute()}
-            WORKFLOW_CORE_REGISTRY=fastflow
-            WORKFLOW_CORE_CONF_PATH=fastflow/templates
+            WORKFLOW_CORE_REGISTRY=deflow
+            WORKFLOW_CORE_CONF_PATH=deflow/templates
             WORKFLOW_CORE_TIMEZONE=Asia/Bangkok
             WORKFLOW_CORE_STAGE_DEFAULT_ID=true
             WORKFLOW_CORE_STAGE_RAISE_ERROR=true
@@ -43,8 +43,8 @@ def dotenv_setting() -> None:
             WORKFLOW_LOG_ENABLE_WRITE=true
             WORKFLOW_AUDIT_PATH={(OUTSIDE_PATH / "audits").absolute()}
             WORKFLOW_AUDIT_ENABLE_WRITE=true
-            FASTFLOW_CORE_ROOT_PATH={OUTSIDE_PATH.absolute()}
-            FASTFLOW_CORE_CONF_PATH=tests/conf
+            DEFLOW_CORE_ROOT_PATH={OUTSIDE_PATH.absolute()}
+            DEFLOW_CORE_CONF_PATH=tests/conf
             """
         ).strip()
         env_path.write_text(env_str)

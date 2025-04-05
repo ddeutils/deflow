@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 from typing import Optional
 
-PREFIX: str = "FASTFLOW"
+PREFIX: str = "DEFLOW"
 
 
 def env(
