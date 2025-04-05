@@ -2,6 +2,8 @@
 
 ## Latest Changes
 
+## 0.0.1
+
 ### :stars: Highlight Features
 
 - :star: add get_process function on io module.
@@ -31,7 +33,6 @@
 
 ### :package: Build & Workflow
 
-- :toolbox: add bump2version config file
 - :toolbox: add .github workflows.
 - :toolbox: add hatchling to build system.
 - :toolbox: add pyproject file.
@@ -39,3 +40,4 @@
 ### :postbox: Dependencies
 
 - :pushpin: update ddeutil-workflow from 0.0.40 to 0.0.41.
+
