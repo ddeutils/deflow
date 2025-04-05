@@ -3,12 +3,12 @@ requires = ["hatchling>=1.8.0"]
 build-backend = "hatchling.build"
 
 [project]
-name = "fastflow"
+name = "deflow"
 description = "Lightweight Declarative Data Workflow Framework"
 readme = "README.md"
 license = "MIT"
 authors = [ { name = "ddeutils", email = "korawich.anu@gmail.com" } ]
-keywords = [ 'data-framework', 'declarative' ]
+keywords = [ 'framework', 'declarative', 'workflow' ]
 classifiers = [
     "Topic :: Utilities",
     "Natural Language :: English",
@@ -31,12 +31,12 @@ dependencies = [
 dynamic = ["version"]
 
 [project.scripts]
-fastflow = "fastflow.__main__:main"
+deflow = "deflow.__main__:main"
 
 [tool.hatch.version]
 scheme = "standard"
 source = "code"
-path = "fastflow/__about__.py"
+path = "deflow/__about__.py"
 
 [tool.hatch.build.targets.sdist]
 exclude = [
@@ -47,10 +47,10 @@ exclude = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["fastflow"]
+packages = ["deflow"]
 
 [tool.shelf.version]
-version = "./fastflow/__about__.py"
+version = "./deflow/__about__.py"
 changelog = "./docs/changelog.md"
 commit_subject_format = "{emoji} {subject}"
 commit_msg_format = "- {subject}"
@@ -59,10 +59,10 @@ commit_msg_format = "- {subject}"
 branch = true
 relative_files = true
 concurrency = [ "thread", "multiprocessing" ]
-source = [ "fastflow" ]
+source = [ "deflow" ]
 omit = [
-    "fastflow/__version__.py",
-    "fastflow/__init__.py",
+    "deflow/__version__.py",
+    "deflow/__init__.py",
 ]
 
 [tool.coverage.report]
@@ -72,7 +72,7 @@ exclude_lines = [
 ]
 
 [tool.pytest.ini_options]
-pythonpath = ["fastflow"]
+pythonpath = ["deflow"]
 console_output_style = "count"
 addopts = [
     "--strict-config",
@@ -110,8 +110,8 @@ exclude = """
 """
 
 [project.urls]
-Homepage = "https://github.com/ddeutils/fastflow/"
-"Source Code" = "https://github.com/ddeutils/fastflow/"
+Homepage = "https://github.com/ddeutils/deflow/"
+"Source Code" = "https://github.com/ddeutils/deflow/"
 
 [tool.ruff]
 line-length = 80

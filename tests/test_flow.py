@@ -1,4 +1,4 @@
-from fastflow.flow import Flow
+from deflow.flow import Flow
 
 
 def test_flow_stream():

@@ -1,4 +1,4 @@
-from fastflow.models import Group, Process, Stream
+from deflow.models import Group, Process, Stream
 
 
 def test_models_stream():

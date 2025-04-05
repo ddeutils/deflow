@@ -14,7 +14,7 @@ conf
 ## Running Flow
 
 ```python
-from fastflow import Flow
+from deflow.flow import Flow
 
 flow = Flow(name="s_stream_name_d").run(mode="N")
 ```
