@@ -1,3 +1,10 @@
+# ------------------------------------------------------------------------------
+# Copyright (c) 2022 Korawich Anuttra. All rights reserved.
+# Licensed under the MIT License. See LICENSE in the project root for
+# license information.
+# ------------------------------------------------------------------------------
+from __future__ import annotations
+
 from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, Field
@@ -52,10 +59,10 @@ class Dataset(BaseModel):
 class Process(BaseModel):
     """Process model."""
 
-    name: str = Field(description="A process name")
-    stream: Stream = Field(description="A stream of this group")
-    group: Group = Field(description="A group of this process")
-    routing: int
+    name: str = Field(description="A process name.")
+    stream: Stream = Field(description="A stream of this group.")
+    group: Group = Field(description="A group of this process.")
+    routing: int = Field(description="A routing value for running workflow.")
     load_type: str
     priority: int
     source: Dataset

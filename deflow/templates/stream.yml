@@ -8,9 +8,11 @@ stream-workflow:
   jobs:
     start-steam:
       stages:
-        - name: Get stream info
+        - name: "Get stream information"
           id: get-stream
-          echo: "Start getting stream of ${{ params.stream }}"
+          uses: tasks/get-stream-info@v1
+          with:
+            name: ${{ params.stream }}
 
         - name: Start stream
           id: start-stream

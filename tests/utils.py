@@ -25,23 +25,13 @@ def dotenv_setting() -> None:
         #
         env_str: str = dedent(
             f"""
-            WORKFLOW_CONF_ROOT_PATH={OUTSIDE_PATH.absolute()}
+            WORKFLOW_CORE_ROOT_PATH={OUTSIDE_PATH.absolute()}
             WORKFLOW_CORE_REGISTRY=deflow
             WORKFLOW_CORE_CONF_PATH=deflow/templates
             WORKFLOW_CORE_TIMEZONE=Asia/Bangkok
-            WORKFLOW_CORE_STAGE_DEFAULT_ID=true
-            WORKFLOW_CORE_STAGE_RAISE_ERROR=true
-            WORKFLOW_CORE_JOB_DEFAULT_ID=false
-            WORKFLOW_CORE_JOB_RAISE_ERROR=true
-            WORKFLOW_CORE_GENERATE_ID_SIMPLE_MODE=true
-            WORKFLOW_CORE_MAX_NUM_POKING=4
-            WORKFLOW_CORE_MAX_JOB_PARALLEL=1
-            WORKFLOW_CORE_MAX_JOB_EXEC_TIMEOUT=600
-            WORKFLOW_CORE_MAX_CRON_PER_WORKFLOW=5
-            WORKFLOW_CORE_MAX_QUEUE_COMPLETE_HIST=16
-            WORKFLOW_LOG_PATH={(OUTSIDE_PATH / "logs").absolute()}
+            WORKFLOW_LOG_PATH={(OUTSIDE_PATH / "logs/traces").absolute()}
             WORKFLOW_LOG_ENABLE_WRITE=true
-            WORKFLOW_AUDIT_PATH={(OUTSIDE_PATH / "audits").absolute()}
+            WORKFLOW_AUDIT_PATH={(OUTSIDE_PATH / "logs/audits").absolute()}
             WORKFLOW_AUDIT_ENABLE_WRITE=true
             DEFLOW_CORE_ROOT_PATH={OUTSIDE_PATH.absolute()}
             DEFLOW_CORE_CONF_PATH=tests/conf

@@ -1,3 +1,10 @@
+# ------------------------------------------------------------------------------
+# Copyright (c) 2022 Korawich Anuttra. All rights reserved.
+# Licensed under the MIT License. See LICENSE in the project root for
+# license information.
+# ------------------------------------------------------------------------------
+from __future__ import annotations
+
 from datetime import datetime
 from enum import Enum
 
@@ -23,12 +30,10 @@ class Flow:
     def __init__(self, name: str, flow_type: FlowType = FlowType.STREAM):
         self.name = name
         self.type = flow_type
+        self.workflow = get_workflow(flow_type)
 
     def run(self, mode: str):
-        from ddeutil.workflow import Workflow
-
-        workflow = Workflow.from_loader("stream-workflow")
-        workflow.release(
+        self.workflow.release(
             release=datetime.now(),
             params={
                 "stream": self.name,
