@@ -14,17 +14,18 @@ stream-workflow:
           with:
             name: ${{ params.stream }}
 
-        - name: Start stream
+        - name: "Start stream"
           id: start-stream
           echo: "Start stream with ${{ stages.get-stream.outputs.name }}"
 
-        - name: Get priority group
+        - name: "Get priority group"
           id: priority-group
           uses: tasks/get-priority-group@v1
           with:
             stream: ${{ stages.get-stream.outputs.name }}
 
-        - name: For-each priority
+        - name: "For-each priority"
+          id: start-priority-group
           foreach: ${{ stages.priority-group.outputs.items }}
           stages:
             - name: Run Group

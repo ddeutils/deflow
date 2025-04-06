@@ -26,13 +26,13 @@ def dotenv_setting() -> None:
         env_str: str = dedent(
             f"""
             WORKFLOW_CORE_ROOT_PATH={OUTSIDE_PATH.absolute()}
-            WORKFLOW_CORE_REGISTRY=deflow
+            WORKFLOW_CORE_REGISTRY_CALLER=deflow
             WORKFLOW_CORE_CONF_PATH=deflow/templates
             WORKFLOW_CORE_TIMEZONE=Asia/Bangkok
-            WORKFLOW_LOG_PATH={(OUTSIDE_PATH / "logs/traces").absolute()}
-            WORKFLOW_LOG_ENABLE_WRITE=true
-            WORKFLOW_AUDIT_PATH={(OUTSIDE_PATH / "logs/audits").absolute()}
-            WORKFLOW_AUDIT_ENABLE_WRITE=true
+            WORKFLOW_LOG_TRACE_PATH={(OUTSIDE_PATH / "logs/traces").absolute()}
+            WORKFLOW_LOG_TRACE_ENABLE_WRITE=true
+            WORKFLOW_LOG_AUDIT_PATH={(OUTSIDE_PATH / "logs/audits").absolute()}
+            WORKFLOW_LOG_AUDIT_ENABLE_WRITE=true
             DEFLOW_CORE_ROOT_PATH={OUTSIDE_PATH.absolute()}
             DEFLOW_CORE_CONF_PATH=tests/conf
             """

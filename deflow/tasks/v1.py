@@ -1,6 +1,6 @@
 from functools import partial
 
-from ddeutil.workflow import tag
+from ddeutil.workflow import Result, tag
 
 VERSION: str = "v1"
 tag_v1 = partial(tag, name=VERSION)
@@ -12,5 +12,6 @@ def get_stream_info(name: str):
 
 
 @tag_v1(alias="get-priority-group")
-def get_priority_group(stream: str):
+def get_priority_group(stream: str, result: Result):
+    result.trace.info(f"Start get priority group: {stream}")
     return {"items": [1, 2]}
