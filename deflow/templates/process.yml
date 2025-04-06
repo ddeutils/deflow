@@ -2,7 +2,13 @@ process-workflow:
   type: Workflow
   params:
     name: str
+    audit-date: datetime
   jobs:
-    start-job:
+    start-process:
       stages:
-        - name: "Start run Group"
+        - name: "Start run Process"
+          id: start-process
+          echo: "Start run process: ${{ params.name }}"
+
+        - name: "End process"
+          echo: "End run process: ${{ params.name }}"

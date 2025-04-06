@@ -16,7 +16,9 @@ stream-workflow:
 
         - name: "Start stream"
           id: start-stream
-          echo: "Start stream with ${{ stages.get-stream.outputs.name }}"
+          uses: tasks/start-stream@v1
+          with:
+            name: ${{ stages.get-stream.outputs.name }}
 
         - name: "Get priority group"
           id: priority-group
@@ -28,11 +30,16 @@ stream-workflow:
           id: start-priority-group
           foreach: ${{ stages.priority-group.outputs.items }}
           stages:
-            - name: Run Group
-              trigger: group-workflow
+            - name: Run Priority Group
+              id: trigger-priority-group
+              trigger: group-priority-workflow
               params:
                 priority: ${{ item }}
-                stream-dates: ${{ stages.start-stream.outputs.stream-dates }}
+                audit-date: ${{ stages.start-stream.outputs.audit-date }}
+
+            - name: End trigger Priority Group
+              id: end-priority-group
+              echo: "End trigger Priority Group: ${{ item }}"
 
         - name: Clear log
           echo: "Clear logging and close stream"

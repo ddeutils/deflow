@@ -4,10 +4,25 @@ group-priority-workflow:
     priority: int
     audit-date: datetime
   jobs:
-    start-priority:
+    start-priority-group:
       stages:
-        - name: Get Groups
-          echo: "Get Groups from priority: ${{ params.priority }}"
+        - name: "Get Group from Priority"
+          id: get-groups
+          uses: tasks/get-groups-from-priority@v1
+          with:
+            priority: ${{ params.priority }}
+
+        - name: "For-each priority group"
+          id: priority-groups
+          foreach: ${{ stages.get-groups.outputs.groups }}
+          stages:
+            - name: Run Group
+              id: trigger-group-workflow
+              trigger: group-workflow
+              params:
+                name: ${{ item }}
+                audit-date: ${{ params.audit-date }}
+
 
 group-workflow:
   type: Workflow
@@ -15,6 +30,21 @@ group-workflow:
     name: str
     audit-date: datetime
   jobs:
-    start-job:
+    start-group:
       stages:
-        - name: "Start run Group"
+        - name: "Get Process from Group"
+          id: get-processes
+          uses: tasks/get-processes-from-group@v1
+          with:
+            group: ${{ params.name }}
+
+        - name: "For-each process"
+          id: processes
+          foreach: ${{ stages.get-processes.outputs.processes }}
+          stages:
+            - name: Run Process
+              id: trigger-process-workflow
+              trigger: process-workflow
+              params:
+                name: ${{ item }}
+                audit-date: ${{ params.audit-date }}

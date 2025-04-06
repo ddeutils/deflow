@@ -11,6 +11,11 @@ p_first_process_01:
       system:
         container: container-name
         path: path-name
+      extras:
+        header: true
+        sheet_name: product
+      tests:
+        file: name/source/product.xlsx
     target:
       schema: foo
       table: bar

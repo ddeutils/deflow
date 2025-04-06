@@ -51,11 +51,16 @@ class System(BaseModel):
     path: str
 
 
+class TestDataset(BaseModel):
+    file: Optional[str] = Field(default=None)
+
+
 class Dataset(BaseModel):
     conn: str = Field(alias="conn")
     scm: str = Field(alias="schema")
     tbl: str = Field(alias="table")
     sys: Optional[str] = Field(default=None, alias="system")
+    tests: TestDataset = Field(default_factory=TestDataset)
 
 
 class Process(BaseModel):
