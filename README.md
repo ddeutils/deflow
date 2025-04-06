@@ -3,6 +3,11 @@
 A **Lightweight Declarative Data Workflow Framework** (DeFlow) that build on the
 [🏃Workflow](https://github.com/ddeutils/ddeutil-workflow) package.
 
+> [!WARNING]
+> This framework does not allow you to custom your pipeline yet. If you want to
+> create you workflow, you can use the [🏃Workflow](https://github.com/ddeutils/ddeutil-workflow)
+> package instead that already installed.
+
 ## 📦 Installation
 
 ```shell
@@ -20,13 +25,13 @@ conf/
  │   ╰─ c_conn_02.yml
  ╰─ stream/
      ╰─ s_stream_01/
-         ├─ s_stream_01.yml
          ├─ g_group_01.tier.priority/
          │   ├─ p_proces_01.yml
          │   ╰─ p_proces_02.yml
-         ╰─ g_group_02.tier.priority/
-             ├─ p_proces_01.yml
-             ╰─ p_proces_02.yml
+         ├─ g_group_02.tier.priority/
+         │   ├─ p_proces_01.yml
+         │   ╰─ p_proces_02.yml
+         ╰─ s_stream_01.yml
 ```
 
 ## 💬 Contribute
