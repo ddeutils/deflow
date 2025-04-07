@@ -14,14 +14,23 @@ from .__types import DictData
 
 
 class Flow:
+    """Flow object for manage workflow model release and test via configuration.
+
+    :param name: (str) A stream name.
+    :param extras: (DictData) An extra parameters that want to override the
+        workflow config.
+    """
+
     def __init__(
         self,
         name: str,
         extras: Optional[DictData] = None,
-    ):
-        self.name = name
+    ) -> None:
+        self.name: str = name
+        self.extras: Optional[DictData] = extras
         self.workflow: Workflow = Workflow.from_conf(
-            "stream-workflow", extras=extras
+            "stream-workflow",
+            extras=extras,
         )
 
     def run(self, mode: str) -> Result:
@@ -34,4 +43,6 @@ class Flow:
             },
         )
 
-    def test(self): ...
+    def test(self) -> Result:
+        """Test."""
+        return self.run(mode="TEST")

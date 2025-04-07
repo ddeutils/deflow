@@ -6,13 +6,21 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
 from ddeutil.io import YamlEnvFl
 
+from .__types import DictData
 
-def get_process(name: str, path: Path) -> dict[str, Any]:
-    """Get Process instance from an input name and path values.
+
+def get_stream(name: str, path: Path) -> DictData:
+    """Get Stream data."""
+    for file in path.rglob("*"):
+        if file.is_dir() and file.stem == name:
+            print(file)
+
+
+def get_process(name: str, path: Path) -> DictData:
+    """Get Process data from an input name and path values.
 
     :param name: (str)
     :param path: (Path)

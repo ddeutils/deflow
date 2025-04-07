@@ -1,10 +1,23 @@
 stream-workflow:
   type: Workflow
   desc: |
-    Stream workflow that run all process groups.
+    Stream workflow that run all group and process workflow that was config in this
+    stream.
+
   params:
-    stream: str
-    run_mode: str
+    name:
+      desc: "A stream name for running this workflow."
+      type: str
+    run_mode:
+      desc: |
+        Running mode of this workflow. This workflow allow mode to run be:
+          - N (Normal): Run with normal mode.
+          - R (Rerun): Run with rerun mode, that get only failed process to run.
+          - F (Force): Run with force mode, that run all processes from the begin.
+          - T (Test): Run with test mode.
+      type: choice
+      options: ["N", "R", "F", "T"]
+
   jobs:
     start-steam:
       stages:
@@ -12,7 +25,7 @@ stream-workflow:
           id: get-stream
           uses: tasks/get-stream-info@v1
           with:
-            name: ${{ params.stream }}
+            name: ${{ params.name }}
 
         - name: "Start stream"
           id: start-stream

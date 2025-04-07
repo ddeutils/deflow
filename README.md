@@ -16,7 +16,8 @@ pip install -U deflow
 
 ## 🍻 Usage
 
-The data pipeline config will store with this file structure:
+After initialize data framework project, your data pipeline config files will
+store with this file structure:
 
 ```text
 conf/
@@ -31,7 +32,16 @@ conf/
          ├─ g_group_02.tier.priority/
          │   ├─ p_proces_01.yml
          │   ╰─ p_proces_02.yml
-         ╰─ s_stream_01.yml
+         ╰─ config.yml
+```
+
+You can run the data flow by:
+
+```python
+from deflow.flow import Flow
+from ddeutil.workflow import Result
+
+flow: Result = Flow(name="s_stream_01").run(mode="N")
 ```
 
 ## 💬 Contribute

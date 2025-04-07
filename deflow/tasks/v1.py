@@ -1,14 +1,33 @@
+# ------------------------------------------------------------------------------
+# Copyright (c) 2022 Korawich Anuttra. All rights reserved.
+# Licensed under the MIT License. See LICENSE in the project root for
+# license information.
+# ------------------------------------------------------------------------------
+from __future__ import annotations
+
 from datetime import datetime
 from functools import partial
 
 from ddeutil.workflow import Result, tag
+
+from ..__types import DictData
 
 VERSION: str = "v1"
 tag_v1 = partial(tag, name=VERSION)
 
 
 @tag_v1(alias="get-stream-info")
-def get_stream_info(name: str):
+def get_stream_info(name: str, result: Result) -> DictData:
+    """Get Stream model information.
+
+    :param name: (str) A stream name
+    :param result: (Result) A result dataclass for make logging.
+
+    :rtype: DictData
+    """
+    result.trace.info(
+        f"... [CALLER]: Start getting stream: {name!r} information."
+    )
     return {"name": name}
 
 
