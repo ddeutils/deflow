@@ -5,22 +5,49 @@
 # ------------------------------------------------------------------------------
 from __future__ import annotations
 
+import copy
+from pathlib import Path
 from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, Field
 from typing_extensions import Self
 
+from .__types import DictData
 from .conf import config
-from .utils import get_process
+from .utils import get_process, get_stream
 
 
 class Frequency(BaseModel):
-    type: str
-    offset: int = 1
+    type: str = Field(default="daily")
+    offset: int = Field(default=1)
 
 
 class Stream(BaseModel):
+    """Stream model."""
+
     name: str = Field(description="A stream name")
+    freq: Frequency = Field(
+        default_factory=Frequency,
+        description="A frequency",
+        alias="frequency",
+    )
+    data_freq: Frequency = Field(
+        default_factory=Frequency,
+        description="A data frequency",
+        alias="date_frequency",
+    )
+
+    @classmethod
+    def from_path(cls, name, path: Path) -> Self:
+        """Construct Stream model from an input stream name and config path."""
+        data = get_stream(name=name, path=path)
+
+        if (t := data.pop("type")) != cls.__name__:
+            raise ValueError(f"Type {t!r} does not match with {cls}")
+
+        loader_data: DictData = copy.deepcopy(data)
+        loader_data["name"] = name
+        return cls.model_validate(obj=loader_data)
 
 
 class Group(BaseModel):

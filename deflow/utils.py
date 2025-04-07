@@ -13,10 +13,33 @@ from .__types import DictData
 
 
 def get_stream(name: str, path: Path) -> DictData:
-    """Get Stream data."""
+    """Get Stream data that store on an input config path.
+
+    :param name:
+    :param path:
+
+    :rtype: DictData
+    """
     for file in path.rglob("*"):
         if file.is_dir() and file.stem == name:
-            print(file)
+            cfile: Path = file / "config.yml"
+            if not cfile.exists():
+                raise FileNotFoundError(
+                    f"Get stream file: {cfile.name} does not exist."
+                )
+
+            data: DictData = YamlEnvFl(path=cfile).read()
+            if name not in data:
+                raise ValueError(
+                    f"Stream config does not set {name!r} config data."
+                )
+            elif "type" not in (stream_data := data[name]):
+                raise ValueError(
+                    "Stream config does not pass the `type` for validation."
+                )
+            return stream_data
+
+    raise FileNotFoundError(f"Does not found stream: {name!r} at {path}")
 
 
 def get_process(name: str, path: Path) -> DictData:
@@ -39,7 +62,7 @@ def get_process(name: str, path: Path) -> DictData:
                 }
             else:
                 raise NotImplementedError(
-                    f"Get process file: {file.name} does not support for "
+                    f"Get process file: {file.name} does not support for file"
                     f"type: {file.suffix}."
                 )
     raise FileNotFoundError(f"{path}/**/{name}.yml")

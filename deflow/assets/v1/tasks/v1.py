@@ -10,7 +10,9 @@ from functools import partial
 
 from ddeutil.workflow import Result, tag
 
-from ..__types import DictData
+from deflow.__types import DictData
+from deflow.conf import config
+from deflow.models import Stream
 
 VERSION: str = "v1"
 tag_v1 = partial(tag, name=VERSION)
@@ -28,11 +30,17 @@ def get_stream_info(name: str, result: Result) -> DictData:
     result.trace.info(
         f"... [CALLER]: Start getting stream: {name!r} information."
     )
-    return {"name": name}
+    stream: Stream = Stream.from_path(name=name, path=config.conf_path)
+    return {
+        "name": stream.name,
+        "freq": stream.freq.model_dump(),
+        "data_freq": stream.data_freq.model_dump(),
+    }
 
 
 @tag_v1(alias="start-stream")
-def start_stream(name: str):
+def start_stream(name: str, result: Result):
+    result.trace.info(f"... [CALLER]: Start running stream: {name!r}.")
     return {
         "audit-date": datetime(2025, 4, 1, 1),
     }
@@ -40,7 +48,7 @@ def start_stream(name: str):
 
 @tag_v1(alias="get-priority-group")
 def get_priority_group(stream: str, result: Result):
-    result.trace.info(f"Start get priority group: {stream}")
+    result.trace.info(f"... [CALLER] Start get priority group: {stream}")
     return {"items": [1, 2]}
 
 

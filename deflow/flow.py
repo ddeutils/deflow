@@ -6,11 +6,15 @@
 from __future__ import annotations
 
 from datetime import datetime
+from pathlib import Path
 from typing import Optional
 
 from ddeutil.workflow import Result, Workflow
 
 from .__types import DictData
+from .conf import config
+
+ASSETS_PATH: Path = Path(__file__).parent / "assets"
 
 
 class Flow:
@@ -27,10 +31,16 @@ class Flow:
         extras: Optional[DictData] = None,
     ) -> None:
         self.name: str = name
-        self.extras: Optional[DictData] = extras
+        self.extras: DictData = {
+            **{
+                "conf_path": ASSETS_PATH / f"{config.version}/templates",
+                "regis_call": [f"deflow.assets.{config.version}"],
+            },
+            **(extras or {}),
+        }
         self.workflow: Workflow = Workflow.from_conf(
             "stream-workflow",
-            extras=extras,
+            extras=self.extras,
         )
 
     def run(self, mode: str) -> Result:
@@ -38,7 +48,7 @@ class Flow:
         return self.workflow.release(
             release=datetime.now(),
             params={
-                "stream": self.name,
+                "name": self.name,
                 "run-mode": mode,
             },
         )

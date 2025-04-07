@@ -1,4 +1,4 @@
-s_cm_d:
+s_ignore_d:
   type: Stream
   frequency:
     type: daily

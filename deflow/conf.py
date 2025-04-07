@@ -28,5 +28,9 @@ class Config:
     def conf_path(self) -> Path:
         return self.root_path / env("CORE_CONF_PATH", "conf")
 
+    @property
+    def version(self) -> str:
+        return env("CORE_VERSION", "v1")
+
 
 config = Config()

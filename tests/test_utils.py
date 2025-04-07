@@ -11,4 +11,8 @@ def test_utils_get_process(test_path):
 
 def test_utils_get_stream(test_path: Path):
     data = get_stream(name="s_cm_d", path=test_path / "conf")
-    print(data)
+    assert data == {
+        "type": "Stream",
+        "frequency": {"offset": 1, "type": "daily"},
+        "date_frequency": {"type": "daily"},
+    }

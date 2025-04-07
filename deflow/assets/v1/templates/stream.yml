@@ -8,7 +8,7 @@ stream-workflow:
     name:
       desc: "A stream name for running this workflow."
       type: str
-    run_mode:
+    run-mode:
       desc: |
         Running mode of this workflow. This workflow allow mode to run be:
           - N (Normal): Run with normal mode.
