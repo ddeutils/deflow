@@ -18,7 +18,12 @@ from .utils import get_process, get_stream
 
 
 class Frequency(BaseModel):
-    type: str = Field(default="daily")
+    """Frequency model for generate audit date."""
+
+    type: str = Field(
+        default="daily",
+        description="A frequency type.",
+    )
     offset: int = Field(default=1)
 
 
@@ -38,8 +43,14 @@ class Stream(BaseModel):
     )
 
     @classmethod
-    def from_path(cls, name, path: Path) -> Self:
-        """Construct Stream model from an input stream name and config path."""
+    def from_path(cls, name: str, path: Path) -> Self:
+        """Construct Stream model from an input stream name and config path.
+
+        :param name: (str) A stream name that want to search from config path.
+        :param path: (Path) A config path.
+
+        :rtype: Self
+        """
         data = get_stream(name=name, path=path)
 
         if (t := data.pop("type")) != cls.__name__:

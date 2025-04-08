@@ -32,6 +32,8 @@ stream-workflow:
           uses: tasks/start-stream@v1
           with:
             name: ${{ stages.get-stream.outputs.name }}
+            freq: ${{ stages.get-stream.outputs.freq }}
+            data_freq: ${{ stages.get-stream.outputs.data_freq }}
 
         - name: "Get priority group"
           id: priority-group

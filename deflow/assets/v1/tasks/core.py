@@ -12,7 +12,7 @@ from ddeutil.workflow import Result, tag
 
 from deflow.__types import DictData
 from deflow.conf import config
-from deflow.models import Stream
+from deflow.models import Frequency, Stream
 
 VERSION: str = "v1"
 tag_v1 = partial(tag, name=VERSION)
@@ -27,9 +27,7 @@ def get_stream_info(name: str, result: Result) -> DictData:
 
     :rtype: DictData
     """
-    result.trace.info(
-        f"... [CALLER]: Start getting stream: {name!r} information."
-    )
+    result.trace.info(f"[CALLER]: Start getting stream: {name!r} information.")
     stream: Stream = Stream.from_path(name=name, path=config.conf_path)
     return {
         "name": stream.name,
@@ -39,8 +37,20 @@ def get_stream_info(name: str, result: Result) -> DictData:
 
 
 @tag_v1(alias="start-stream")
-def start_stream(name: str, result: Result):
-    result.trace.info(f"... [CALLER]: Start running stream: {name!r}.")
+def start_stream(
+    name: str, freq: Frequency, data_freq: Frequency, result: Result
+):
+    """Start stream workflow with update audit watermarking and generate starter
+    stream log.
+
+    :param name:
+    :param freq:
+    :param data_freq:
+    :param result:
+    """
+    result.trace.info(f"[CALLER]: Start running stream: {name!r}.")
+    result.trace.info(f"... freq: {freq}")
+    result.trace.info(f"... data_freq: {data_freq}")
     return {
         "audit-date": datetime(2025, 4, 1, 1),
     }

@@ -1,11 +1,11 @@
 # DeFlow
 
-A **Lightweight Declarative Data Workflow Framework** (DeFlow) that build on the
-[🏃Workflow](https://github.com/ddeutils/ddeutil-workflow) package.
+A **Lightweight Declarative Data Workflow Framework** that build on the
+[🏃 Workflow](https://github.com/ddeutils/ddeutil-workflow) package.
 
 > [!WARNING]
 > This framework does not allow you to custom your pipeline yet. If you want to
-> create you workflow, you can use the [🏃Workflow](https://github.com/ddeutils/ddeutil-workflow)
+> create you workflow, you can use the [🏃 Workflow](https://github.com/ddeutils/ddeutil-workflow)
 > package instead that already installed.
 
 ## 📦 Installation
@@ -14,10 +14,14 @@ A **Lightweight Declarative Data Workflow Framework** (DeFlow) that build on the
 pip install -U deflow
 ```
 
+| Version | Supported |
+|---------|-----------|
+| 1       | Yes       |
+
 ## 🍻 Usage
 
-After initialize data framework project, your data pipeline config files will
-store with this file structure:
+After initialize data framework project with **Version 1**, your data pipeline
+config files will store with this file structure:
 
 ```text
 conf/
@@ -43,6 +47,8 @@ from ddeutil.workflow import Result
 
 flow: Result = Flow(name="s_stream_01").run(mode="N")
 ```
+
+## :cookie: Configuration
 
 ## 💬 Contribute
 
