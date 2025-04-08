@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import copy
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Literal, Optional
 
@@ -24,7 +25,9 @@ class Frequency(BaseModel):
         default="daily",
         description="A frequency type.",
     )
-    offset: int = Field(default=1)
+    offset: int = Field(
+        default=1, description="An offset value for decrease freq type unit."
+    )
 
 
 class Stream(BaseModel):
@@ -65,6 +68,11 @@ class Group(BaseModel):
     name: str = Field(description="A group name")
     tier: Literal["bronze", "silver", "gold"]
     priority: int
+
+    @classmethod
+    def from_stream(cls, name: str, path: Path) -> Self:
+        """Construct Group model from an input stream name and config path."""
+        return
 
 
 class Dependency(BaseModel):
@@ -131,3 +139,8 @@ class Process(BaseModel):
             process.stream.name == stream_name
         ), "Stream does not match with file location."
         return process
+
+
+class Dates(BaseModel):
+    audit_date: datetime
+    logical_date: datetime

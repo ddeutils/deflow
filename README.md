@@ -14,10 +14,6 @@ A **Lightweight Declarative Data Workflow Framework** that build on the
 pip install -U deflow
 ```
 
-| Version | Supported |
-|---------|-----------|
-| 1       | Yes       |
-
 ## 🍻 Usage
 
 After initialize data framework project with **Version 1**, your data pipeline
@@ -49,6 +45,12 @@ flow: Result = Flow(name="s_stream_01").run(mode="N")
 ```
 
 ## :cookie: Configuration
+
+Support data framework version:
+
+|  Version  |  Supported  | Description                                              |
+|:---------:|:-----------:|----------------------------------------------------------|
+|     1     |     Yes     | A data framework that base on stream, group, and process |
 
 ## 💬 Contribute
 

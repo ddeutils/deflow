@@ -35,15 +35,9 @@ stream-workflow:
             freq: ${{ stages.get-stream.outputs.freq }}
             data_freq: ${{ stages.get-stream.outputs.data_freq }}
 
-        - name: "Get priority group"
-          id: priority-group
-          uses: tasks/get-priority-group@v1
-          with:
-            stream: ${{ stages.get-stream.outputs.name }}
-
         - name: "For-each priority"
           id: start-priority-group
-          foreach: ${{ stages.priority-group.outputs.items }}
+          foreach: ${{ stages.get-stream.outputs.priority-groups }}
           stages:
             - name: Run Priority Group
               id: trigger-priority-group
@@ -51,6 +45,7 @@ stream-workflow:
               params:
                 priority: ${{ item }}
                 audit-date: ${{ stages.start-stream.outputs.audit-date }}
+                logical-date: ${{ stages.start-stream.outputs.logical-date }}
 
             - name: End trigger Priority Group
               id: end-priority-group

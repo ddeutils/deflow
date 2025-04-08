@@ -19,6 +19,8 @@ ASSETS_PATH: Path = Path(__file__).parent / "assets"
 
 class Flow:
     """Flow object for manage workflow model release and test via configuration.
+    This is the core object for this package that active data pipeline from
+    the current data framework version.
 
     :param name: (str) A stream name.
     :param extras: (DictData) An extra parameters that want to override the
@@ -44,7 +46,10 @@ class Flow:
         )
 
     def run(self, mode: str) -> Result:
-        """Start release dynamic pipeline with this flow name."""
+        """Start release dynamic pipeline with this flow name.
+
+        :param mode: (str) A running mode of this flow.
+        """
         return self.workflow.release(
             release=datetime.now(),
             params={

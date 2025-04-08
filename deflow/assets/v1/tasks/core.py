@@ -33,19 +33,21 @@ def get_stream_info(name: str, result: Result) -> DictData:
         "name": stream.name,
         "freq": stream.freq.model_dump(),
         "data_freq": stream.data_freq.model_dump(),
+        "priority-groups": [1, 2],
     }
 
 
 @tag_v1(alias="start-stream")
 def start_stream(
     name: str, freq: Frequency, data_freq: Frequency, result: Result
-):
+) -> DictData:
     """Start stream workflow with update audit watermarking and generate starter
     stream log.
 
-    :param name:
-    :param freq:
-    :param data_freq:
+    :param name: (str) A stream name that want to get audit logs for generate
+        the next audit date.
+    :param freq: (Frequency)
+    :param data_freq: (Frequency)
     :param result:
     """
     result.trace.info(f"[CALLER]: Start running stream: {name!r}.")
@@ -53,27 +55,24 @@ def start_stream(
     result.trace.info(f"... data_freq: {data_freq}")
     return {
         "audit-date": datetime(2025, 4, 1, 1),
+        "logical-date": datetime(2025, 4, 1, 1),
     }
-
-
-@tag_v1(alias="get-priority-group")
-def get_priority_group(stream: str, result: Result):
-    result.trace.info(f"... [CALLER] Start get priority group: {stream}")
-    return {"items": [1, 2]}
 
 
 @tag_v1(alias="get-groups-from-priority")
 def get_groups_from_priority(priority: int, result: Result):
-    result.trace.info(f"Get groups from priority: {priority}")
+    result.trace.info(f"[CALLER]: Get groups from priority: {priority}")
     if priority == 1:
+        result.trace.info("... Return groups from 1")
         return {"groups": ["group-01", "group-02"]}
     else:
+        result.trace.info("... Return groups from 2")
         return {"groups": ["group-03"]}
 
 
 @tag_v1(alias="get-processes-from-group")
 def get_processes_from_group(group: str, result: Result):
-    result.trace.info(f"Get processes from group: {group}")
+    result.trace.info(f"[CALLER]: Get processes from group: {group}")
     if group == "group-01":
         return {"processes": ["process-01"]}
     elif group == "group-02":

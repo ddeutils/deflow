@@ -3,12 +3,19 @@ from ddeutil.workflow import Result, Workflow, extract_call
 from deflow.conf import config
 
 
-def test_workflow():
-    workflow = Workflow.from_conf("stream-workflow")
+def test_workflow(test_path):
+    workflow = Workflow.from_conf(
+        "stream-workflow",
+        extras={
+            "conf_path": (
+                test_path.parent / f"deflow/assets/{config.version}/templates"
+            )
+        },
+    )
     rs: Result = workflow.execute(
         params={
             "stream": "s_cm_d",
-            "run_mode": "N",
+            "run-mode": "N",
         }
     )
     print(rs.context)

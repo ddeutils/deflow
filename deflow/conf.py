@@ -19,6 +19,7 @@ def env(
 
 
 class Config:
+    """Config object."""
 
     @property
     def root_path(self) -> Path:
