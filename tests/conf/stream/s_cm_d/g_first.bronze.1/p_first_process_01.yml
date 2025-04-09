@@ -1,28 +1,26 @@
 p_first_process_01:
   type: Process
-  etl:
-    type: 1
-    load_type: F
-    priority: 1
-    source:
-      schema: source/%Y%m%d
-      table: product.xlsx
-      connection: name
-      system:
-        container: container-name
-        path: path-name
-      extras:
-        header: true
-        sheet_name: product
-      tests:
-        file: name/source/product.xlsx
-    target:
-      schema: foo
-      table: bar
-      connection: name
-      system:
-        container: container-name
-        path: path-name
+  routing: 1
+  load_type: F
+  priority: 1
+  source:
+    schema: source/%Y%m%d
+    table: product.xlsx
+    conn: name
+    extras:
+      header: true
+      sheet_name: product
+      container: container-name
+      path: path-name
+    tests:
+      file: name/source/product.xlsx
+  target:
+    schema: dwh
+    table: bronze
+    conn: product
+    system:
+      container: container-name
+      path: path-name
   deps:
     - name: p_deps_process_01
       offset: 1

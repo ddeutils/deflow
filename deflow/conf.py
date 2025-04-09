@@ -7,9 +7,10 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Optional
+from typing import Final, Optional
 
-PREFIX: str = "DEFLOW"
+PREFIX: Final[str] = "DEFLOW"
+ASSETS_PATH: Final[Path] = Path(__file__).parent / "assets"
 
 
 def env(

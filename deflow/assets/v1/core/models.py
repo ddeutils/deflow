@@ -6,29 +6,39 @@
 from __future__ import annotations
 
 import copy
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Literal, Optional
+from zoneinfo import ZoneInfo
 
 from pydantic import BaseModel, Field
 from typing_extensions import Self
 
 from deflow.__types import DictData
-from deflow.conf import config
 
-from .utils import get_process, get_stream
+from .utils import get_stream
 
 
 class Frequency(BaseModel):
     """Frequency model for generate audit date."""
 
-    type: str = Field(
+    type: Literal["daily", "monthly", "yearly", "hourly"] = Field(
         default="daily",
         description="A frequency type.",
     )
     offset: int = Field(
-        default=1, description="An offset value for decrease freq type unit."
+        default=1,
+        description="An offset value for decrease freq type unit.",
     )
+
+    def gen_datetime(
+        self, dt: Optional[datetime] = None, tz: Optional[ZoneInfo] = None
+    ) -> datetime:
+        """Generate and prepare datetime"""
+        tz = tz or ZoneInfo("UTC")
+        if dt is None:
+            dt = datetime.now(tz=tz)
+        return dt - timedelta(days=self.offset)
 
 
 class Stream(BaseModel):
@@ -44,6 +54,10 @@ class Stream(BaseModel):
         default_factory=Frequency,
         description="A data frequency",
         alias="date_frequency",
+    )
+    groups: dict[str, Group] = Field(
+        default_factory=dict,
+        description="A list of Group model.",
     )
 
     @classmethod
@@ -64,20 +78,55 @@ class Stream(BaseModel):
         loader_data["name"] = name
         return cls.model_validate(obj=loader_data)
 
+    def group(self, name: str) -> Group:
+        """Get a Group model by name.
+
+        :param name: (str) A group name.
+
+        :rtype: Group
+        """
+        return self.groups[name]
+
+    def priority_group(self) -> list[int]:
+        """Return the ordered list of distinct group priority that keep in this
+        stream.
+
+        :rtype: list[int]
+        """
+        return sorted({group.priority for group in self.groups.values()})
+
+
+GroupTier = Literal["raw", "bronze", "silver", "gold", "staging", "operation"]
+
 
 class Group(BaseModel):
-    name: str = Field(description="A group name")
-    tier: Literal["bronze", "silver", "gold"]
-    priority: int
+    """Group model that use for grouping process together and run with its
+    priority.
+    """
 
-    @classmethod
-    def from_stream(cls, name: str, path: Path) -> Self:
-        """Construct Group model from an input stream name and config path."""
-        return
+    name: str = Field(description="A group name")
+    tier: GroupTier = Field(description="A tier of this group.")
+    priority: int = Field(gt=0, description="A priority of this group.")
+    processes: dict[str, Process] = Field(
+        default_factory=dict,
+        description="A list of Process model.",
+    )
+
+    @property
+    def filename(self) -> str:
+        """Return the file name that combine name, tier, and priority of this
+        group.
+
+        :rtype: str
+        """
+        return f"{self.name}.{self.tier}.{self.priority}"
+
+    def process(self, name: str) -> Process:
+        return self.processes[name]
 
 
 class Dependency(BaseModel):
-    name: str
+    name: str = Field(description="A dependency process name.")
     offset: int = Field(default=1)
 
 
@@ -87,7 +136,8 @@ class Connection(BaseModel):
     host: str
     database: str
     user: str
-    secret: str = Field(
+    secret: Optional[str] = Field(
+        default=None,
         description="A secret key for getting from any secret manager service.",
     )
 
@@ -103,22 +153,25 @@ class TestDataset(BaseModel):
 
 
 class Dataset(BaseModel):
+    """Dataset model."""
+
     conn: str = Field(alias="conn")
     scm: str = Field(alias="schema")
     tbl: str = Field(alias="table")
-    sys: Optional[str] = Field(default=None, alias="system")
     tests: TestDataset = Field(default_factory=TestDataset)
 
 
 class Process(BaseModel):
-    """Process model."""
+    """Process model for only one action for move the data from source to
+    target with routing type.
+    """
 
     name: str = Field(description="A process name.")
-    stream: Stream = Field(description="A stream of this group.")
-    group: Group = Field(description="A group of this process.")
-    routing: int = Field(description="A routing value for running workflow.")
-    load_type: str
-    priority: int
+    routing: int = Field(
+        ge=1, lt=20, description="A routing value for running workflow."
+    )
+    load_type: str = Field(description="A loading type.")
+    priority: int = Field(gt=0, description="A priority of this process.")
     source: Dataset
     target: Dataset
     extras: dict[str, Any] = Field(default_factory=dict)
@@ -127,19 +180,13 @@ class Process(BaseModel):
         description="List of process dependency.",
     )
 
+
+class ProcessDirect(Process):
+    stream: str
+    group: str
+
     @classmethod
-    def load_conf(cls, name: str) -> Self:
-        data = get_process(name, path=config.conf_path)
-        group_name = data.pop("group_name")
-        stream_name = data.pop("stream_name")
-        process = cls.model_validate(obj=data)
-        assert (
-            process.group.name == group_name
-        ), "Group does not match with file location."
-        assert (
-            process.stream.name == stream_name
-        ), "Stream does not match with file location."
-        return process
+    def from_path(cls): ...
 
 
 class Dates(BaseModel):

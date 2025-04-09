@@ -6,15 +6,13 @@
 from __future__ import annotations
 
 from datetime import datetime
-from pathlib import Path
 from typing import Optional
 
 from ddeutil.workflow import Result, Workflow
+from ddeutil.workflow import config as workflow_config
 
 from .__types import DictData
-from .conf import config
-
-ASSETS_PATH: Path = Path(__file__).parent / "assets"
+from .conf import ASSETS_PATH, config
 
 
 class Flow:
@@ -30,13 +28,15 @@ class Flow:
     def __init__(
         self,
         name: str,
+        *,
         extras: Optional[DictData] = None,
     ) -> None:
         self.name: str = name
         self.extras: DictData = {
             **{
                 "conf_path": ASSETS_PATH / f"{config.version}/templates",
-                "regis_call": [f"deflow.assets.{config.version}.core"],
+                "audit_path": workflow_config.audit_path / f"stream={name}",
+                "registry_caller": [f"deflow.assets.{config.version}.core"],
             },
             **(extras or {}),
         }
@@ -44,6 +44,14 @@ class Flow:
             "stream-workflow",
             extras=self.extras,
         )
+
+    def __repr__(self) -> str:
+        """Override __repr__ method."""
+        return f"{self.__class__.__name__}(name={self.name})"
+
+    def __str__(self) -> str:
+        """Override __str__ method."""
+        return self.name
 
     def run(self, mode: str) -> Result:
         """Start release dynamic pipeline with this flow name.
@@ -59,5 +67,7 @@ class Flow:
         )
 
     def test(self) -> Result:
-        """Test."""
+        """Test running flow on local without integration testing."""
         return self.run(mode="TEST")
+
+    def ui(self): ...

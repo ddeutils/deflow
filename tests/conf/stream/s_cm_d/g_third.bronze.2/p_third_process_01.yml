@@ -1,0 +1,22 @@
+p_third_process_01:
+  type: Process
+  routing: 1
+  load_type: F
+  priority: 1
+  source:
+    conn: name
+    schema: publish
+    table: province
+    extras:
+      system: ms
+  target:
+    conn: dwh
+    schema: bronze
+    table: province
+  extras:
+    archive: true
+  deps:
+    - name: p_deps_process_01
+      offset: 1
+    - name: p_deps_process_02
+      offset: 1

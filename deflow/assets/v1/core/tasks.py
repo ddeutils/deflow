@@ -33,7 +33,7 @@ def get_stream_info(name: str, result: Result) -> DictData:
         "name": stream.name,
         "freq": stream.freq.model_dump(),
         "data_freq": stream.data_freq.model_dump(),
-        "priority-groups": [1, 2],
+        "priority-groups": stream.priority_group(),
     }
 
 
@@ -46,9 +46,9 @@ def start_stream(
 
     :param name: (str) A stream name that want to get audit logs for generate
         the next audit date.
-    :param freq: (Frequency)
-    :param data_freq: (Frequency)
-    :param result:
+    :param freq: (Frequency) A audit date frequency.
+    :param data_freq: (Frequency) A logical date frequency.
+    :param result: (Result) A result dataclass for make logging.
     """
     result.trace.info(f"[CALLER]: Start running stream: {name!r}.")
     result.trace.info(f"... freq: {freq}")

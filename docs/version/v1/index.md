@@ -1,10 +1,10 @@
-# Pipeline strategy
+# Version 1
 
 This concept use pipeline to pass running date on all node processes.
 
 ```text
 core
- ╰─ pipeline
-     ╰─ node-group
-         ╰─ node
+ ╰─ stream
+     ╰─ group
+         ╰─ process
 ```

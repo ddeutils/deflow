@@ -6,7 +6,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
 from ddeutil.io import YamlEnvFl
 
@@ -17,8 +16,9 @@ from .__types import Re
 def get_stream(name: str, path: Path) -> DictData:
     """Get Stream data that store on an input config path.
 
-    :param name:
-    :param path:
+    :param name: A stream name that want to search and extract data from the
+        config path.
+    :param path: A config path.
 
     :rtype: DictData
     """
@@ -40,27 +40,34 @@ def get_stream(name: str, path: Path) -> DictData:
                 raise ValueError(
                     "Stream config does not pass the `type` for validation."
                 )
+
+            groups = {}
+            for d in file.iterdir():
+                if d.is_dir() and (match := Re.RE_GROUP.search(d.name)):
+                    groups[match.groupdict()["name"]] = {
+                        "processes": get_processes_from_path(d),
+                        **match.groupdict(),
+                    }
+
+            stream_data["groups"] = groups
             return stream_data
 
     raise FileNotFoundError(f"Does not found stream: {name!r} at {path}")
 
 
-def get_group(stream: str, path: Path):
-    file: Path
-    rs: dict[str, Any] = {}
-    for file in path.rglob("*"):
-        if file.is_dir() and file.stem == stream:
-            cfile: Path = file / "config.yml"
-            if not cfile.exists():
-                raise FileNotFoundError(
-                    f"Get stream file: {cfile.name} does not exist."
-                )
+def get_processes_from_path(path: Path) -> DictData:
+    """Get all process from an input config path.
 
-            for d in file.iterdir():
-                if d.is_dir():
-                    if match := Re.RE_GROUP.search(d.name):
-                        rs[match.groupdict()["name"]] = match.groupdict()
-    return rs
+    :param path: A config path.
+    """
+    process = {}
+    for file in path.rglob("*"):
+        if file.suffix in (".yml", ".yaml"):
+            data = YamlEnvFl(path=file).read()
+            if data:
+                for name in data:
+                    process[name] = {"name": name, **data[name]}
+    return process
 
 
 def get_process(name: str, path: Path) -> DictData:

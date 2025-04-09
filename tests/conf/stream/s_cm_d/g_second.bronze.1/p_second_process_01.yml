@@ -1,19 +1,18 @@
-p_first_process_01:
+p_second_process_01:
   type: Process
   routing: 1
   load_type: F
   priority: 1
   source:
     conn: name
-    schema: source/%Y%m%d
-    table: product.xlsx
-    system: hm
+    schema: publish
+    table: province
     extras:
-      header: true
+      system: ms
   target:
-    conn: name
-    schema: foo
-    table: bar
+    conn: dwh
+    schema: bronze
+    table: province
   extras:
     archive: true
   deps:
