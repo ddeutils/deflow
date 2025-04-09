@@ -36,7 +36,7 @@ class Flow:
         self.extras: DictData = {
             **{
                 "conf_path": ASSETS_PATH / f"{config.version}/templates",
-                "regis_call": [f"deflow.assets.{config.version}"],
+                "regis_call": [f"deflow.assets.{config.version}.core"],
             },
             **(extras or {}),
         }

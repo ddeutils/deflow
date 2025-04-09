@@ -24,6 +24,6 @@ def test_workflow(test_path):
 def test_extract_call():
     func = extract_call(
         "tasks/get-stream-info@v1",
-        registries=[f"deflow.assets.{config.version}"],
+        registries=[f"deflow.assets.{config.version}.core"],
     )
     print(func)

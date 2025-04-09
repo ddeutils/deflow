@@ -6,10 +6,12 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 from ddeutil.io import YamlEnvFl
 
-from .__types import DictData
+from ....__types import DictData
+from .__types import Re
 
 
 def get_stream(name: str, path: Path) -> DictData:
@@ -20,6 +22,7 @@ def get_stream(name: str, path: Path) -> DictData:
 
     :rtype: DictData
     """
+    file: Path
     for file in path.rglob("*"):
         if file.is_dir() and file.stem == name:
             cfile: Path = file / "config.yml"
@@ -40,6 +43,24 @@ def get_stream(name: str, path: Path) -> DictData:
             return stream_data
 
     raise FileNotFoundError(f"Does not found stream: {name!r} at {path}")
+
+
+def get_group(stream: str, path: Path):
+    file: Path
+    rs: dict[str, Any] = {}
+    for file in path.rglob("*"):
+        if file.is_dir() and file.stem == stream:
+            cfile: Path = file / "config.yml"
+            if not cfile.exists():
+                raise FileNotFoundError(
+                    f"Get stream file: {cfile.name} does not exist."
+                )
+
+            for d in file.iterdir():
+                if d.is_dir():
+                    if match := Re.RE_GROUP.search(d.name):
+                        rs[match.groupdict()["name"]] = match.groupdict()
+    return rs
 
 
 def get_process(name: str, path: Path) -> DictData:

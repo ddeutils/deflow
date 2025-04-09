@@ -13,8 +13,9 @@ from typing import Any, Literal, Optional
 from pydantic import BaseModel, Field
 from typing_extensions import Self
 
-from .__types import DictData
-from .conf import config
+from deflow.__types import DictData
+from deflow.conf import config
+
 from .utils import get_process, get_stream
 
 

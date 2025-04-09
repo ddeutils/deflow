@@ -1,4 +1,4 @@
-from deflow.models import Group, Process, Stream
+from deflow.assets.v1.tasks.models import Group, Process, Stream
 
 
 def test_models_stream():

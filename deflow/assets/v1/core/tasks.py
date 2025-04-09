@@ -10,9 +10,9 @@ from functools import partial
 
 from ddeutil.workflow import Result, tag
 
-from deflow.__types import DictData
-from deflow.conf import config
-from deflow.models import Frequency, Stream
+from ....__types import DictData
+from ....conf import config
+from .models import Frequency, Stream
 
 VERSION: str = "v1"
 tag_v1 = partial(tag, name=VERSION)
