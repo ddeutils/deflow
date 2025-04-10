@@ -12,7 +12,7 @@ from ddeutil.workflow import Result, tag
 
 from ....__types import DictData
 from ....conf import config
-from .models import Frequency, Stream
+from .models import Frequency, Process, Stream
 
 VERSION: str = "v1"
 tag_v1 = partial(tag, name=VERSION)
@@ -31,9 +31,9 @@ def get_stream_info(name: str, result: Result) -> DictData:
     stream: Stream = Stream.from_path(name=name, path=config.conf_path)
     return {
         "name": stream.name,
-        "freq": stream.freq.model_dump(),
-        "data_freq": stream.data_freq.model_dump(),
-        "priority-groups": stream.priority_group(),
+        "freq": stream.freq.model_dump(by_alias=True),
+        "data_freq": stream.data_freq.model_dump(by_alias=True),
+        "priority-groups": sorted(stream.priority_group().keys()),
     }
 
 
@@ -60,22 +60,77 @@ def start_stream(
 
 
 @tag_v1(alias="get-groups-from-priority")
-def get_groups_from_priority(priority: int, result: Result):
+def get_groups_from_priority(
+    priority: int, stream: str, result: Result
+) -> DictData:
+    """Get groups from priority.
+
+    :param priority: (int)
+    :param stream: (str)
+    :param result: (Result)
+    """
     result.trace.info(f"[CALLER]: Get groups from priority: {priority}")
-    if priority == 1:
-        result.trace.info("... Return groups from 1")
-        return {"groups": ["group-01", "group-02"]}
-    else:
-        result.trace.info("... Return groups from 2")
-        return {"groups": ["group-03"]}
+    stream: Stream = Stream.from_path(name=stream, path=config.conf_path)
+    priority_group = stream.priority_group()
+    result.trace.info(f"... Return groups from {priority}")
+    return {"groups": [group.name for group in priority_group.get(priority)]}
 
 
 @tag_v1(alias="get-processes-from-group")
-def get_processes_from_group(group: str, result: Result):
-    result.trace.info(f"[CALLER]: Get processes from group: {group}")
-    if group == "group-01":
-        return {"processes": ["process-01"]}
-    elif group == "group-02":
-        return {"processes": ["process-02"]}
-    else:
-        return {"processes": ["process-03"]}
+def get_processes_from_group(
+    group: str, stream: str, result: Result
+) -> DictData:
+    result.trace.info(f"[CALLER]: Get processes from group: {group!r}")
+    stream: Stream = Stream.from_path(name=stream, path=config.conf_path)
+    return {"processes": list(stream.group(group).processes)}
+
+
+@tag_v1(alias="start-process")
+def start_process(name: str, result: Result) -> DictData:
+    """Start process with an input process name."""
+    result.trace.info(f"[CALLER]: Start process: {name!r}")
+    process: Process = Process.from_path(name=name, path=config.conf_path)
+    return {
+        "routing": process.routing,
+        "process": process.model_dump(by_alias=True),
+    }
+
+
+@tag_v1(alias="routing-01")
+def routing_ingest_file(
+    process: Process,
+    audit_date: datetime,
+    result: Result,
+) -> DictData:
+    """Routing file.
+
+    :param process: (Process)
+    :param audit_date: (datetime)
+    :param result: (Result)
+    """
+    result.trace.info(f"[CALLER]: Routing: 01 with process: {process.name!r}")
+    result.trace.info("... This routing is ingest data with file type.")
+    result.trace.info(f"... Audit date: {audit_date}")
+    return {
+        "records": 1000,
+    }
+
+
+@tag_v1(alias="routing-02")
+def routing_ingest_db(
+    process: Process,
+    audit_date: datetime,
+    result: Result,
+) -> DictData:
+    """Routing database.
+
+    :param process: (Process)
+    :param audit_date: (datetime)
+    :param result: (Result)
+    """
+    result.trace.info(f"[CALLER]: Routing: 02 with process: {process.name!r}")
+    result.trace.info("... This routing is ingest data with database type.")
+    result.trace.info(f"... Audit date: {audit_date}")
+    return {
+        "records": 1000,
+    }

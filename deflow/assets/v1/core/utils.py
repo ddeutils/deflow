@@ -82,12 +82,16 @@ def get_process(name: str, path: Path) -> DictData:
         if file.is_file() and file.stem == name:
             if file.suffix in (".yml", ".yaml"):
                 data = YamlEnvFl(path=file).read()
+                if name not in data:
+                    raise NotImplementedError
+
                 return {
                     "name": name,
                     "group_name": file.parent.name,
                     "stream_name": file.parent.parent.name,
-                    **data,
+                    **data[name],
                 }
+
             else:
                 raise NotImplementedError(
                     f"Get process file: {file.name} does not support for file"

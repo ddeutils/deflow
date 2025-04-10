@@ -8,7 +8,35 @@ process-workflow:
       stages:
         - name: "Start run Process"
           id: start-process
-          echo: "Start run process: ${{ params.name }}"
+          uses: tasks/start-process@v1
+          with:
+            name: ${{ params.name }}
+
+        - name: Switch routing
+          case: ${{ stages.start-process.outputs.routing }}
+          match:
+            - case: 1
+              stage:
+                name: Process file from RAW -> Bronze
+                uses: tasks/routing-01@v1
+                with:
+                  process: ${{ stages.start-process.outputs.process }}
+                  audit_date: ${{ params.audit-date }}
+
+            - case: 2
+              stage:
+                name: Process database from RAW -> Bronze
+                uses: tasks/routing-02@v1
+                with:
+                  process: ${{ stages.start-process.outputs.process }}
+                  audit_date: ${{ params.audit-date }}
+
+        - name: "Making Data Quality"
+          echo: Start run data quality
+
+        - name: "Clear log"
+          echo: Clear logging and close process
 
         - name: "End process"
-          echo: "End run process: ${{ params.name }}"
+          echo: |
+            End run process: ${{ params.name }}

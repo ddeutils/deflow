@@ -1,4 +1,4 @@
-from deflow.assets.v1.core.models import Group, ProcessDirect, Stream
+from deflow.assets.v1.core.models import Group, Process, Stream
 
 
 def test_v1_models_stream():
@@ -11,14 +11,14 @@ def test_v1_models_stream():
     )
     print(stream)
     assert stream.groups == {}
-    assert stream.priority_group() == []
+    assert stream.priority_group() == {}
 
 
 def test_v1_models_stream_from_path(test_path):
     stream = Stream.from_path("s_cm_d", path=test_path / "conf")
     print(stream)
     print(stream.priority_group())
-    assert stream.priority_group() == [1, 2]
+    assert sorted(stream.priority_group().keys()) == [1, 2]
 
 
 def test_v1_models_group():
@@ -33,7 +33,7 @@ def test_v1_models_group():
 
 
 def test_v1_models_process():
-    process = ProcessDirect.model_validate(
+    process = Process.model_validate(
         obj={
             "name": "p_first_process_01",
             "stream": "s_cm_d",
@@ -60,4 +60,9 @@ def test_v1_models_process():
             ],
         }
     )
+    print(process)
+
+
+def test_v1_models_process_direct(test_path):
+    process = Process.from_path("p_first_process_01", path=test_path / "conf")
     print(process)

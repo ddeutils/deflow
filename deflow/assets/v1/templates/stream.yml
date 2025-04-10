@@ -41,18 +41,19 @@ stream-workflow:
           stages:
             - name: Run Priority Group
               id: trigger-priority-group
-              trigger: group-priority-workflow
+              trigger: priority-group-workflow
               params:
                 priority: ${{ item }}
+                stream: ${{ stages.get-stream.outputs.name }}
                 audit-date: ${{ stages.start-stream.outputs.audit-date }}
                 logical-date: ${{ stages.start-stream.outputs.logical-date }}
 
             - name: End trigger Priority Group
-              id: end-priority-group
+              id: end-trigger-priority-group
               echo: "End trigger Priority Group: ${{ item }}"
 
-        - name: Clear log
-          echo: "Clear logging and close stream"
+        - name: "Clear log"
+          echo: Clear logging and close stream
 
-        - name: Alert
-          echo: "Alert with mail or notify-services"
+        - name: "Alert"
+          echo: Alert with mail or notify-services

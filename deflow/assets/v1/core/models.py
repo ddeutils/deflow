@@ -16,7 +16,7 @@ from typing_extensions import Self
 
 from deflow.__types import DictData
 
-from .utils import get_stream
+from .utils import get_process, get_stream
 
 
 class Frequency(BaseModel):
@@ -87,13 +87,19 @@ class Stream(BaseModel):
         """
         return self.groups[name]
 
-    def priority_group(self) -> list[int]:
+    def priority_group(self) -> dict[int, list[Group]]:
         """Return the ordered list of distinct group priority that keep in this
         stream.
 
-        :rtype: list[int]
+        :rtype: dict[int, list[Group]]
         """
-        return sorted({group.priority for group in self.groups.values()})
+        rs: dict[int, list[Group]] = {}
+        for group in self.groups.values():
+            if group.priority in rs:
+                rs[group.priority].append(group)
+            else:
+                rs[group.priority] = [group]
+        return rs
 
 
 GroupTier = Literal["raw", "bronze", "silver", "gold", "staging", "operation"]
@@ -155,9 +161,11 @@ class TestDataset(BaseModel):
 class Dataset(BaseModel):
     """Dataset model."""
 
-    conn: str = Field(alias="conn")
-    scm: str = Field(alias="schema")
-    tbl: str = Field(alias="table")
+    conn: str = Field(alias="conn", description="A connection name.")
+    scm: str = Field(
+        alias="schema", description="A schema or parent path name."
+    )
+    tbl: str = Field(alias="table", description="A table or file name.")
     tests: TestDataset = Field(default_factory=TestDataset)
 
 
@@ -167,6 +175,8 @@ class Process(BaseModel):
     """
 
     name: str = Field(description="A process name.")
+    stream: Optional[str] = None
+    group: Optional[str] = None
     routing: int = Field(
         ge=1, lt=20, description="A routing value for running workflow."
     )
@@ -180,13 +190,15 @@ class Process(BaseModel):
         description="List of process dependency.",
     )
 
-
-class ProcessDirect(Process):
-    stream: str
-    group: str
-
     @classmethod
-    def from_path(cls): ...
+    def from_path(cls, name: str, path: Path) -> Self:
+        data = get_process(name=name, path=path)
+
+        if (t := data.pop("type")) != cls.__name__:
+            raise ValueError(f"Type {t!r} does not match with {cls}")
+
+        loader_data: DictData = copy.deepcopy(data)
+        return cls.model_validate(obj=loader_data)
 
 
 class Dates(BaseModel):

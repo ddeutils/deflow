@@ -1,6 +1,6 @@
 p_second_process_01:
   type: Process
-  routing: 1
+  routing: 2
   load_type: F
   priority: 1
   source:
