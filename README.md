@@ -3,6 +3,9 @@
 A **Lightweight Declarative Data Workflow Framework** that build on the
 [🏃 Workflow](https://github.com/ddeutils/ddeutil-workflow) package.
 
+I want to use this project is the real-world use-case for my [🏃 Workflow](https://github.com/ddeutils/ddeutil-workflow)
+package that able to handle production data pipeline with the DataOps strategy.
+
 > [!WARNING]
 > This framework does not allow you to custom your pipeline yet. If you want to
 > create you workflow, you can use the [🏃 Workflow](https://github.com/ddeutils/ddeutil-workflow)
@@ -14,7 +17,7 @@ A **Lightweight Declarative Data Workflow Framework** that build on the
 pip install -U deflow
 ```
 
-## 🍻 Usage
+## :dart: Usage
 
 After initialize data framework project with **Version 1**, your data pipeline
 config files will store with this file structure:
