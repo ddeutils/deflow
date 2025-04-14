@@ -31,6 +31,38 @@ process-workflow:
                   process: ${{ stages.start-process.outputs.process }}
                   audit_date: ${{ params.audit-date }}
 
+            - case: 3
+              stage:
+                name: Process internal Bronze -> Silver,Gold
+                uses: tasks/routing-03@v1
+                with:
+                  process: ${{ stages.start-process.outputs.process }}
+                  audit_date: ${{ params.audit-date }}
+
+            - case: 4
+              stage:
+                name: Process internal Silver -> Gold
+                uses: tasks/routing-04@v1
+                with:
+                  process: ${{ stages.start-process.outputs.process }}
+                  audit_date: ${{ params.audit-date }}
+
+            - case: 5
+              stage:
+                name: Process adhoc from Raw -> Gold
+                uses: tasks/routing-05@v1
+                with:
+                  process: ${{ stages.start-process.outputs.process }}
+                  audit_date: ${{ params.audit-date }}
+
+            - case: 6
+              stage:
+                name: Process export from Gold -> External
+                uses: tasks/routing-06@v1
+                with:
+                  process: ${{ stages.start-process.outputs.process }}
+                  audit_date: ${{ params.audit-date }}
+
         - name: "Making Data Quality"
           echo: Start run data quality
 

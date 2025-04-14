@@ -1,35 +1,3 @@
-priority-group-workflow:
-  type: Workflow
-  params:
-    priority: int
-    stream: str
-    audit-date: datetime
-  jobs:
-    start-priority-group:
-      stages:
-        - name: "Get Group from Priority"
-          id: get-groups
-          uses: tasks/get-groups-from-priority@v1
-          with:
-            priority: ${{ params.priority }}
-            stream: ${{ params.stream }}
-
-        - name: "For-each priority group"
-          id: priority-groups
-          foreach: ${{ stages.get-groups.outputs.groups }}
-          stages:
-            - name: Run Group
-              id: trigger-group-workflow
-              trigger: group-workflow
-              params:
-                name: ${{ item }}
-                stream: ${{ params.stream }}
-                audit-date: ${{ params.audit-date }}
-
-            - name: End trigger Group
-              id: end-trigger-group
-              echo: "End trigger Group: ${{ item }}"
-
 group-workflow:
   type: Workflow
   params:
