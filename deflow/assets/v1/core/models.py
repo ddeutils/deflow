@@ -42,7 +42,9 @@ class Frequency(BaseModel):
 
 
 class Stream(BaseModel):
-    """Stream model."""
+    """Stream model is the main model that keep the Group and Process models.
+    This model will construct from the config data that extract from YAML file.
+    """
 
     name: str = Field(description="A stream name")
     freq: Frequency = Field(

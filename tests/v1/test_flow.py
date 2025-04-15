@@ -4,11 +4,12 @@ from deflow.flow import Flow
 
 
 def test_flow():
-    flow = Flow("s_cm_d")
-    print(flow)
+    flow = Flow("s_cm_d", version="v1")
+    assert flow.name == "s_cm_d"
+    assert flow.version == "v1"
 
 
 def test_flow_run():
-    flow = Flow("s_cm_d")
+    flow = Flow("s_cm_d", version="v1")
     rs: Result = flow.run(mode="N")
     print(rs.context)

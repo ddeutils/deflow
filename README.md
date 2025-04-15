@@ -11,6 +11,12 @@ package that able to handle production data pipeline with the DataOps strategy.
 > create you workflow, you can use the [🏃 Workflow](https://github.com/ddeutils/ddeutil-workflow)
 > package instead that already installed.
 
+In my opinion, I think it should not create duplicate workflow codes if I can
+write with dynamic input parameters on the one template workflow that just change
+the input parameters per use-case instead.
+This way I can handle a lot of logical workflows in our orgs with only metadata
+configuration. It called **Metadata Driven Data Workflow**.
+
 ## 📦 Installation
 
 ```shell

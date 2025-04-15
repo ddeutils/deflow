@@ -20,14 +20,15 @@ tag_v1 = partial(tag, name=VERSION)
 
 @tag_v1(alias="get-stream-info")
 def get_stream_info(name: str, result: Result) -> DictData:
-    """Get Stream model information.
+    """Get Stream model information. This function use to validate an input
+    stream name that exists on the config path.
 
     :param name: (str) A stream name
     :param result: (Result) A result dataclass for make logging.
 
     :rtype: DictData
     """
-    result.trace.info(f"[CALLER]: Start getting stream: {name!r} information.")
+    result.trace.info(f"[CALLER]: Start getting stream: {name!r} info.")
     stream: Stream = Stream.from_path(name=name, path=config.conf_path)
     return {
         "name": stream.name,

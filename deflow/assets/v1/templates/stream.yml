@@ -39,6 +39,7 @@ stream-workflow:
           id: start-priority-group
           foreach: ${{ stages.get-stream.outputs.priority-groups }}
           stages:
+
             - name: "Get Group from Priority"
               id: get-groups
               uses: tasks/get-groups-from-priority@v1
@@ -57,8 +58,8 @@ stream-workflow:
                   concurrency: 4
                   params:
                     name: ${{ item }}
-                    stream: ${{ params.stream }}
-                    audit-date: ${{ params.audit-date }}
+                    stream: ${{ stages.get-stream.outputs.name }}
+                    audit-date: ${{ stages.start-stream.outputs.audit-date }}
 
                 - name: "End trigger Group"
                   id: end-trigger-group
