@@ -15,7 +15,7 @@ from .__types import DictData
 from .conf import ASSETS_PATH, config
 
 
-def routing_workflow(
+def workflow_factory(
     name: str,
     version: str,
     *,
@@ -26,18 +26,25 @@ def routing_workflow(
     :param name: (str) A name of data pipeline.
     :param version: (str) A version of data framework.
     :param extras: An extra parameter that want to override core config values.
+
+    :rtype: Workflow
     """
     extras: DictData = {
         **{
             "conf_path": ASSETS_PATH / f"{config.version}/templates",
-            "audit_path": workflow_config.audit_path / f"stream={name}",
             "registry_caller": [f"deflow.assets.{config.version}.core"],
             "conf_paths": [config.conf_path],
         },
         **(extras or {}),
     }
     if version == "v1":
-        return Workflow.from_conf("stream-workflow", extras=extras)
+        return Workflow.from_conf(
+            name="stream-workflow",
+            extras=extras
+            | {
+                "audit_path": workflow_config.audit_path / f"stream={name}",
+            },
+        )
     raise NotImplementedError(f"Flow version: {version!r} does not implement.")
 
 
@@ -47,23 +54,22 @@ class Flow:
     the current data framework version.
 
     :param name: (str) A stream name.
+    :param version: (str) A version of data framework.
     :param extras: (DictData) An extra parameters that want to override the
         workflow config.
-    :param version: (str) A version of data framework that want creates Workflow
-        model.
     """
 
     def __init__(
         self,
         name: str,
         *,
-        extras: Optional[DictData] = None,
         version: Optional[str] = None,
+        extras: Optional[DictData] = None,
     ) -> None:
         self.name: str = name
         self.version: str = version or config.version
         self.extras: DictData = extras or {}
-        self.workflow: Workflow = routing_workflow(
+        self.workflow: Workflow = workflow_factory(
             name, version=self.version, extras=self.extras
         )
 

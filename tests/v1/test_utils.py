@@ -18,34 +18,30 @@ def test_v1_utils_get_stream(test_path: Path):
                             {"name": "p_deps_process_01", "offset": 1},
                             {"name": "p_deps_process_02", "offset": 1},
                         ],
-                        "etl": {
-                            "load_type": "F",
-                            "priority": 1,
-                            "source": {
-                                "connection": "name",
-                                "extras": {
-                                    "header": True,
-                                    "sheet_name": "product",
-                                },
-                                "schema": "source/%Y%m%d",
-                                "system": {
-                                    "container": "container-name",
-                                    "path": "path-name",
-                                },
-                                "table": "product.xlsx",
-                                "tests": {"file": "name/source/product.xlsx"},
+                        "load_type": "F",
+                        "priority": 1,
+                        "source": {
+                            "conn": "name",
+                            "extras": {
+                                "container": "container-name",
+                                "header": True,
+                                "sheet_name": "product",
+                                "path": "path-name",
                             },
-                            "target": {
-                                "connection": "product",
-                                "schema": "dwh",
-                                "system": {
-                                    "container": "container-name",
-                                    "path": "path-name",
-                                },
-                                "table": "bronze",
-                            },
-                            "type": 1,
+                            "schema": "source/%Y%m%d",
+                            "table": "product.xlsx",
+                            "tests": {"file": "name/source/product.xlsx"},
                         },
+                        "target": {
+                            "conn": "product",
+                            "schema": "dwh",
+                            "table": "bronze",
+                            "extras": {
+                                "container": "container-name",
+                                "path": "path-name",
+                            },
+                        },
+                        "routing": 1,
                         "type": "Process",
                     }
                 },
@@ -64,12 +60,12 @@ def test_v1_utils_get_stream(test_path: Path):
                         "extras": {"archive": True},
                         "load_type": "F",
                         "priority": 1,
-                        "routing": 1,
+                        "routing": 2,
                         "source": {
                             "conn": "name",
                             "schema": "publish",
-                            "system": "ms",
                             "table": "province",
+                            "extras": {"system": "ms"},
                         },
                         "target": {
                             "conn": "dwh",
@@ -82,6 +78,46 @@ def test_v1_utils_get_stream(test_path: Path):
                 "name": "g_second",
                 "tier": "bronze",
                 "priority": "1",
+            },
+            "g_third": {
+                "processes": {
+                    "p_third_process_01": {
+                        "name": "p_third_process_01",
+                        "deps": [
+                            {
+                                "name": "p_deps_process_01",
+                                "offset": 1,
+                            },
+                            {
+                                "name": "p_deps_process_02",
+                                "offset": 1,
+                            },
+                        ],
+                        "extras": {
+                            "archive": True,
+                        },
+                        "load_type": "F",
+                        "priority": 1,
+                        "routing": 2,
+                        "source": {
+                            "conn": "name",
+                            "extras": {
+                                "system": "ms",
+                            },
+                            "schema": "publish",
+                            "table": "province",
+                        },
+                        "target": {
+                            "conn": "dwh",
+                            "schema": "bronze",
+                            "table": "province",
+                        },
+                        "type": "Process",
+                    }
+                },
+                "name": "g_third",
+                "tier": "bronze",
+                "priority": "2",
             },
         },
     }

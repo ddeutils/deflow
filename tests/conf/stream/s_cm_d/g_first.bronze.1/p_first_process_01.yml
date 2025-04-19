@@ -18,7 +18,7 @@ p_first_process_01:
     schema: dwh
     table: bronze
     conn: product
-    system:
+    extras:
       container: container-name
       path: path-name
   deps:

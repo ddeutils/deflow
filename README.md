@@ -1,6 +1,6 @@
 # DeFlow
 
-A **Lightweight Declarative Data Workflow Framework** that build on the
+A **Lightweight Declarative Data Framework** that build on the
 [🏃 Workflow](https://github.com/ddeutils/ddeutil-workflow) package.
 
 I want to use this project is the real-world use-case for my [🏃 Workflow](https://github.com/ddeutils/ddeutil-workflow)

@@ -150,12 +150,6 @@ class Connection(BaseModel):
     )
 
 
-class System(BaseModel):
-    name: str
-    container: str
-    path: str
-
-
 class TestDataset(BaseModel):
     file: Optional[str] = Field(default=None)
 

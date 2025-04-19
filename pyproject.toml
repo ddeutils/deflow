@@ -4,11 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "deflow"
-description = "Lightweight Declarative Data Workflow Framework"
+description = "Lightweight Declarative Data Framework"
 readme = "README.md"
 license = "MIT"
 authors = [ { name = "ddeutils", email = "korawich.anu@gmail.com" } ]
-keywords = [ 'framework', 'declarative', 'workflow' ]
+keywords = [ 'framework', 'declarative' ]
 classifiers = [
     "Topic :: Utilities",
     "Natural Language :: English",
