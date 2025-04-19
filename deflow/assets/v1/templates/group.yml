@@ -17,6 +17,7 @@ group-workflow:
         - name: "For-each process"
           id: processes
           foreach: ${{ stages.get-processes.outputs.processes }}
+          concurrency: 1
           stages:
             - name: Run Process
               id: trigger-process-workflow

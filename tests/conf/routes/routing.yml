@@ -1,0 +1,19 @@
+routing-1-workflow:
+  type: Workflow
+  params:
+    name: str
+  jobs:
+    start-route:
+      stages:
+        - name: "Start route"
+          echo: "Start running from process: ${{ params.name }}"
+
+routing-2-workflow:
+  type: Workflow
+  params:
+    name: str
+  jobs:
+    start-route:
+      stages:
+        - name: "Start route"
+          echo: "Start running from process: ${{ params.name }}"

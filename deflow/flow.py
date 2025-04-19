@@ -16,13 +16,23 @@ from .conf import ASSETS_PATH, config
 
 
 def routing_workflow(
-    name: str, version: str, *, extras: Optional[DictData] = None
+    name: str,
+    version: str,
+    *,
+    extras: Optional[DictData] = None,
 ) -> Workflow:
+    """Routing workflow function.
+
+    :param name: (str) A name of data pipeline.
+    :param version: (str) A version of data framework.
+    :param extras: An extra parameter that want to override core config values.
+    """
     extras: DictData = {
         **{
             "conf_path": ASSETS_PATH / f"{config.version}/templates",
             "audit_path": workflow_config.audit_path / f"stream={name}",
             "registry_caller": [f"deflow.assets.{config.version}.core"],
+            "conf_paths": [config.conf_path],
         },
         **(extras or {}),
     }
@@ -58,11 +68,17 @@ class Flow:
         )
 
     def __repr__(self) -> str:
-        """Override __repr__ method."""
+        """Override __repr__ method.
+
+        :rtype: str
+        """
         return f"{self.__class__.__name__}(name={self.name})"
 
     def __str__(self) -> str:
-        """Override __str__ method."""
+        """Override __str__ method.
+
+        :rtype: str
+        """
         return self.name
 
     def run(self, mode: str) -> Result:

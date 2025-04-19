@@ -55,7 +55,6 @@ stream-workflow:
                 - name: "For-each group"
                   id: trigger-group-workflow
                   trigger: group-workflow
-                  concurrency: 4
                   params:
                     name: ${{ item }}
                     stream: ${{ stages.get-stream.outputs.name }}
