@@ -52,8 +52,8 @@ def start_stream(
     :param result: (Result) A result dataclass for make logging.
     """
     result.trace.info(f"[CALLER]: Start running stream: {name!r}.")
-    result.trace.info(f"... freq: {freq}")
-    result.trace.info(f"... data_freq: {data_freq}")
+    result.trace.info(f"[CALLER]: ... freq: {freq}")
+    result.trace.info(f"[CALLER]: ... data_freq: {data_freq}")
     return {
         "audit-date": datetime(2025, 4, 1, 1),
         "logical-date": datetime(2025, 4, 1, 1),
@@ -73,7 +73,7 @@ def get_groups_from_priority(
     result.trace.info(f"[CALLER]: Get groups from priority: {priority}")
     stream: Stream = Stream.from_path(name=stream, path=config.conf_path)
     priority_group = stream.priority_group()
-    result.trace.info(f"... Return groups from {priority}")
+    result.trace.info(f"[CALLER]: ... Return groups from {priority}")
     return {"groups": [group.name for group in priority_group.get(priority)]}
 
 
