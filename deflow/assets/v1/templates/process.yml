@@ -16,6 +16,7 @@ process-workflow:
           trigger: routing-${{ stages.start-process.outputs.routing }}-workflow
           params:
             name: ${{ params.name }}
+            audit-date: ${{ params.audit-date }}
 
         - name: "Making Data Quality"
           echo: Start run data quality

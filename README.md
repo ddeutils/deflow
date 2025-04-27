@@ -25,6 +25,8 @@ pip install -U deflow
 
 ## :dart: Usage
 
+### Version 1
+
 After initialize data framework project with **Version 1**, your data pipeline
 config files will store with this file structure:
 
@@ -33,6 +35,8 @@ conf/
  ├─ conn/
  │   ├─ c_conn_01.yml
  │   ╰─ c_conn_02.yml
+ ├─ routes/
+ │   ╰─ routing.yml
  ╰─ stream/
      ╰─ s_stream_01/
          ├─ g_group_01.tier.priority/

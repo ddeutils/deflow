@@ -10,6 +10,10 @@ def test_flow():
 
 
 def test_flow_run():
-    flow = Flow("s_cm_d", version="v1")
+    flow = Flow(
+        "s_cm_d",
+        version="v1",
+        extras={"registry_caller": ["tests.v1"]},
+    )
     rs: Result = flow.run(mode="N")
     print(rs.context)

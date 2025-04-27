@@ -32,7 +32,10 @@ def workflow_factory(
     extras: DictData = {
         **{
             "conf_path": ASSETS_PATH / f"{config.version}/templates",
-            "registry_caller": [f"deflow.assets.{config.version}.core"],
+            "registry_caller": [
+                f"deflow.assets.{config.version}.core",
+                *extras.pop("registry_caller", []),
+            ],
             "conf_paths": [config.conf_path],
         },
         **(extras or {}),
@@ -91,6 +94,8 @@ class Flow:
         """Start release dynamic pipeline with this flow name.
 
         :param mode: (str) A running mode of this flow.
+
+        :result: Result
         """
         return self.workflow.release(
             release=datetime.now(),
@@ -101,7 +106,10 @@ class Flow:
         )
 
     def test(self) -> Result:
-        """Test running flow on local without integration testing."""
+        """Test running flow on local without integration testing.
+
+        :result: Result
+        """
         return self.run(mode="TEST")
 
     def ui(self): ...
