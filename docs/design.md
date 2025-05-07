@@ -1,12 +1,12 @@
 # Design
 
-For governance, I will give you a simple data pipeline naming design and you can
-this be the baseline for the next generation.
+For governance part, I will give you a simple data pipeline naming design, and
+you can this be the baseline for the next generation.
 
 ## Stream
 
 ```text
-s_<system>_<frequency>
+s_<system>_<sub-domain?>_<frequency>
 ```
 
 ```text

@@ -63,9 +63,16 @@ extra:
 nav:
   - Home:
     - index.md
-    - Introduction: introduction.md
     - Get Started: getting-started.md
     - Changelogs: changelog.md
+
+  - Framework:
+    - Version 1:
+      - version/v1/index.md
+      - Metadata: version/v1/metadata.md
+    - Version 2:
+      - version/v2/index.md
+      - Metadata: version/v2/metadata.md
 
   - API references:
     - Library:
