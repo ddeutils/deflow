@@ -35,6 +35,7 @@ def get_stream_info(name: str, result: Result) -> DictData:
         "freq": stream.freq.model_dump(by_alias=True),
         "data_freq": stream.data_freq.model_dump(by_alias=True),
         "priority-groups": sorted(stream.priority_group().keys()),
+        "stream": stream,
     }
 
 
