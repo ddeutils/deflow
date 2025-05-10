@@ -1,10 +1,17 @@
-# Node strategy
+# Version 2
 
-This concept use node to pass running date only.
+A Data Framework Version 2. This concept use workflow to pass running date on only
+node only.
 
 ```text
 core
- ╰─ node
-     ├─ pipeline-label
-     ╰─ node-group-label
+ ╰─ pipeline
+     ╰─ node
 ```
+
+!!! note
+
+    The audit date control by the node layer that mean the audit date can different
+    between node in its same pipeline.
+
+## Concept

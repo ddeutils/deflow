@@ -1,7 +1,7 @@
 # Version 1
 
-A Data Framework version 1. This concept use pipeline to pass running date on all
-node processes.
+A Data Framework Version 1. This concept use workflow to pass running date on all
+process that config in its stream.
 
 ```text
 core
@@ -10,7 +10,13 @@ core
          ╰─ process
 ```
 
-## Stream
+!!! note
+
+    The audit date control by the steam layer and passing thai audit date to all
+    its process after prepare with its frequency.
+
+
+## Concept
 
 ```mermaid
 flowchart TD

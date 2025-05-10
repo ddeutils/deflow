@@ -71,9 +71,10 @@ flow: Result = Flow(name="s_stream_01").run(mode="N")
 
 Support data framework version:
 
-|  Version  |  Supported  | Description                                              |
-|:---------:|:-----------:|----------------------------------------------------------|
-|     1     |     Yes     | A data framework that base on stream, group, and process |
+| Version | Supported | Description                                               |
+|:-------:|:---------:|-----------------------------------------------------------|
+|    1    |    Yes    | A data framework that base on stream, group, and process. |
+|    2    |    No     | A data framework that base on pipeline, and node.         |
 
 ## 💬 Contribute
 

@@ -3,6 +3,9 @@
 # Licensed under the MIT License. See LICENSE in the project root for
 # license information.
 # ------------------------------------------------------------------------------
+"""The Core Tasks module for keeping necessary tasks that use on the caller
+stage that config in the workflow template.
+"""
 from __future__ import annotations
 
 from datetime import datetime
@@ -28,7 +31,7 @@ def get_stream_info(name: str, result: Result) -> DictData:
 
     :rtype: DictData
     """
-    result.trace.info(f"[CALLER]: Start getting stream: {name!r} info.")
+    result.trace.info(f"Start getting stream: {name!r} info.")
     stream: Stream = Stream.from_path(name=name, path=config.conf_path)
     return {
         "name": stream.name,
@@ -52,9 +55,9 @@ def start_stream(
     :param data_freq: (Frequency) A logical date frequency.
     :param result: (Result) A result dataclass for make logging.
     """
-    result.trace.info(f"[CALLER]: Start running stream: {name!r}.")
-    result.trace.info(f"[CALLER]: ... freq: {freq}")
-    result.trace.info(f"[CALLER]: ... data_freq: {data_freq}")
+    result.trace.info(f"Start running stream: {name!r}.")
+    result.trace.info(f"... freq: {freq}")
+    result.trace.info(f"... data_freq: {data_freq}")
     return {
         "audit-date": datetime(2025, 4, 1, 1),
         "logical-date": datetime(2025, 4, 1, 1),
@@ -82,15 +85,25 @@ def get_groups_from_priority(
 def get_processes_from_group(
     group: str, stream: str, result: Result
 ) -> DictData:
-    result.trace.info(f"[CALLER]: Get processes from group: {group!r}")
+    """Get all process name from a specific group.
+
+    :param group: (str) A group name.
+    :param stream: (str)
+    :param result: (Result)
+    """
+    result.trace.info(f"Get processes from group: {group!r}")
     stream: Stream = Stream.from_path(name=stream, path=config.conf_path)
     return {"processes": list(stream.group(group).processes)}
 
 
 @tag_v1(alias="start-process")
 def start_process(name: str, result: Result) -> DictData:
-    """Start process with an input process name."""
-    result.trace.info(f"[CALLER]: Start process: {name!r}")
+    """Start process with an input process name.
+
+    :param name:
+    :param result:
+    """
+    result.trace.info(f"Start process: {name!r}")
     process: Process = Process.from_path(name=name, path=config.conf_path)
     return {
         "routing": process.routing,
