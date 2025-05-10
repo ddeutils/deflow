@@ -28,14 +28,20 @@ class Frequency(BaseModel):
     )
     offset: int = Field(
         default=1,
+        ge=-100,
+        le=100,
         description="An offset value for decrease freq type unit.",
     )
 
     def gen_datetime(
         self, dt: Optional[datetime] = None, tz: Optional[ZoneInfo] = None
     ) -> datetime:
-        """Generate and prepare datetime"""
-        tz = tz or ZoneInfo("UTC")
+        """Generate and prepare datetime
+
+        :param dt: (datetime) A datetime object.
+        :param tz: (ZoneInfo) A timezone information.
+        """
+        tz: ZoneInfo = tz or ZoneInfo("UTC")
         if dt is None:
             dt = datetime.now(tz=tz)
         return dt - timedelta(days=self.offset)
@@ -71,7 +77,7 @@ class Stream(BaseModel):
 
         :rtype: Self
         """
-        data = get_stream(name=name, path=path)
+        data: DictData = get_stream(name=name, path=path)
 
         if (t := data.pop("type")) != cls.__name__:
             raise ValueError(f"Type {t!r} does not match with {cls}")
@@ -134,11 +140,15 @@ class Group(BaseModel):
 
 
 class Dependency(BaseModel):
+    """Dependency model"""
+
     name: str = Field(description="A dependency process name.")
-    offset: int = Field(default=1)
+    offset: int = Field(default=1, description="A dependency offset.")
 
 
 class Connection(BaseModel):
+    """Connection model."""
+
     ir: Optional[str] = Field(default=None)
     service: str
     host: str
@@ -151,7 +161,14 @@ class Connection(BaseModel):
 
 
 class TestDataset(BaseModel):
-    file: Optional[str] = Field(default=None)
+    """Test Dataset model for keeping pointer of dummy or sampling file for
+    testing run the workflow on the local before deploy to target environment.
+    """
+
+    file: Optional[str] = Field(
+        default=None,
+        description="A test filename.",
+    )
 
 
 class Dataset(BaseModel):
@@ -171,8 +188,8 @@ class Process(BaseModel):
     """
 
     name: str = Field(description="A process name.")
-    stream: Optional[str] = None
-    group: Optional[str] = None
+    stream: Optional[str] = Field(default=None, description="A stream name.")
+    group: Optional[str] = Field(default=None, description="A group name.")
     routing: int = Field(
         ge=1, lt=20, description="A routing value for running workflow."
     )
@@ -188,6 +205,7 @@ class Process(BaseModel):
 
     @classmethod
     def from_path(cls, name: str, path: Path) -> Self:
+        """Get Process instance from the config path."""
         data = get_process(name=name, path=path)
 
         if (t := data.pop("type")) != cls.__name__:
@@ -198,5 +216,7 @@ class Process(BaseModel):
 
 
 class Dates(BaseModel):
+    """Dates model."""
+
     audit_date: datetime
     logical_date: datetime
