@@ -1,3 +1,8 @@
+# A Stream workflow template that passing 2 parameters:
+#   - name: (str) A stream name that must exist on the config path.
+#   - run-mode: (choice) A running mode that want to execution with the audit
+#     tracking log.
+#
 stream-workflow:
   type: Workflow
   desc: |

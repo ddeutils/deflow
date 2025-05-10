@@ -90,25 +90,28 @@ class Flow:
         """
         return self.name
 
-    def run(self, mode: str) -> Result:
+    def run(
+        self, dt: Optional[datetime] = None, mode: Optional[str] = None
+    ) -> Result:
         """Start release dynamic pipeline with this flow name.
 
+        :param dt: (datetime) A release datetime that want to run.
         :param mode: (str) A running mode of this flow.
 
-        :result: Result
+        :rtype: Result
         """
         return self.workflow.release(
-            release=datetime.now(),
+            release=dt or datetime.now(),
             params={
                 "name": self.name,
-                "run-mode": mode,
+                "run-mode": mode or "N",
             },
         )
 
     def test(self) -> Result:
         """Test running flow on local without integration testing.
 
-        :result: Result
+        :rtype: Result
         """
         return self.run(mode="TEST")
 
