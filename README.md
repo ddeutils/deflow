@@ -32,6 +32,9 @@ pip install -U deflow
 
 ## :dart: Usage
 
+> [!NOTE]
+> This project will create the data framework **Version 1** first.
+
 ### Version 1
 
 After initialize data framework project with **Version 1**, your data pipeline
