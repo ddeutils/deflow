@@ -1,5 +1,12 @@
 # DeFlow
 
+[![test](https://github.com/ddeutils/deflow/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/ddeutils/deflow/actions/workflows/tests.yml)
+[![pypi version](https://img.shields.io/pypi/v/deflow)](https://pypi.org/project/deflow/)
+[![python support version](https://img.shields.io/pypi/pyversions/deflow)](https://pypi.org/project/deflow/)
+[![size](https://img.shields.io/github/languages/code-size/ddeutils/deflow)](https://github.com/ddeutils/deflow)
+[![gh license](https://img.shields.io/github/license/ddeutils/deflow)](https://github.com/ddeutils/deflow/blob/main/LICENSE)
+[![code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 A **Lightweight Declarative Data Framework** that build on the
 [🏃 Workflow](https://github.com/ddeutils/ddeutil-workflow) package.
 
