@@ -2,6 +2,56 @@
 
 ## Latest Changes
 
+## 0.0.2
+
+### :stars: Highlight Features
+
+- :star: change template location with version base.
+
+### :sparkles: Features
+
+- :dart: add routing workflow for custom workflow layer.
+- :dart: merge priority group workflow to stream workflow.
+- :dart: add routing workflow func for dynamic version.
+- :dart: create routing tasks.
+- :dart: update models module.
+- :dart: update tasks for version 1.
+- :dart: draft dynamic workflow templates.
+- :dart: change tasks function base on api version.
+
+### :bug: Bug fixes
+
+- :gear: change routing task function parameter.
+- :gear: change env name that not valid.
+
+### :black_nib: Code Changes
+
+- :test_tube: upgrade testcase.
+- :test_tube: split testcase base on version.
+- :test_tube: update testcase for override workflow config.
+
+### :package: Build & Workflow
+
+- :package: bump typer from 0.15.2 to 0.15.3 (#1)
+
+### :postbox: Dependencies
+
+- :pushpin: update fixed trace bug of ddeutil-workflow version to 0.0.60.
+- :pushpin: update ddeutil-workflow to 0.0.59
+- :pushpin: update version of ddeutil-workflow from 0.0.51 to 0.0.58.
+- :pushpin: update ddeutil-workflow to 0.0.56.
+- :pushpin: update version of ddeutil-workflow from 0.0.42 to 0.0.51.
+- :pushpin: update ddeutil-workflow from 0.0.41 to 0.0.42.
+
+### :book: Documentations
+
+- :page_facing_up: update mkdocs for making version topics.
+- :page_facing_up: update mkdoc on data framework version 1.
+- :page_facing_up: update design docs.
+- :page_facing_up: update readme file.
+- :page_facing_up: update readme file.
+- :page_facing_up: update mkdocs package for making docs.
+
 ## 0.0.1
 
 ### :stars: Highlight Features
