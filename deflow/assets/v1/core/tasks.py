@@ -15,14 +15,14 @@ from ddeutil.workflow import Result, tag
 
 from ....__types import DictData
 from ....conf import config
-from .models import Frequency, Process, Stream
+from .models import Group, Process, Stream
 
 VERSION: str = "v1"
 tag_v1 = partial(tag, name=VERSION)
 
 
-@tag_v1(alias="get-stream-info")
-def get_stream_info(name: str, result: Result) -> DictData:
+@tag_v1(alias="get-start-stream-info")
+def get_start_stream_info(name: str, result: Result) -> DictData:
     """Get Stream model information. This function use to validate an input
     stream name that exists on the config path.
 
@@ -33,40 +33,49 @@ def get_stream_info(name: str, result: Result) -> DictData:
     """
     result.trace.info(f"Start getting stream: {name!r} info.")
     stream: Stream = Stream.from_path(name=name, path=config.conf_path)
+
+    result.trace.info(
+        f"Start Stream Info:"
+        f"||> freq: {stream.freq.model_dump(by_alias=True)}"
+        f"||> data_freq: {stream.data_freq.model_dump(by_alias=True)}"
+    )
+
     return {
         "name": stream.name,
         "freq": stream.freq.model_dump(by_alias=True),
         "data_freq": stream.data_freq.model_dump(by_alias=True),
         "priority-groups": sorted(stream.priority_group().keys()),
-        "stream": stream,
-    }
-
-
-@tag_v1(alias="start-stream")
-def start_stream(
-    name: str, freq: Frequency, data_freq: Frequency, result: Result
-) -> DictData:
-    """Start stream workflow with update audit watermarking and generate starter
-    stream log.
-
-    :param name: (str) A stream name that want to get audit logs for generate
-        the next audit date.
-    :param freq: (Frequency) A audit date frequency.
-    :param data_freq: (Frequency) A logical date frequency.
-    :param result: (Result) A result dataclass for make logging.
-    """
-    result.trace.info(f"Start running stream: {name!r}.")
-    result.trace.info(f"... freq: {freq}")
-    result.trace.info(f"... data_freq: {data_freq}")
-    return {
+        "stream": stream.model_dump(by_alias=True),
         "audit-date": datetime(2025, 4, 1, 1),
         "logical-date": datetime(2025, 4, 1, 1),
     }
 
 
+# @tag_v1(alias="start-stream")
+# def start_stream(
+#     name: str, freq: Frequency, data_freq: Frequency, result: Result
+# ) -> DictData:
+#     """Start stream workflow with update audit watermarking and generate starter
+#     stream log.
+#
+#     :param name: (str) A stream name that want to get audit logs for generate
+#         the next audit date.
+#     :param freq: (Frequency) A audit date frequency.
+#     :param data_freq: (Frequency) A logical date frequency.
+#     :param result: (Result) A result dataclass for make logging.
+#     """
+#     result.trace.info(f"Start running stream: {name!r}.")
+#     result.trace.info(f"... freq: {freq}")
+#     result.trace.info(f"... data_freq: {data_freq}")
+#     return {
+#         "audit-date": datetime(2025, 4, 1, 1),
+#         "logical-date": datetime(2025, 4, 1, 1),
+#     }
+
+
 @tag_v1(alias="get-groups-from-priority")
 def get_groups_from_priority(
-    priority: int, stream: str, result: Result
+    priority: int, stream: Stream, result: Result
 ) -> DictData:
     """Get groups from priority.
 
@@ -74,10 +83,9 @@ def get_groups_from_priority(
     :param stream: (str)
     :param result: (Result)
     """
-    result.trace.info(f"[CALLER]: Get groups from priority: {priority}")
-    stream: Stream = Stream.from_path(name=stream, path=config.conf_path)
-    priority_group = stream.priority_group()
-    result.trace.info(f"[CALLER]: ... Return groups from {priority}")
+    result.trace.info(f"Get groups from priority: {priority}")
+    priority_group: dict[int, list[Group]] = stream.priority_group()
+    result.trace.info(f"... Return groups from {priority}")
     return {"groups": [group.name for group in priority_group.get(priority)]}
 
 

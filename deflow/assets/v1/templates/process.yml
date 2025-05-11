@@ -1,5 +1,8 @@
 process-workflow:
   type: Workflow
+  desc: |
+    Process workflow for run the minimum data process like ETL/ELT/EL action.
+
   params:
     name: str
     audit-date: datetime

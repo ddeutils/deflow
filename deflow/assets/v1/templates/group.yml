@@ -1,9 +1,16 @@
 group-workflow:
   type: Workflow
+
+  desc: |
+    Group workflow for run all process workflow that was config in this group.
+
   params:
-    name: str
+    name:
+      desc: "A group name."
+      type: str
     stream: str
     audit-date: datetime
+
   jobs:
     start-group:
       stages:
