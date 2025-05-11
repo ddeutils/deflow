@@ -34,16 +34,8 @@ stream-workflow:
           with:
             name: ${{ params.name }}
 
-#        - name: "Start stream"
-#          id: start-stream
-#          uses: tasks/start-stream@v1
-#          with:
-#            name: ${{ stages.get-start-stream.outputs.name }}
-#            freq: ${{ stages.get-start-stream.outputs.freq }}
-#            data_freq: ${{ stages.get-start-stream.outputs.data_freq }}
-
         - name: "For-each priority"
-          id: start-priority-group
+          id: group-priorities
           foreach: ${{ stages.get-start-stream.outputs.priority-groups }}
           stages:
 
@@ -54,29 +46,29 @@ stream-workflow:
                 priority: ${{ item }}
                 stream: ${{ stages.get-start-stream.outputs.stream }}
 
-#            - name: "For-each priority group"
-#              id: priority-groups
-#              foreach: ${{ stages.get-groups.outputs.groups }}
-#              stages:
+            - name: "For-each priority group"
+              id: groups
+              foreach: ${{ stages.get-groups.outputs.groups }}
+              stages:
 
-#                - name: "For-each group"
-#                  id: trigger-group-workflow
-#                  trigger: group-workflow
-#                  params:
-#                    name: ${{ item }}
-#                    stream: ${{ stages.get-start-stream.outputs.name }}
-#                    audit-date: ${{ stages.get-start-stream.outputs.audit-date }}
+                - name: "For-each group"
+                  id: trigger-group-workflow
+                  trigger: group-workflow
+                  params:
+                    name: ${{ item }}
+                    stream: ${{ stages.get-start-stream.outputs.name }}
+                    audit-date: ${{ stages.get-start-stream.outputs.audit-date }}
 
-#                - name: "End trigger Group"
-#                  id: end-trigger-group
-#                  echo: "End trigger Group: ${{ item }}"
+                - name: "End trigger Group"
+                  id: end-trigger-group
+                  echo: "End trigger Group: ${{ item }}"
 
-#            - name: "End trigger Priority Group"
-#              id: end-trigger-priority-group
-#              echo: "End trigger Priority Group: ${{ item }}"
-#
-#        - name: "Clear log"
-#          echo: Clear logging and close stream
-#
-#        - name: "Alert"
-#          echo: Alert with mail or notify-services
+            - name: "End trigger Priority Group"
+              id: end-trigger-priority-group
+              echo: "End trigger Priority Group: ${{ item }}"
+
+        - name: "Clear log"
+          echo: Clear logging and close stream
+
+        - name: "Alert"
+          echo: Alert with mail or notify-services

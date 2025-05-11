@@ -18,10 +18,10 @@ from ....conf import config
 from .models import Group, Process, Stream
 
 VERSION: str = "v1"
-tag_v1 = partial(tag, name=VERSION)
+TAG_VERSION_1 = partial(tag, name=VERSION)
 
 
-@tag_v1(alias="get-start-stream-info")
+@TAG_VERSION_1(alias="get-start-stream-info")
 def get_start_stream_info(name: str, result: Result) -> DictData:
     """Get Stream model information. This function use to validate an input
     stream name that exists on the config path.
@@ -33,11 +33,10 @@ def get_start_stream_info(name: str, result: Result) -> DictData:
     """
     result.trace.info(f"Start getting stream: {name!r} info.")
     stream: Stream = Stream.from_path(name=name, path=config.conf_path)
-
     result.trace.info(
-        f"Start Stream Info:"
-        f"||> freq: {stream.freq.model_dump(by_alias=True)}"
-        f"||> data_freq: {stream.data_freq.model_dump(by_alias=True)}"
+        f"... Start Stream Info:"
+        f"||=> freq: {stream.freq.model_dump(by_alias=True)}"
+        f"||=> data_freq: {stream.data_freq.model_dump(by_alias=True)}"
     )
 
     return {
@@ -51,68 +50,62 @@ def get_start_stream_info(name: str, result: Result) -> DictData:
     }
 
 
-# @tag_v1(alias="start-stream")
-# def start_stream(
-#     name: str, freq: Frequency, data_freq: Frequency, result: Result
-# ) -> DictData:
-#     """Start stream workflow with update audit watermarking and generate starter
-#     stream log.
-#
-#     :param name: (str) A stream name that want to get audit logs for generate
-#         the next audit date.
-#     :param freq: (Frequency) A audit date frequency.
-#     :param data_freq: (Frequency) A logical date frequency.
-#     :param result: (Result) A result dataclass for make logging.
-#     """
-#     result.trace.info(f"Start running stream: {name!r}.")
-#     result.trace.info(f"... freq: {freq}")
-#     result.trace.info(f"... data_freq: {data_freq}")
-#     return {
-#         "audit-date": datetime(2025, 4, 1, 1),
-#         "logical-date": datetime(2025, 4, 1, 1),
-#     }
-
-
-@tag_v1(alias="get-groups-from-priority")
+@TAG_VERSION_1(alias="get-groups-from-priority")
 def get_groups_from_priority(
     priority: int, stream: Stream, result: Result
 ) -> DictData:
     """Get groups from priority.
 
-    :param priority: (int)
-    :param stream: (str)
-    :param result: (Result)
+    :param priority: (int) A priority number of groups.
+    :param stream: (str) A stream data model.
+    :param result: (Result) A result dataclass for make logging.
     """
     result.trace.info(f"Get groups from priority: {priority}")
-    priority_group: dict[int, list[Group]] = stream.priority_group()
-    result.trace.info(f"... Return groups from {priority}")
-    return {"groups": [group.name for group in priority_group.get(priority)]}
+    groups: list[Group] = [
+        group.name for group in stream.priority_group().get(priority)
+    ]
+    result.trace.info(
+        f"Return groups from priority: {priority}||Groups: {groups}||"
+    )
+    return {"groups": groups}
 
 
-@tag_v1(alias="get-processes-from-group")
+@TAG_VERSION_1(alias="get-processes-from-group")
 def get_processes_from_group(
     group: str, stream: str, result: Result
 ) -> DictData:
     """Get all process name from a specific group.
 
     :param group: (str) A group name.
-    :param stream: (str)
-    :param result: (Result)
+    :param stream: (str) A stream name.
+    :param result: (Result) A result dataclass for make logging.
     """
-    result.trace.info(f"Get processes from group: {group!r}")
+    result.trace.info(
+        f"Get processes from group: {group!r} and stream: {stream!r}"
+    )
     stream: Stream = Stream.from_path(name=stream, path=config.conf_path)
-    return {"processes": list(stream.group(group).processes)}
+    group_model: Group = stream.group(group)
+    processes: list[str] = list(group_model.processes)
+    result.trace.info(
+        f"... Return process from group: {group!r}||Processes: {processes}||"
+    )
+    return {
+        "processes": processes,
+        "group": group_model.model_dump(by_alias=True),
+        "stream": stream.model_dump(by_alias=True),
+    }
 
 
-@tag_v1(alias="start-process")
+@TAG_VERSION_1(alias="start-process")
 def start_process(name: str, result: Result) -> DictData:
     """Start process with an input process name.
 
-    :param name:
-    :param result:
+    :param name: (str) A process name.
+    :param result: (Result) A result dataclass for make logging.
     """
-    result.trace.info(f"Start process: {name!r}")
+    result.trace.info(f"Start getting process: {name!r} info")
     process: Process = Process.from_path(name=name, path=config.conf_path)
+    result.trace.info(f"... routing of this process: {process.routing}")
     return {
         "routing": process.routing,
         "process": process.model_dump(by_alias=True),

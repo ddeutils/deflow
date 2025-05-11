@@ -6,13 +6,16 @@ group-workflow:
 
   params:
     name:
-      desc: "A group name."
+      desc: "A group name for passing to run this group workflow."
       type: str
-    stream: str
+    stream:
+      desc: "A stream name for passing to run this group workflow."
+      type: str
     audit-date: datetime
 
   jobs:
     start-group:
+      desc: "A start group job for get a group information"
       stages:
         - name: "Get Process from Group"
           id: get-processes
@@ -37,3 +40,6 @@ group-workflow:
             - name: End trigger Process
               id: end-trigger-process
               echo: "End trigger Process: ${{ item }}"
+
+        - name: "Clear log"
+          echo: Clear logging and close stream

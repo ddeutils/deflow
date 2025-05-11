@@ -9,10 +9,16 @@ routing-1-workflow:
         - name: "Start route"
           echo: "Start running from process: ${{ params.name }}"
 
+        - name: "Start run Process"
+          id: start-process
+          uses: tasks/start-process@v1
+          with:
+            name: ${{ params.name }}
+
         - name: Process file from RAW -> Bronze
           uses: tasks/routing-01@v1
           with:
-            process: ${{ params.name }}
+            process: ${{ stages.start-process.outputs.process }}
             audit_date: ${{ params.audit-date }}
 
 routing-2-workflow:
@@ -26,8 +32,14 @@ routing-2-workflow:
         - name: "Start route"
           echo: "Start running from process: ${{ params.name }}"
 
+        - name: "Start run Process"
+          id: start-process
+          uses: tasks/start-process@v1
+          with:
+            name: ${{ params.name }}
+
         - name: Process file from RAW -> Bronze
           uses: tasks/routing-02@v1
           with:
-            process: ${{ params.name }}
+            process: ${{ stages.start-process.outputs.process }}
             audit_date: ${{ params.audit-date }}
