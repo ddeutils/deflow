@@ -136,6 +136,12 @@ class Group(BaseModel):
         return f"{self.name}.{self.tier}.{self.priority}"
 
     def process(self, name: str) -> Process:
+        """Return Process model with an input specific name.
+
+        :param name: (str) A process string name that want to get Process model.
+
+        :rtype: Process
+        """
         return self.processes[name]
 
 
@@ -176,10 +182,16 @@ class Dataset(BaseModel):
 
     conn: str = Field(alias="conn", description="A connection name.")
     scm: str = Field(
-        alias="schema", description="A schema or parent path name."
+        alias="schema",
+        description="A schema or parent path name.",
     )
     tbl: str = Field(alias="table", description="A table or file name.")
-    tests: TestDataset = Field(default_factory=TestDataset)
+    tests: TestDataset = Field(
+        default_factory=TestDataset,
+        description=(
+            "A test pointer for sync testing data that use for unittest."
+        ),
+    )
 
 
 class Process(BaseModel):
@@ -218,5 +230,13 @@ class Process(BaseModel):
 class Dates(BaseModel):
     """Dates model."""
 
-    audit_date: datetime
-    logical_date: datetime
+    audit_date: datetime = Field(
+        description=(
+            "An audit datetime that will equal the current release date."
+        )
+    )
+    logical_date: datetime = Field(
+        description=(
+            "A logical date that will generate from the frequency object."
+        )
+    )

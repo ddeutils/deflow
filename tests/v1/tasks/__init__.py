@@ -25,7 +25,6 @@ def routing_ingest_file(
     :param audit_date: (datetime)
     :param result: (Result)
     """
-    # process: Process = Process.from_path(process, path=config.conf_path)
     result.trace.info(f"[CALLER]: Routing: 01 with process: {process.name!r}")
     result.trace.info(
         "[CALLER]: ... This routing is ingest data with file type."
@@ -48,7 +47,6 @@ def routing_ingest_db(
     :param audit_date: (datetime)
     :param result: (Result)
     """
-    # process: Process = Process.from_path(process, path=config.conf_path)
     result.trace.info(f"[CALLER]: Routing: 02 with process: {process.name!r}")
     result.trace.info(
         "[CALLER]: ... This routing is ingest data with database type."
