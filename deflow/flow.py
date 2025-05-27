@@ -6,10 +6,11 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional
+from typing import Any, Optional
 
 from ddeutil.workflow import Result, Workflow
 from ddeutil.workflow import config as workflow_config
+from typing_extensions import Self
 
 from .__types import DictData
 from .conf import ASSETS_PATH, config
@@ -89,6 +90,15 @@ class Flow:
         :rtype: str
         """
         return self.name
+
+    def option(self, key: str, value: Any) -> Self:
+        """Update the extras option.
+
+        :param key: A key of the extra parameter.
+        :param value: A value of the extra parameter.
+        """
+        self.extras[key] = value
+        return self
 
     def run(
         self, dt: Optional[datetime] = None, mode: Optional[str] = None

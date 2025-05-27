@@ -7,16 +7,17 @@
 [![gh license](https://img.shields.io/github/license/ddeutils/deflow)](https://github.com/ddeutils/deflow/blob/main/LICENSE)
 [![code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-A **Lightweight Declarative Data Framework** that build on the
-[🏃 Workflow](https://github.com/ddeutils/ddeutil-workflow) package.
+A **Lightweight Declarative Data Framework** that allow you to run data pipelines
+by YAML config template.
 
-I want to use this project is the real-world use-case for my [🏃 Workflow](https://github.com/ddeutils/ddeutil-workflow)
-package that able to handle production data pipeline with the DataOps strategy.
+> [!NOTE]
+> I want to use this project is the real-world use-case for my [Workflow](https://github.com/ddeutils/ddeutil-workflow)
+> package that able to handle production data pipeline with the DataOps strategy.
 
 > [!WARNING]
 > This framework does not allow you to custom your pipeline yet. If you want to
-> create you workflow, you can use the [🏃 Workflow](https://github.com/ddeutils/ddeutil-workflow)
-> package instead that already installed.
+> create your workflow, you can implement it by your custom template reference this
+> package.
 
 In my opinion, I think it should not create duplicate workflow codes if I can
 write with dynamic input parameters on the one template workflow that just change
@@ -32,12 +33,12 @@ pip install -U deflow
 
 ## :dart: Usage
 
+### Version 1
+
 > [!NOTE]
 > This project will create the data framework **Version 1** first.
 
-### Version 1
-
-After initialize data framework project with **Version 1**, your data pipeline
+After initialize your data framework project with **Version 1**, your data pipeline
 config files will store with this file structure:
 
 ```text
@@ -64,7 +65,11 @@ You can run the data flow by:
 from deflow.flow import Flow
 from ddeutil.workflow import Result
 
-flow: Result = Flow(name="s_stream_01").run(mode="N")
+flow: Result = (
+    Flow(name="s_stream_01")
+    .option("conf_paths", ["./data/conf"])
+    .run(mode="N")
+)
 ```
 
 ## :cookie: Configuration
