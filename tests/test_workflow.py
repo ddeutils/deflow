@@ -23,7 +23,7 @@ def test_workflow(test_path):
 
 def test_extract_call():
     func = extract_call(
-        "tasks/get-start-stream-`info@v1",
+        "tasks/get-start-stream-info@v1",
         registries=[f"deflow.assets.{config.version}.core"],
     )
     print(func)
