@@ -12,8 +12,15 @@ from ddeutil.workflow import Result, Workflow
 from ddeutil.workflow import config as workflow_config
 from typing_extensions import Self
 
-from .__types import DictData
+from .__types import DictData, TupleStr
 from .conf import ASSETS_PATH, config
+
+RUN_MODES: TupleStr = (
+    "N",
+    "R",
+    "F",
+    "T",
+)
 
 
 def workflow_factory(
@@ -22,7 +29,8 @@ def workflow_factory(
     *,
     extras: Optional[DictData] = None,
 ) -> Workflow:
-    """Routing workflow function.
+    """Workflow function for create the Workflow instance base on the version of
+    data framework.
 
     :param name: (str) A name of data pipeline.
     :param version: (str) A version of data framework.
@@ -49,6 +57,14 @@ def workflow_factory(
                 "audit_path": workflow_config.audit_path / f"stream={name}",
             },
         )
+    elif version == "v2":
+        return Workflow.from_conf(
+            name="pipeline-workflow",
+            extras=extras
+            | {
+                "audit_path": workflow_config.audit_path / f"pipeline={name}",
+            },
+        )
     raise NotImplementedError(f"Flow version: {version!r} does not implement.")
 
 
@@ -57,7 +73,7 @@ class Flow:
     This is the core object for this package that active data pipeline from
     the current data framework version.
 
-    :param name: (str) A stream name.
+    :param name: (str) A main workflow parameter name.
     :param version: (str) A version of data framework.
     :param extras: (DictData) An extra parameters that want to override the
         workflow config.
@@ -92,12 +108,20 @@ class Flow:
         return self.name
 
     def option(self, key: str, value: Any) -> Self:
-        """Update the extras option.
+        """Update the extras option with specific key and value.
 
-        :param key: A key of the extra parameter.
-        :param value: A value of the extra parameter.
+        :param key: A key of the extra parameter that want to update.
+        :param value: A value of the extra parameter that want to update.
         """
         self.extras[key] = value
+        return self
+
+    def options(self, values: dict[str, Any]) -> Self:
+        """Update the extras option with mapping values.
+
+        :param values: A mapping value that want to update.
+        """
+        self.extras.update(values)
         return self
 
     def run(
@@ -110,6 +134,8 @@ class Flow:
 
         :rtype: Result
         """
+        if mode:
+            assert mode in RUN_MODES, "The running mode does not valid."
         return self.workflow.release(
             release=dt or datetime.now(),
             params={
