@@ -1,0 +1,17 @@
+node-workflow:
+  type: Workflow
+
+  desc: |
+    Node workflow
+
+  params:
+    name: "A node name"
+    type: str
+
+  jobs:
+    start-node:
+      desc: "A start node job"
+      stages:
+        - name: "Get and Start Node Information"
+          id: get-start-node
+          echo: "Start Node ..."

@@ -72,14 +72,36 @@ flow: Result = (
 )
 ```
 
+### Version 2
+
+> [!NOTE]
+> This version is the same DAG and Task strategy like Airflow.
+
+After initialize your data framework project with **Version 2**, your data pipeline
+config files will store with this file structure:
+
+```text
+conf/
+ ├─ conn/
+ │   ├─ c_conn_01.yml
+ │   ╰─ c_conn_02.yml
+ ├─ routes/
+ │   ╰─ routing.yml
+ ╰─ pipe/
+     ╰─ p_pipe_01/
+         ├─ n_node_01.yml
+         ├─ n_node_02.yml
+         ╰─ config.yml
+```
+
 ## :cookie: Configuration
 
-Support data framework version:
+**Support data framework version:**
 
 | Version | Supported | Description                                               |
-|:-------:|:---------:|-----------------------------------------------------------|
-|    1    |    Yes    | A data framework that base on stream, group, and process. |
-|    2    |    No     | A data framework that base on pipeline, and node.         |
+|:-------:|:---------:|:----------------------------------------------------------|
+|    1    | Progress  | A data framework that base on stream, group, and process. |
+|    2    | Progress  | A data framework that base on pipeline, and node.         |
 
 ## 💬 Contribute
 

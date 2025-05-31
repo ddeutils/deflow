@@ -1,0 +1,22 @@
+pipeline-workflow:
+  type: Workflow
+
+  desc: |
+    Pipeline workflow for run all node that config in this pipeline name.
+
+  params:
+    name:
+      desc: "A pipeline name for passing to run this pipeline workflow."
+      type: str
+    start-date:
+      desc: "A start datetime"
+      type: datetime
+
+  jobs:
+    start-pipeline:
+      desc: "A start pipeline job for get a pipeline information"
+      stages:
+        - name: "Get and Start Pipeline Information"
+          id: get-start-pipeline
+          with:
+            name: ${{ params.name }}
