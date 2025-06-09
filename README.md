@@ -87,7 +87,7 @@ conf/
  │   ╰─ c_conn_02.yml
  ├─ routes/
  │   ╰─ routing.yml
- ╰─ pipe/
+ ╰─ pipeline/
      ╰─ p_pipe_01/
          ├─ n_node_01.yml
          ├─ n_node_02.yml
