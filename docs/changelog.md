@@ -2,6 +2,53 @@
 
 ## Latest Changes
 
+## 0.0.3
+
+### :stars: Highlight Features
+
+- :star: add data framework version 2 with dynamic caller.
+
+### :sparkles: Features
+
+- :dart: add pipeline workflow call node operator.
+- :dart: add node workflow tempalte and pipeline construct.
+- :dart: draft data framework version 2.
+- :dart: add options for update extras value.
+- :dart: add draft workflow for data frameworkf version 2.
+- :dart: add option method for allow to update extra parameters.
+
+### :bug: Bug fixes
+
+- :gear: use caller instead routing on data framework version 2.
+- :gear: testcase not valid when upgrade ddeutil-workflow deps.
+- :gear: remove root_path from config module.
+
+### :black_nib: Code Changes
+
+- :lipstick: pull json schema from workflow package.
+- :test_tube: fix testcase for extract caller func.
+- :art: clean core workflow template on data framework version 01.
+- :art: change workflow steps on data framework version 01.
+- :test_tube: update testcase and add override datetime.
+
+### :package: Build & Workflow
+
+- :package: bump typer from 0.15.4 to 0.16.0 (#2)
+
+### :postbox: Dependencies
+
+- :pushpin: update ddeutil-workflow to 0.0.70.
+- :pushpin: downgrade typer version to 0.15.4.
+- :pushpin: upgrade typer version to 0.16.0.
+- :pushpin: update version of ddeutil-workflow to 0.0.66.
+
+### :book: Documentations
+
+- :page_facing_up: update readme file.
+- :page_facing_up: update desc on v1 models module.
+- :page_facing_up: update mkdocs version content.
+- :page_facing_up: update badges on gh readme file.
+
 ## 0.0.2
 
 ### :stars: Highlight Features
