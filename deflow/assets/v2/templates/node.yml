@@ -7,6 +7,8 @@ node-workflow:
     name:
       desc: "A node name."
       type: str
+    audit-date:
+      type: datetime
 
   jobs:
     start-node:
@@ -14,13 +16,15 @@ node-workflow:
       stages:
         - name: "Get and Start Node Information"
           id: start-node
-          echo: "Start Node ..."
-
-        - name: "Switch routing"
-          uses: tasks/${{ stages.start-node.outputs.operator }}@${{ stage.start-node.outputs.task }}
+          uses: tasks/start-node@v2
           with:
-            name: ${{ paras.node }}
-            audit-date: ${{ params.audit-date }}
+            name: ${{ params.name }}
+
+        - name: "Switch Node Caller"
+          uses: tasks/${{ stages.start-node.outputs.operator }}@${{ stages.start-node.outputs.task }}
+          with:
+            node: ${{ stages.start-node.outputs.node }}
+            audit_date: ${{ params.audit-date }}
 
         - name: "Making Data Quality"
           echo: Start run data quality

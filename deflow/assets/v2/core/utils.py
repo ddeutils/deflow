@@ -22,10 +22,10 @@ def get_pipeline(name: str, path: Path) -> DictData:
 
     :rtype: DictData
     """
-    file: Path
-    for file in path.rglob("*"):
-        if file.is_dir() and file.stem == name:
-            cfile: Path = file / "config.yml"
+    d: Path
+    for d in path.rglob("*"):
+        if d.is_dir() and d.stem == name:
+            cfile: Path = d / "config.yml"
             if not cfile.exists():
                 raise FileNotFoundError(
                     f"Get pipeline file: {cfile.name} does not exist."
@@ -43,7 +43,7 @@ def get_pipeline(name: str, path: Path) -> DictData:
 
             nodes: dict[str, Any] = {}
             f: Path
-            for f in file.rglob("*"):
+            for f in d.rglob("*"):
                 if not f.is_file():
                     continue
 
@@ -53,6 +53,10 @@ def get_pipeline(name: str, path: Path) -> DictData:
                 node_data = YamlEnvFl(path=f).read()
                 if node_data:
                     for nn in node_data:
+
+                        if not (t := node_data[nn].get("type")) or t != "Node":
+                            continue
+
                         nodes[nn] = {
                             "name": nn,
                             "pipeline_name": name,

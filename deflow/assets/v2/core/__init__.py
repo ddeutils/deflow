@@ -1,1 +1,1 @@
-from .models import Node
+from .models import Node, Pipeline

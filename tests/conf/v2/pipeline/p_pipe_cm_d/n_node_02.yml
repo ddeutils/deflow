@@ -2,5 +2,8 @@ n_node_02:
   type: Node
   operator: import-db
   task: sqlite
+  upstream:
+    - name: n_node_01
   params:
-    ...
+    execute_start: "start-date"
+    execute_end: "end-date"

@@ -31,17 +31,29 @@ pipeline-workflow:
           with:
             name: ${{ params.name }}
 
-        - name: "For-each node"
-          id: nodes
-          foreach: ${{ stages.get-start-pipeline.outputs.nodes }}
+        - name: "For-each node lineage"
+          id: node-lineage
+          foreach: ${{ stages.get-start-pipeline.outputs.node-lineage-key }}
           stages:
 
-            - name: "Trigger node"
-              trigger: node-workflow
-              params:
-                name: ${{ item }}
-                pipeline: ${{ stages.get-start-pipeline.outputs.name }}
-                audit-date: ${{ stages.get-start-stream.outputs.audit-date }}
+            - name: "Get nodes"
+              id: get-nodes
+              vars:
+                nodes: ${{ stages.get-start-pipeline.outputs.node-lineage }}
+              run: |
+                node: list[str] = nodes.get(${{ item }})
+
+            - name: "For-each node"
+              id: node
+              foreach: ${{ stages.get-nodes.outputs.node }}
+              concurrent: 5
+              stages:
+
+                - name: "Trigger node workflow"
+                  trigger: node-workflow
+                  params:
+                    name: ${{ item }}
+                    audit-date: ${{ stages.get-start-pipeline.outputs.audit-date }}
 
             - name: "End trigger node"
               id: end-trigger-node

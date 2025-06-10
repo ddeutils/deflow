@@ -14,6 +14,8 @@ def test_v1_utils_get_stream(test_path: Path):
                 "processes": {
                     "p_first_process_01": {
                         "name": "p_first_process_01",
+                        "group_name": "g_first",
+                        "stream_name": "s_cm_d",
                         "deps": [
                             {"name": "p_deps_process_01", "offset": 1},
                             {"name": "p_deps_process_02", "offset": 1},
@@ -53,6 +55,8 @@ def test_v1_utils_get_stream(test_path: Path):
                 "processes": {
                     "p_second_process_01": {
                         "name": "p_second_process_01",
+                        "group_name": "g_second",
+                        "stream_name": "s_cm_d",
                         "deps": [
                             {"name": "p_deps_process_01", "offset": 1},
                             {"name": "p_deps_process_02", "offset": 1},
@@ -83,6 +87,8 @@ def test_v1_utils_get_stream(test_path: Path):
                 "processes": {
                     "p_third_process_01": {
                         "name": "p_third_process_01",
+                        "group_name": "g_third",
+                        "stream_name": "s_cm_d",
                         "deps": [
                             {
                                 "name": "p_deps_process_01",

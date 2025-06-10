@@ -3,4 +3,5 @@ n_node_01:
   operator: import-file
   task: local
   params:
-    ...
+    execute_start: "start-date"
+    execute_end: "end-date"

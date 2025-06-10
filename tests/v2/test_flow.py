@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from ddeutil.workflow import Result
+from ddeutil.workflow import SUCCESS, Result
 
 from deflow.flow import Flow
 
@@ -21,4 +21,5 @@ def test_flow_run(test_path: Path):
         },
     )
     rs: Result = flow.run(mode="N")
+    assert rs.status == SUCCESS
     print(rs.context)

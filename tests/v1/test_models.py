@@ -14,8 +14,8 @@ def test_v1_models_stream():
     assert stream.priority_group() == {}
 
 
-def test_v1_models_stream_from_path(test_path):
-    stream = Stream.from_path("s_cm_d", path=test_path / "conf")
+def test_v1_models_stream_from_conf(test_path):
+    stream = Stream.from_conf("s_cm_d", path=test_path / "conf")
     print(stream)
     print(stream.priority_group())
     assert sorted(stream.priority_group().keys()) == [1, 2]

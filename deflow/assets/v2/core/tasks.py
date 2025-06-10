@@ -39,13 +39,21 @@ def get_start_pipeline_info(
     pipeline: Pipeline = Pipeline.from_conf(
         name=name, path=dynamic("deflow_conf_path", extras=extras)
     )
-    result.trace.info(f"... Start Pipeline Info:||" f"> {pipeline}")
+    node_lineage: list[list[str]] = pipeline.lineage()
 
+    result.trace.info(
+        f"... Start Pipeline Info:||"
+        f"> pipeline name: {pipeline.name}||"
+        f"> node lineage: {node_lineage}"
+    )
+    node_lineage_map: dict[int, list[str]] = dict(enumerate(node_lineage))
     return {
         "name": pipeline.name,
         "stream": pipeline.model_dump(by_alias=True),
         "audit-date": datetime(2025, 4, 1, 1),
         "logical-date": datetime(2025, 4, 1, 1),
+        "node-lineage-key": list(node_lineage_map.keys()),
+        "node-lineage": node_lineage_map,
     }
 
 
@@ -57,10 +65,18 @@ def start_node(name: str, result: Result, extras: dict[str, Any]) -> DictData:
     :param result: (Result) A result dataclass for make logging.
     :param extras: (dict[str, Any]) An extra parameters.
     """
-    result.trace.info(f"Start getting process: {name!r} info")
-    process: Node = Node.from_conf(
+    result.trace.info(f"Start getting node: {name!r} info")
+    node: Node = Node.from_conf(
         name=name, path=dynamic("deflow_conf_path", extras=extras)
     )
+    result.trace.info(
+        f"... Start Node Info:||"
+        f"> node name: {node.name}||"
+        f"> node operator: {node.operator}||"
+        f"> node task: {node.task}||"
+    )
     return {
-        "process": process.model_dump(by_alias=True),
+        "node": node,
+        "operator": node.operator,
+        "task": node.task,
     }
