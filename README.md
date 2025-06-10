@@ -90,13 +90,17 @@ conf/
  ├─ pipeline/
  │   ╰─ p_pipe_01/
  │       ├─ config.yml
- │       ├─ lineage.yml
  │       ├─ n_node_01.yml
  │       ╰─ n_node_02.yml
  ╰─ .configore
 ```
 
 ## :cookie: Configuration
+
+| Name                      | Component | Default  | Description                                        |
+|:--------------------------|:---------:|:---------|:---------------------------------------------------|
+| **DEFLOW_CORE_CONF_PATH** |   CORE    | `./conf` | A config path to get data framework configuration. |
+| **DEFLOW_CORE_VERSION**   |   CORE    | `v1`     | A specific data framework version.                 |
 
 **Support data framework version:**
 
