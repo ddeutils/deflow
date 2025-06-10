@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling>=1.8.0"]
+requires = [ "hatchling>=1.8.0" ]
 build-backend = "hatchling.build"
 
 [project]
@@ -25,9 +25,9 @@ classifiers = [
 ]
 requires-python = ">=3.9.13"
 dependencies = [
-    "ddeutil-workflow==0.0.71",
+    "ddeutil-workflow==0.0.72",
     "python-dotenv==1.1.0",
-    "typer==0.16.0",
+    "typer>=0.16.0,<1.0.0",
 ]
 dynamic = ["version"]
 
