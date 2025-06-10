@@ -17,8 +17,8 @@ node-workflow:
           echo: "Start Node ..."
 
         - name: "Switch routing"
-          trigger: routing-${{ stages.start-node.outputs.routing }}-workflow
-          params:
+          uses: tasks/${{ stages.start-node.outputs.operator }}@${{ stage.start-node.outputs.task }}
+          with:
             name: ${{ paras.name }}
             audit-date: ${{ params.audit-date }}
 
