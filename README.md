@@ -48,15 +48,16 @@ conf/
  │   ╰─ c_conn_02.yml
  ├─ routes/
  │   ╰─ routing.yml
- ╰─ stream/
-     ╰─ s_stream_01/
-         ├─ g_group_01.tier.priority/
-         │   ├─ p_proces_01.yml
-         │   ╰─ p_proces_02.yml
-         ├─ g_group_02.tier.priority/
-         │   ├─ p_proces_01.yml
-         │   ╰─ p_proces_02.yml
-         ╰─ config.yml
+ ├─ stream/
+ │   ╰─ s_stream_01/
+ │       ├─ g_group_01.tier.priority/
+ │       │   ├─ p_proces_01.yml
+ │       │   ╰─ p_proces_02.yml
+ │       ├─ g_group_02.tier.priority/
+ │       │   ├─ p_proces_01.yml
+ │       │   ╰─ p_proces_02.yml
+ │       ╰─ config.yml
+ ╰─ .configore
 ```
 
 You can run the data flow by:
@@ -82,11 +83,6 @@ config files will store with this file structure:
 
 ```text
 conf/
- ├─ conn/
- │   ├─ c_conn_01.yml
- │   ╰─ c_conn_02.yml
- ├─ routes/
- │   ╰─ routing.yml
  ├─ pipeline/
  │   ╰─ p_pipe_01/
  │       ├─ config.yml
