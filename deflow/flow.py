@@ -13,7 +13,7 @@ from ddeutil.workflow import config as workflow_config
 from typing_extensions import Self
 
 from .__types import DictData, TupleStr
-from .conf import ASSETS_PATH, config
+from .conf import ASSETS_PATH, dynamic
 
 RUN_MODES: TupleStr = (
     "N",
@@ -40,12 +40,12 @@ def workflow_factory(
     """
     extras: DictData = {
         **{
-            "conf_path": ASSETS_PATH / f"{config.version}/templates",
+            "conf_path": ASSETS_PATH / f"{version}/templates",
             "registry_caller": [
-                f"deflow.assets.{config.version}.core",
+                f"deflow.assets.{version}.core",
                 *extras.pop("registry_caller", []),
             ],
-            "conf_paths": [config.conf_path],
+            "conf_paths": [dynamic("deflow_conf_path", extras=extras)],
         },
         **(extras or {}),
     }
@@ -87,10 +87,14 @@ class Flow:
         extras: Optional[DictData] = None,
     ) -> None:
         self.name: str = name
-        self.version: str = version or config.version
+        self.version: str = dynamic("version", f=version)
         self.extras: DictData = extras or {}
+
+        # NOTE: Factory the workflow from the override params.
         self.workflow: Workflow = workflow_factory(
-            name, version=self.version, extras=self.extras
+            name,
+            version=self.version,
+            extras=self.extras,
         )
 
     def __repr__(self) -> str:

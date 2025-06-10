@@ -46,9 +46,14 @@ def get_stream(name: str, path: Path) -> DictData:
             d: Path
             for d in file.iterdir():
                 if d.is_dir() and (match := Re.RE_GROUP.search(d.name)):
-                    groups[match.groupdict()["name"]] = {
-                        "processes": get_processes_from_path(d),
-                        **match.groupdict(),
+                    match_data: dict[str, Any] = match.groupdict()
+                    groups[match_data["name"]] = {
+                        "processes": get_processes_from_path(
+                            d,
+                            stream_name=name,
+                            group_name=match_data["name"],
+                        ),
+                        **match_data,
                     }
 
             stream_data["groups"] = groups
@@ -57,10 +62,16 @@ def get_stream(name: str, path: Path) -> DictData:
     raise FileNotFoundError(f"Does not found stream: {name!r} at {path}")
 
 
-def get_processes_from_path(path: Path) -> DictData:
+def get_processes_from_path(
+    path: Path,
+    stream_name: str,
+    group_name: str,
+) -> DictData:
     """Get all process from an input config path.
 
     :param path: A config path.
+    :param stream_name:
+    :param group_name:
     """
     process: dict[str, Any] = {}
     for file in path.rglob("*"):
@@ -68,7 +79,12 @@ def get_processes_from_path(path: Path) -> DictData:
             data = YamlEnvFl(path=file).read()
             if data:
                 for name in data:
-                    process[name] = {"name": name, **data[name]}
+                    process[name] = {
+                        "name": name,
+                        "group_name": group_name,
+                        "stream_name": stream_name,
+                        **data[name],
+                    }
     return process
 
 

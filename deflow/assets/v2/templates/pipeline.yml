@@ -27,6 +27,7 @@ pipeline-workflow:
       stages:
         - name: "Get and Start Pipeline Information"
           id: get-start-pipeline
+          uses: tasks/get-start-pipeline-info@v2
           with:
             name: ${{ params.name }}
 

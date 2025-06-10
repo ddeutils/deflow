@@ -19,7 +19,7 @@ node-workflow:
         - name: "Switch routing"
           uses: tasks/${{ stages.start-node.outputs.operator }}@${{ stage.start-node.outputs.task }}
           with:
-            name: ${{ paras.name }}
+            name: ${{ paras.node }}
             audit-date: ${{ params.audit-date }}
 
         - name: "Making Data Quality"

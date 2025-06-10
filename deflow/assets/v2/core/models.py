@@ -1,12 +1,12 @@
 import copy
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 from typing_extensions import Self
 
 from ....__types import DictData
-from .utils import get_pipeline
+from .utils import get_node, get_pipeline
 
 
 class NodeDeps(BaseModel):
@@ -15,9 +15,24 @@ class NodeDeps(BaseModel):
 
 
 class Node(BaseModel):
-    name: str
+    name: str = Field(description="A node name.")
+    pipeline_name: Optional[str] = Field(
+        default=None, description="A pipeline name of this node."
+    )
     desc: Optional[str] = Field(default=None)
     upstream: list[NodeDeps] = Field(default_factory=list)
+    params: dict[str, Any] = Field(default_factory=dict)
+
+    @classmethod
+    def from_conf(cls, name: str, path: Path) -> Self:
+        """Construct Node model from an input node name and config path."""
+        data: DictData = get_node(name=name, path=path)
+
+        if (t := data.pop("type")) != cls.__name__:
+            raise ValueError(f"Type {t!r} does not match with {cls}")
+
+        loader_data: DictData = copy.deepcopy(data)
+        return cls.model_validate(obj=loader_data)
 
 
 class Lineage(BaseModel):

@@ -10,11 +10,12 @@ from __future__ import annotations
 
 from datetime import datetime
 from functools import partial
+from typing import Any
 
 from ddeutil.workflow import Result, tag
 
 from ....__types import DictData
-from ....conf import config
+from ....conf import dynamic
 from .models import Group, Process, Stream
 
 VERSION: str = "v1"
@@ -22,17 +23,22 @@ TAG_VERSION_1 = partial(tag, name=VERSION)
 
 
 @TAG_VERSION_1(alias="get-start-stream-info")
-def get_start_stream_info(name: str, result: Result) -> DictData:
+def get_start_stream_info(
+    name: str, result: Result, extras: dict[str, Any]
+) -> DictData:
     """Get Stream model information. This function use to validate an input
     stream name that exists on the config path.
 
     :param name: (str) A stream name
     :param result: (Result) A result dataclass for make logging.
+    :param extras: (dict[str, Any]) An extra parameters.
 
     :rtype: DictData
     """
     result.trace.info(f"Start getting stream: {name!r} info.")
-    stream: Stream = Stream.from_conf(name=name, path=config.conf_path)
+    stream: Stream = Stream.from_conf(
+        name=name, path=dynamic("deflow_conf_path", extras=extras)
+    )
     result.trace.info(
         f"... Start Stream Info:"
         f"||=> freq: {stream.freq.model_dump(by_alias=True)}"
@@ -72,18 +78,21 @@ def get_groups_from_priority(
 
 @TAG_VERSION_1(alias="get-processes-from-group")
 def get_processes_from_group(
-    group: str, stream: str, result: Result
+    group: str, stream: str, result: Result, extras: dict[str, Any]
 ) -> DictData:
     """Get all process name from a specific group.
 
     :param group: (str) A group name.
     :param stream: (str) A stream name.
     :param result: (Result) A result dataclass for make logging.
+    :param extras: (dict[str, Any]) An extra parameters.
     """
     result.trace.info(
         f"Get processes from group: {group!r} and stream: {stream!r}"
     )
-    stream: Stream = Stream.from_conf(name=stream, path=config.conf_path)
+    stream: Stream = Stream.from_conf(
+        name=stream, path=dynamic("deflow_conf_path", extras=extras)
+    )
     group_model: Group = stream.group(group)
     processes: list[str] = list(group_model.processes)
     result.trace.info(
@@ -97,14 +106,19 @@ def get_processes_from_group(
 
 
 @TAG_VERSION_1(alias="start-process")
-def start_process(name: str, result: Result) -> DictData:
+def start_process(
+    name: str, result: Result, extras: dict[str, Any]
+) -> DictData:
     """Start process with an input process name.
 
     :param name: (str) A process name.
     :param result: (Result) A result dataclass for make logging.
+    :param extras: (dict[str, Any]) An extra parameters.
     """
     result.trace.info(f"Start getting process: {name!r} info")
-    process: Process = Process.from_path(name=name, path=config.conf_path)
+    process: Process = Process.from_path(
+        name=name, path=dynamic("deflow_conf_path", extras=extras)
+    )
     result.trace.info(f"... routing of this process: {process.routing}")
     return {
         "routing": process.routing,

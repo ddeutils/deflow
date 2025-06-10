@@ -1,0 +1,6 @@
+n_node_02:
+  type: Node
+  operator: import-db
+  task: sqlite
+  params:
+    ...

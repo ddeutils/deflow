@@ -13,7 +13,7 @@ from deflow.__types import DictData
 from deflow.assets.v2.core import Node
 
 
-@tag(name="operator", alias="import-file")
+@tag(name="local", alias="import-file")
 def operator_import_file(
     node: Node,
     audit_date: datetime,
@@ -35,7 +35,7 @@ def operator_import_file(
     }
 
 
-@tag(name="operator", alias="import-db")
+@tag(name="sqlite", alias="import-db")
 def operator_import_db(
     node: Node,
     audit_date: datetime,

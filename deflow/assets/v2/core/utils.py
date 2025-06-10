@@ -47,13 +47,17 @@ def get_pipeline(name: str, path: Path) -> DictData:
                 if not f.is_file():
                     continue
 
-                if file.suffix not in (".yml", ".yaml"):
+                if f.suffix not in (".yml", ".yaml"):
                     continue
 
                 node_data = YamlEnvFl(path=f).read()
                 if node_data:
-                    for name in node_data:
-                        nodes[name] = {"name": name, **data[name]}
+                    for nn in node_data:
+                        nodes[nn] = {
+                            "name": nn,
+                            "pipeline_name": name,
+                            **node_data[nn],
+                        }
 
             pipeline_data["nodes"] = nodes
             return pipeline_data
@@ -61,4 +65,23 @@ def get_pipeline(name: str, path: Path) -> DictData:
     raise FileNotFoundError(f"Does not found pipeline: {name!r} at {path}")
 
 
-def get_node(name: str, path: Path): ...
+def get_node(name: str, path: Path) -> DictData:
+    for file in path.rglob("*"):
+        if file.is_file() and file.stem == name:
+            if file.suffix in (".yml", ".yaml"):
+                data = YamlEnvFl(path=file).read()
+                if name not in data:
+                    raise NotImplementedError
+
+                return {
+                    "name": name,
+                    "pipeline_name": file.parent.name,
+                    **data[name],
+                }
+
+            else:
+                raise NotImplementedError(
+                    f"Get node file: {file.name} does not support for file"
+                    f"type: {file.suffix}."
+                )
+    raise FileNotFoundError(f"{path}/**/{name}.yml")
