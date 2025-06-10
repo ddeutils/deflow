@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 from ddeutil.io import YamlEnvFl
 
@@ -41,7 +42,8 @@ def get_stream(name: str, path: Path) -> DictData:
                     "Stream config does not pass the `type` for validation."
                 )
 
-            groups = {}
+            groups: dict[str, Any] = {}
+            d: Path
             for d in file.iterdir():
                 if d.is_dir() and (match := Re.RE_GROUP.search(d.name)):
                     groups[match.groupdict()["name"]] = {
@@ -60,7 +62,7 @@ def get_processes_from_path(path: Path) -> DictData:
 
     :param path: A config path.
     """
-    process = {}
+    process: dict[str, Any] = {}
     for file in path.rglob("*"):
         if file.suffix in (".yml", ".yaml"):
             data = YamlEnvFl(path=file).read()

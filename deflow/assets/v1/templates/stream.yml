@@ -51,7 +51,7 @@ stream-workflow:
               foreach: ${{ stages.get-groups.outputs.groups }}
               stages:
 
-                - name: "For-each group"
+                - name: "Trigger group"
                   id: trigger-group-workflow
                   trigger: group-workflow
                   params:

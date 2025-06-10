@@ -87,21 +87,23 @@ conf/
  │   ╰─ c_conn_02.yml
  ├─ routes/
  │   ╰─ routing.yml
- ╰─ pipeline/
-     ╰─ p_pipe_01/
-         ├─ n_node_01.yml
-         ├─ n_node_02.yml
-         ╰─ config.yml
+ ├─ pipeline/
+ │   ╰─ p_pipe_01/
+ │       ├─ config.yml
+ │       ├─ lineage.yml
+ │       ├─ n_node_01.yml
+ │       ╰─ n_node_02.yml
+ ╰─ .configore
 ```
 
 ## :cookie: Configuration
 
 **Support data framework version:**
 
-| Version | Supported | Description                                               |
-|:-------:|:---------:|:----------------------------------------------------------|
-|    1    | Progress  | A data framework that base on stream, group, and process. |
-|    2    | Progress  | A data framework that base on pipeline, and node.         |
+| Version | Supported | Description                                                     |
+|:-------:|:---------:|:----------------------------------------------------------------|
+|    1    | Progress  | A data framework that base on `stream`, `group`, and `process`. |
+|    2    | Progress  | A data framework that base on `pipeline`, and `node`.           |
 
 ## 💬 Contribute
 

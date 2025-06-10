@@ -4,7 +4,9 @@ process-workflow:
     Process workflow for run the minimum data process like ETL/ELT/EL action.
 
   params:
-    name: str
+    name:
+      desc: "A process name."
+      type: str
     audit-date: datetime
   jobs:
     start-process:

@@ -8,6 +8,8 @@ from re import (
 
 
 class Re:
+    """Regular expression for parsing the group from filename."""
+
     __group_regex: str = r"""
         (?P<name>\w+)(?:\.(?P<tier>\w+))?(?:\.(?P<priority>\d+))
     """

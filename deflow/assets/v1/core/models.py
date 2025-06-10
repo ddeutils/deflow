@@ -14,8 +14,7 @@ from zoneinfo import ZoneInfo
 from pydantic import BaseModel, Field
 from typing_extensions import Self
 
-from deflow.__types import DictData
-
+from ....__types import DictData
 from .utils import get_process, get_stream
 
 
@@ -65,11 +64,12 @@ class Stream(BaseModel):
     )
     groups: dict[str, Group] = Field(
         default_factory=dict,
-        description="A list of Group model.",
+        description="A mapping of Group model and its name.",
     )
+    tags: list[str] = Field(default_factory=list)
 
     @classmethod
-    def from_path(cls, name: str, path: Path) -> Self:
+    def from_conf(cls, name: str, path: Path) -> Self:
         """Construct Stream model from an input stream name and config path.
 
         :param name: (str) A stream name that want to search from config path.
@@ -110,7 +110,9 @@ class Stream(BaseModel):
         return rs
 
 
-GroupTier = Literal["raw", "bronze", "silver", "gold", "staging", "operation"]
+GroupTier = Literal[
+    "raw", "bronze", "silver", "gold", "staging", "operation", "platinum"
+]
 
 
 class Group(BaseModel):
@@ -197,6 +199,10 @@ class Dataset(BaseModel):
 class Process(BaseModel):
     """Process model for only one action for move the data from source to
     target with routing type.
+
+    Note:
+
+        Process ==> Source --> Transform --> Target
     """
 
     name: str = Field(description="A process name.")

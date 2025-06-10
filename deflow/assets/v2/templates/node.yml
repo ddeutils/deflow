@@ -1,17 +1,33 @@
 node-workflow:
   type: Workflow
-
   desc: |
-    Node workflow
+    Node workflow for run the minimum data process like ETL/ELT/EL action.
 
   params:
-    name: "A node name"
-    type: str
+    name:
+      desc: "A node name."
+      type: str
 
   jobs:
     start-node:
       desc: "A start node job"
       stages:
         - name: "Get and Start Node Information"
-          id: get-start-node
+          id: start-node
           echo: "Start Node ..."
+
+        - name: "Switch routing"
+          trigger: routing-${{ stages.start-node.outputs.routing }}-workflow
+          params:
+            name: ${{ paras.name }}
+            audit-date: ${{ params.audit-date }}
+
+        - name: "Making Data Quality"
+          echo: Start run data quality
+
+        - name: "Clear log"
+          echo: Clear logging and close node
+
+        - name: "End node"
+          echo: |
+            End run node: ${{ params.name }}

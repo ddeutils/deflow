@@ -11,6 +11,15 @@ pipeline-workflow:
     start-date:
       desc: "A start datetime"
       type: datetime
+    run-mode:
+      desc: |
+        Running mode of this workflow. This workflow allow mode to run be:
+          - N (Normal): Run with normal mode.
+          - R (Rerun): Run with rerun mode, that get only failed node to run.
+          - F (Force): Run with force mode, that run all nodes from the begin.
+          - T (Test): Run with test mode.
+      type: choice
+      options: [ "N", "R", "F", "T" ]
 
   jobs:
     start-pipeline:
@@ -20,3 +29,25 @@ pipeline-workflow:
           id: get-start-pipeline
           with:
             name: ${{ params.name }}
+
+        - name: "For-each node"
+          id: nodes
+          foreach: ${{ stages.get-start-pipeline.outputs.nodes }}
+          stages:
+
+            - name: "Trigger node"
+              trigger: node-workflow
+              params:
+                name: ${{ item }}
+                pipeline: ${{ stages.get-start-pipeline.outputs.name }}
+                audit-date: ${{ stages.get-start-stream.outputs.audit-date }}
+
+            - name: "End trigger node"
+              id: end-trigger-node
+              echo: "End trigger Node: ${{ item }}"
+
+        - name: "Clear log"
+          echo: Clear logging and close pipeline
+
+        - name: "Alert"
+          echo: Alert with mail or notify-services

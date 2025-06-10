@@ -32,7 +32,7 @@ def get_start_stream_info(name: str, result: Result) -> DictData:
     :rtype: DictData
     """
     result.trace.info(f"Start getting stream: {name!r} info.")
-    stream: Stream = Stream.from_path(name=name, path=config.conf_path)
+    stream: Stream = Stream.from_conf(name=name, path=config.conf_path)
     result.trace.info(
         f"... Start Stream Info:"
         f"||=> freq: {stream.freq.model_dump(by_alias=True)}"
@@ -83,7 +83,7 @@ def get_processes_from_group(
     result.trace.info(
         f"Get processes from group: {group!r} and stream: {stream!r}"
     )
-    stream: Stream = Stream.from_path(name=stream, path=config.conf_path)
+    stream: Stream = Stream.from_conf(name=stream, path=config.conf_path)
     group_model: Group = stream.group(group)
     processes: list[str] = list(group_model.processes)
     result.trace.info(
