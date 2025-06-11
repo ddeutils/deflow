@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 from typing import Any, Union
 
-from ddeutil.io import YamlEnvFl
+from ddeutil.io import YamlEnvFl, is_ignored, read_ignore
 
 from ....__types import DictData, ListData
 
@@ -24,9 +24,15 @@ def get_pipeline(name: str, path: Path) -> DictData:
     :rtype: DictData
     """
     d: Path
+    ignore = read_ignore(path / ".confignore")
     for d in path.rglob("*"):
+
         if d.is_dir() and d.stem == name:
             cfile: Path = d / "config.yml"
+
+            if is_ignored(cfile, ignore):
+                continue
+
             if not cfile.exists():
                 raise FileNotFoundError(
                     f"Get pipeline file: {cfile.name} does not exist."
@@ -46,6 +52,9 @@ def get_pipeline(name: str, path: Path) -> DictData:
             f: Path
             for f in d.rglob("*"):
                 if not f.is_file():
+                    continue
+
+                if is_ignored(f, ignore):
                     continue
 
                 if f.suffix not in (".yml", ".yaml"):
@@ -97,8 +106,14 @@ def get_node_assets(name: str, path: Path) -> Union[DictData, ListData]:
 
 
 def get_node(name: str, path: Path) -> DictData:
+    ignore = read_ignore(path / ".confignore")
     for file in path.rglob("*"):
+
         if file.is_file() and file.stem == name:
+
+            if is_ignored(file, ignore):
+                continue
+
             if file.suffix in (".yml", ".yaml"):
                 data = YamlEnvFl(path=file).read()
                 if name not in data:

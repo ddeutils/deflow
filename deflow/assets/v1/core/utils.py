@@ -6,9 +6,9 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
-from ddeutil.io import YamlEnvFl
+from ddeutil.io import YamlEnvFl, is_ignored, read_ignore
 
 from ....__types import DictData
 from .__types import Re
@@ -23,10 +23,15 @@ def get_stream(name: str, path: Path) -> DictData:
 
     :rtype: DictData
     """
-    file: Path
-    for file in path.rglob("*"):
-        if file.is_dir() and file.stem == name:
-            cfile: Path = file / "config.yml"
+    d: Path
+    ignore = read_ignore(path / ".confignore")
+    for d in path.rglob("*"):
+        if d.is_dir() and d.stem == name:
+            cfile: Path = d / "config.yml"
+
+            if is_ignored(cfile, ignore):
+                continue
+
             if not cfile.exists():
                 raise FileNotFoundError(
                     f"Get stream file: {cfile.name} does not exist."
@@ -43,15 +48,18 @@ def get_stream(name: str, path: Path) -> DictData:
                 )
 
             groups: dict[str, Any] = {}
-            d: Path
-            for d in file.iterdir():
-                if d.is_dir() and (match := Re.RE_GROUP.search(d.name)):
+            grout_dir: Path
+            for grout_dir in d.iterdir():
+                if grout_dir.is_dir() and (
+                    match := Re.RE_GROUP.search(grout_dir.name)
+                ):
                     match_data: dict[str, Any] = match.groupdict()
                     groups[match_data["name"]] = {
                         "processes": get_processes_from_path(
-                            d,
+                            grout_dir,
                             stream_name=name,
                             group_name=match_data["name"],
+                            ignore=ignore,
                         ),
                         **match_data,
                     }
@@ -66,16 +74,23 @@ def get_processes_from_path(
     path: Path,
     stream_name: str,
     group_name: str,
+    ignore: Optional[list[str]] = None,
 ) -> DictData:
     """Get all process from an input config path.
 
     :param path: A config path.
     :param stream_name:
     :param group_name:
+    :param ignore: A list of ignore
     """
     process: dict[str, Any] = {}
     for file in path.rglob("*"):
-        if file.suffix in (".yml", ".yaml"):
+
+        if file.is_file() and file.suffix in (".yml", ".yaml"):
+
+            if is_ignored(file, ignore):
+                continue
+
             data = YamlEnvFl(path=file).read()
             if data:
                 for name in data:
@@ -96,8 +111,14 @@ def get_process(name: str, path: Path) -> DictData:
 
     :rtype: dict[str, Any]
     """
+    ignore = read_ignore(path / ".confignore")
     for file in path.rglob("*"):
+
         if file.is_file() and file.stem == name:
+
+            if is_ignored(file, ignore):
+                continue
+
             if file.suffix in (".yml", ".yaml"):
                 data = YamlEnvFl(path=file).read()
                 if name not in data:
