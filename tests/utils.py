@@ -30,7 +30,8 @@ def dotenv_setting() -> None:
             WORKFLOW_LOG_TRACE_ENABLE_WRITE=true
             WORKFLOW_LOG_AUDIT_PATH={(OUTSIDE_PATH / "logs/audits").absolute()}
             WORKFLOW_LOG_AUDIT_ENABLE_WRITE=true
-            DEFLOW_CORE_CONF_PATH=tests/conf/v1
+            DEFLOW_CORE_CONF_PATH={(OUTSIDE_PATH / "tests/conf/v1").absolute()}
+            DEFLOW_CORE_REGISTRY_CALLER=tests.v1
             """
         ).strip()
         env_path.write_text(env_str)

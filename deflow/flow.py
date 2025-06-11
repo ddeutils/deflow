@@ -43,7 +43,7 @@ def workflow_factory(
             "conf_path": ASSETS_PATH / f"{version}/templates",
             "registry_caller": [
                 f"deflow.assets.{version}.core",
-                *extras.pop("registry_caller", []),
+                *dynamic("deflow_registry_caller", extras=extras),
             ],
             "conf_paths": [dynamic("deflow_conf_path", extras=extras)],
         },
@@ -155,4 +155,5 @@ class Flow:
         """
         return self.run(mode="TEST")
 
-    def ui(self): ...
+    def ui(self) -> str:
+        """Return graph of this flow from the config data."""

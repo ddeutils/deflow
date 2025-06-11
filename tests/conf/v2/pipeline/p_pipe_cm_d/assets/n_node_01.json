@@ -1,0 +1,21 @@
+{
+  "field": [
+    {
+      "metadata": {},
+      "name": "id",
+      "nullable": true,
+      "type": "long"
+    },
+    {
+      "metadata": {},
+      "name": "check_in_hist",
+      "nullable": true,
+      "type": {
+        "containNull": true,
+        "elementType": "timestamp",
+        "type": "array"
+      }
+    }
+  ],
+  "type": "struct"
+}

@@ -16,7 +16,7 @@ def test_flow_run(test_path: Path):
         name="p_pipe_cm_d",
         version="v2",
         extras={
-            "registry_caller": ["tests.v2"],
+            "deflow_registry_caller": ["tests.v2"],
             "deflow_conf_path": test_path / "conf/v2",
         },
     )

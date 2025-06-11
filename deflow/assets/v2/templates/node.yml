@@ -8,7 +8,17 @@ node-workflow:
       desc: "A node name."
       type: str
     audit-date:
+      desc: "An audit datetime of this running workflow."
       type: datetime
+    run-mode:
+      desc: |
+        Running mode of this workflow. This workflow allow mode to run be:
+          - N (Normal): Run with normal mode.
+          - R (Rerun): Run with rerun mode, that get only failed node to run.
+          - F (Force): Run with force mode, that run all nodes from the begin.
+          - T (Test): Run with test mode.
+      type: choice
+      options: [ "N", "R", "F", "T" ]
 
   jobs:
     start-node:

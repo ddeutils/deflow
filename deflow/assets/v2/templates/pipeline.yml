@@ -49,13 +49,14 @@ pipeline-workflow:
               concurrent: 5
               stages:
 
-                - name: "Trigger node workflow"
+                - name: "Trigger Node Workflow"
                   trigger: node-workflow
                   params:
                     name: ${{ item }}
                     audit-date: ${{ stages.get-start-pipeline.outputs.audit-date }}
+                    run-mode: ${{ params.run-mode }}
 
-            - name: "End trigger node"
+            - name: "End Trigger Node"
               id: end-trigger-node
               echo: "End trigger Node: ${{ item }}"
 

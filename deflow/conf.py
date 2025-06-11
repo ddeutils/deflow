@@ -21,8 +21,8 @@ def env(
 ) -> Optional[str]:  # pragma: no cov
     """Get the specific environment variable with the project prefix.
 
-    :param var:
-    :param default:
+    :param var: An environment variable name.
+    :param default: A default value if it does not exist.
 
     :rtype: str | None
     """
@@ -35,6 +35,11 @@ class Config:
     @property
     def deflow_conf_path(self) -> Path:
         return Path(env("CORE_CONF_PATH", "./conf"))
+
+    @property
+    def deflow_registry_caller(self) -> list[str]:
+        regis_call_str: str = env("CORE_REGISTRY_CALLER", ".")
+        return [r.strip() for r in regis_call_str.split(",")]
 
     @property
     def version(self) -> str:

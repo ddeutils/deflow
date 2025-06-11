@@ -93,10 +93,11 @@ conf/
 
 ## :cookie: Configuration
 
-| Name                      | Component | Default  | Description                                        |
-|:--------------------------|:---------:|:---------|:---------------------------------------------------|
-| **DEFLOW_CORE_CONF_PATH** |   CORE    | `./conf` | A config path to get data framework configuration. |
-| **DEFLOW_CORE_VERSION**   |   CORE    | `v1`     | A specific data framework version.                 |
+| Name                            | Component | Default  | Description                                        |
+|:--------------------------------|:---------:|:---------|:---------------------------------------------------|
+| **DEFLOW_CORE_CONF_PATH**       |   CORE    | `./conf` | A config path to get data framework configuration. |
+| **DEFLOW_CORE_VERSION**         |   CORE    | `v1`     | A specific data framework version.                 |
+| **DEFLOW_CORE_REGISTRY_CALLER** |   CORE    | `.`      | A registry of caller function.                     |
 
 **Support data framework version:**
 

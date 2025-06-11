@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from typing_extensions import Self
 
 from ....__types import DictData
-from .utils import get_node, get_pipeline
+from .utils import get_node, get_node_assets, get_pipeline
 
 
 class NodeDeps(BaseModel):
@@ -17,6 +17,7 @@ class NodeDeps(BaseModel):
 class Node(BaseModel):
     """Node model."""
 
+    conf_dir: Path = Field(description="A dir path of this config data.")
     name: str = Field(description="A node name.")
     pipeline_name: Optional[str] = Field(
         default=None, description="A pipeline name of this node."
@@ -26,6 +27,7 @@ class Node(BaseModel):
     operator: str = Field(description="An node operator.")
     task: str = Field(description="A node task.")
     params: dict[str, Any] = Field(default_factory=dict)
+    assets: list[str] = Field(default_factory=list)
 
     @classmethod
     def from_conf(cls, name: str, path: Path) -> Self:
@@ -38,6 +40,12 @@ class Node(BaseModel):
         loader_data: DictData = copy.deepcopy(data)
         return cls.model_validate(obj=loader_data)
 
+    def asset(self, name: str) -> dict[str, Any]:
+        """Get the asset data with a specific name."""
+        if name not in self.assets:
+            raise ValueError(f"This asset, {name!r}, does not exists.")
+        return get_node_assets(name, path=self.conf_dir)
+
 
 class Lineage(BaseModel):
     inlets: list[NodeDeps] = Field(default_factory=list)
@@ -47,6 +55,7 @@ class Lineage(BaseModel):
 class Pipeline(BaseModel):
     """Pipeline model."""
 
+    conf_dir: Path = Field(description="A dir path of this config data.")
     name: str = Field(description="A pipeline.")
     desc: Optional[str] = Field(
         default=None,

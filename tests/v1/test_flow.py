@@ -15,7 +15,7 @@ def test_flow_run():
     flow = Flow(
         name="s_cm_d",
         version="v1",
-        extras={"registry_caller": ["tests.v1"]},
+        extras={"deflow_registry_caller": ["tests.v1"]},
     )
     rs: Result = flow.run(mode="N")
     print(rs.context)
@@ -25,7 +25,7 @@ def test_flow_run_with_dt():
     flow = Flow(
         name="s_cm_d",
         version="v1",
-        extras={"registry_caller": ["tests.v1"]},
+        extras={"deflow_registry_caller": ["tests.v1"]},
     )
     rs: Result = flow.run(dt=datetime(2025, 5, 15), mode="N")
     print(rs.context)
