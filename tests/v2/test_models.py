@@ -10,7 +10,7 @@ def test_pipeline(test_path):
         name="p_pipe_cm_d", path=test_path / "conf/v2"
     )
     assert pipeline.name == "p_pipe_cm_d"
-    assert pipeline.lineage() == [["n_node_01"], ["n_node_02"]]
+    assert pipeline.node_priorities() == [["n_node_01"], ["n_node_02"]]
 
 
 def test_pipeline_load_ignore(test_path: Path):

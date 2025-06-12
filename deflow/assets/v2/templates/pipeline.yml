@@ -31,21 +31,21 @@ pipeline-workflow:
           with:
             name: ${{ params.name }}
 
-        - name: "For-each node lineage"
-          id: node-lineage
-          foreach: ${{ stages.get-start-pipeline.outputs.node-lineage-key }}
+        - name: "For-each Node Priorities"
+          id: node-priorities
+          foreach: ${{ stages.get-start-pipeline.outputs.node-priorities-key }}
           stages:
 
-            - name: "Get nodes"
+            - name: "Get Nodes"
               id: get-nodes
               vars:
-                nodes: ${{ stages.get-start-pipeline.outputs.node-lineage }}
+                node_priorities: ${{ stages.get-start-pipeline.outputs.node-priorities }}
               run: |
-                node: list[str] = nodes.get(${{ item }})
+                nodes: list[str] = node_priorities.get(${{ item }})
 
-            - name: "For-each node"
+            - name: "For-each Node"
               id: node
-              foreach: ${{ stages.get-nodes.outputs.node }}
+              foreach: ${{ stages.get-nodes.outputs.nodes }}
               concurrent: 5
               stages:
 
@@ -60,8 +60,8 @@ pipeline-workflow:
               id: end-trigger-node
               echo: "End trigger Node: ${{ item }}"
 
-        - name: "Clear log"
+        - name: "Clear Log"
           echo: Clear logging and close pipeline
 
-        - name: "Alert"
-          echo: Alert with mail or notify-services
+        - name: "Notification"
+          echo: Notify with mail or notify-services

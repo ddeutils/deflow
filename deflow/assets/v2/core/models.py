@@ -15,7 +15,11 @@ class NodeDeps(BaseModel):
 
 
 class Node(BaseModel):
-    """Node model."""
+    """Node model.
+
+        The node model will represent the minimum action for ETL/ELT/EL or
+    trigger or hook external API/SDK.
+    """
 
     conf_dir: Path = Field(description="A dir path of this config data.")
     name: str = Field(description="A node name.")
@@ -40,11 +44,23 @@ class Node(BaseModel):
         loader_data: DictData = copy.deepcopy(data)
         return cls.model_validate(obj=loader_data)
 
-    def asset(self, name: str) -> dict[str, Any]:
-        """Get the asset data with a specific name."""
+    def asset(self, name: str) -> DictData:
+        """Get the asset data with a specific name.
+
+        :param name: (str) An asset name that want to load from the config path.
+        """
         if name not in self.assets:
             raise ValueError(f"This asset, {name!r}, does not exists.")
         return get_node_assets(name, path=self.conf_dir)
+
+    def sync_assets(self) -> DictData:
+        """Return mapping of its asset name and asset data from the conf path.
+
+        :rtype: DictData
+        """
+        return {
+            asset_name: self.asset(asset_name) for asset_name in self.assets
+        }
 
 
 class Lineage(BaseModel):
@@ -91,14 +107,17 @@ class Pipeline(BaseModel):
         """Get the Node model with pass the specific node name."""
         return self.nodes[name]
 
-    def lineage(self) -> list[list[str]]:
-        """Generate the Node lineage with its upstream field."""
+    def node_priorities(self) -> list[list[str]]:
+        """Generate the Node priorities that convert from its upstream field.
+
+        :rtype: list[list[str]]
+        """
 
         if not self.nodes:
             return []
 
         # Build reverse adjacency list and in-degree count in one pass
-        in_degree = {}
+        in_degree: dict[str, int] = {}
         dependents = {}  # node -> [nodes that depend on it]
 
         # Initialize
@@ -121,19 +140,24 @@ class Pipeline(BaseModel):
                     in_degree[node] += 1
                     dependents[upstream_name].append(node)
 
-        # Kahn's algorithm with level-by-level processing
-        result = []
-        current_level = [
+        # NOTE: Kahn's algorithm with level-by-level processing
+        result: list[list[str]] = []
+        current_level: list[str] = [
             node for node, degree in in_degree.items() if degree == 0
         ]
 
         while current_level:
-            current_level.sort()  # For consistent output
-            result.append(current_level[:])  # Shallow copy
 
-            next_level = []
+            # NOTE: For consistent output
+            current_level.sort()
+
+            # NOTE: Shallow copy
+            result.append(current_level[:])
+
+            next_level: list[str] = []
             for node in current_level:
-                # Decrease in-degree for all dependents
+
+                # NOTE: Decrease in-degree for all dependents
                 for dependent in dependents[node]:
                     in_degree[dependent] -= 1
                     if in_degree[dependent] == 0:
@@ -146,3 +170,5 @@ class Pipeline(BaseModel):
             raise ValueError("Circular dependency detected")
 
         return result
+
+    def lineage(self) -> list[Lineage]: ...

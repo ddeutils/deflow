@@ -82,6 +82,7 @@ def get_pipeline(name: str, path: Path) -> DictData:
 
 
 def get_node_assets(name: str, path: Path) -> Union[DictData, ListData]:
+    """Get the node asset data from a specific path."""
     data: Union[DictData, ListData] = {}
     if (file := (path / name)).exists():
         if file.is_dir():

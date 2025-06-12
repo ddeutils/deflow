@@ -1,7 +1,8 @@
 node-workflow:
   type: Workflow
   desc: |
-    Node workflow for run the minimum data process like ETL/ELT/EL action.
+    Node workflow for run the minimum data process like ETL/ELT/EL or hook external
+    service action.
 
   params:
     name:
@@ -30,7 +31,7 @@ node-workflow:
           with:
             name: ${{ params.name }}
 
-        - name: "Switch Node Caller"
+        - name: "Call Node Operator and Task"
           uses: tasks/${{ stages.start-node.outputs.operator }}@${{ stages.start-node.outputs.task }}
           with:
             node: ${{ stages.start-node.outputs.node }}
@@ -39,9 +40,9 @@ node-workflow:
         - name: "Making Data Quality"
           echo: Start run data quality
 
-        - name: "Clear log"
+        - name: "Clear Log"
           echo: Clear logging and close node
 
-        - name: "End node"
+        - name: "End Node Workflow"
           echo: |
             End run node: ${{ params.name }}
