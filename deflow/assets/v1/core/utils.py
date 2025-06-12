@@ -78,9 +78,9 @@ def get_processes_from_path(
 ) -> DictData:
     """Get all process from an input config path.
 
-    :param path: A config path.
-    :param stream_name:
-    :param group_name:
+    :param path: (Path) A config path.
+    :param stream_name: (str) A stream name.
+    :param group_name: (str) A group name.
     :param ignore: A list of ignore
     """
     process: dict[str, Any] = {}

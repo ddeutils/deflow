@@ -28,30 +28,31 @@ stream-workflow:
     start-steam:
       desc: "A start stream job for get a stream information."
       stages:
+
         - name: "Get and Start Stream Information"
           id: get-start-stream
           uses: tasks/get-start-stream-info@v1
           with:
             name: ${{ params.name }}
 
-        - name: "For-each priority"
+        - name: "For-each Priorities"
           id: group-priorities
           foreach: ${{ stages.get-start-stream.outputs.priority-groups }}
           stages:
 
-            - name: "Get Group from Priority"
+            - name: "Get Group from Priorities"
               id: get-groups
               uses: tasks/get-groups-from-priority@v1
               with:
                 priority: ${{ item }}
                 stream: ${{ stages.get-start-stream.outputs.stream }}
 
-            - name: "For-each priority group"
+            - name: "For-each Priority Group"
               id: groups
               foreach: ${{ stages.get-groups.outputs.groups }}
               stages:
 
-                - name: "Trigger group"
+                - name: "Trigger Group"
                   id: trigger-group-workflow
                   trigger: group-workflow
                   params:
@@ -63,12 +64,12 @@ stream-workflow:
                   id: end-trigger-group
                   echo: "End trigger Group: ${{ item }}"
 
-            - name: "End trigger Priority Group"
+            - name: "End Trigger Priority Group"
               id: end-trigger-priority-group
               echo: "End trigger Priority Group: ${{ item }}"
 
-        - name: "Clear log"
+        - name: "Clear Log"
           echo: Clear logging and close stream
 
-        - name: "Alert"
-          echo: Alert with mail or notify-services
+        - name: "Notification"
+          echo: Notify with mail or notify-services

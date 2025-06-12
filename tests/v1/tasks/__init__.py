@@ -10,20 +10,22 @@ from datetime import datetime
 from ddeutil.workflow import Result
 
 from deflow.__types import DictData
-from deflow.assets.v1.core import TAG_VERSION_1, Process
+from deflow.assets.v1.core import Process, tag_routing
 
 
-@TAG_VERSION_1(alias="routing-01")
+@tag_routing(alias="1")
 def routing_ingest_file(
     process: Process,
     audit_date: datetime,
     result: Result,
+    extras: DictData,
 ) -> DictData:
     """Routing for process the file data source.
 
     :param process: (str) A process name.
     :param audit_date: (datetime)
     :param result: (Result)
+    :param extras:
     """
     result.trace.info(f"[CALLER]: Routing: 01 with process: {process.name!r}")
     result.trace.info(
@@ -35,17 +37,19 @@ def routing_ingest_file(
     }
 
 
-@TAG_VERSION_1(alias="routing-02")
+@tag_routing(alias="2")
 def routing_ingest_db(
     process: Process,
     audit_date: datetime,
     result: Result,
+    extras: DictData,
 ) -> DictData:
     """Routing for process the database data source.
 
     :param process: (str)
     :param audit_date: (datetime)
     :param result: (Result)
+    :param extras:
     """
     result.trace.info(f"[CALLER]: Routing: 02 with process: {process.name!r}")
     result.trace.info(

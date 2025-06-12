@@ -22,6 +22,10 @@ VERSION: str = "v1"
 TAG_VERSION_1 = partial(tag, name=VERSION)
 
 
+def tag_routing(alias: str):
+    return TAG_VERSION_1(alias=f"routing-{alias}")
+
+
 @TAG_VERSION_1(alias="get-start-stream-info")
 def get_start_stream_info(
     name: str, result: Result, extras: dict[str, Any]
