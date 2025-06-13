@@ -1,0 +1,5 @@
+s_cm_d:
+  type: Variable
+  stages:
+    prod:
+      ...

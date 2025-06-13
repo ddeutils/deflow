@@ -5,4 +5,4 @@ databricks:
   host: host.windows.net
   database: database
   user: user-name
-  secret: secret-name
+  pass: ${ secret-name }
