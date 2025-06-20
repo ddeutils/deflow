@@ -9,6 +9,11 @@ from .__types import DictData
 
 
 def get_data(name: str, path: Path):
+    """Get configuration data that store on an input config path.
+
+    :param name: (str)
+    :param path: (Path)
+    """
     _dir: Path
     ignore: list[str] = read_ignore(path / ".confignore")
     target_dir: Optional[Path] = None
@@ -38,10 +43,11 @@ def get_data(name: str, path: Path):
     all_ignore: list[str] = list(set(merge_list(ignore, sub_ignore)))
 
     conf_data: Optional[DictData] = None
+    metadata: DictData = {"dir_path": target_dir}
     child_paths: list[str] = []
     for file in target_dir.rglob("*"):
-
         if is_ignored(file, all_ignore):
+            print("ignore")
             continue
 
         if file.stem == "config":
@@ -60,14 +66,12 @@ def get_data(name: str, path: Path):
         child_paths.append(relate_path_str)
         # print(file.relative_to(path))
 
-    print(conf_data)
-
     if not conf_data:
         raise FileNotFoundError("Config file does not exists.")
 
     return {
-        "conf": conf_data,
-        "child": child_paths,
+        "conf": conf_data | metadata,
+        "children": child_paths,
     }
 
 
@@ -81,10 +85,20 @@ def read_conf(path: Path) -> DictData:
             raise NotImplementedError("Config was empty")
 
         if len(data) > 1:
-            return {"name": path.parent.name, **data}
+            return {
+                "name": path.parent.name,
+                "created_at": path.lstat().st_ctime,
+                "updated_at": path.lstat().st_mtime,
+                **data,
+            }
 
         first_key: str = next(iter(data.keys()))
-        return {"name": first_key, **data[first_key]}
+        return {
+            "name": first_key,
+            "created_at": path.lstat().st_ctime,
+            "updated_at": path.lstat().st_mtime,
+            **data[first_key],
+        }
 
     raise NotImplementedError(
         f"Config file format: {path.suffix!r} does not support yet."

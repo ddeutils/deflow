@@ -7,7 +7,8 @@ process-workflow:
     name:
       desc: "A process name."
       type: str
-    audit-date: datetime
+    audit-date:
+      type: datetime
   jobs:
     start-process:
       stages:

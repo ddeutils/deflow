@@ -11,7 +11,8 @@ group-workflow:
     stream:
       desc: "A stream name for passing to run this group workflow."
       type: str
-    audit-date: datetime
+    audit-date:
+      type: datetime
 
   jobs:
     start-group:

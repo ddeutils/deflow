@@ -1,11 +1,12 @@
 import copy
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, ClassVar, Optional
 
 from pydantic import BaseModel, Field
 from typing_extensions import Self
 
 from ....__types import DictData
+from ...models import AbstractModel, GetConfigFunc
 from .utils import get_node, get_node_assets, get_pipeline
 
 
@@ -68,11 +69,12 @@ class Lineage(BaseModel):
     outlets: list[NodeDeps] = Field(default_factory=list)
 
 
-class Pipeline(BaseModel):
+class Pipeline(AbstractModel):
     """Pipeline model."""
 
-    conf_dir: Path = Field(description="A dir path of this config data.")
-    name: str = Field(description="A pipeline.")
+    get_data: ClassVar[GetConfigFunc] = get_pipeline
+
+    name: str = Field(description="A pipeline name.")
     desc: Optional[str] = Field(
         default=None,
         description=(
@@ -82,26 +84,6 @@ class Pipeline(BaseModel):
     nodes: dict[str, Node] = Field(
         default_factory=list, description="A list of Node model."
     )
-    tags: list[str] = Field(default_factory=list)
-
-    @classmethod
-    def from_conf(cls, name: str, path: Path) -> Self:
-        """Construct Pipeline model from an input pipeline name and config path.
-
-        :param name: (str) A pipeline name that want to search from config path.
-        :param path: (Path) A config path.
-
-        :rtype: Self
-        """
-        data: DictData = get_pipeline(name=name, path=path)
-
-        if (t := data.pop("type")) != cls.__name__:
-            raise ValueError(f"Type {t!r} does not match with {cls}")
-
-        loader_data: DictData = copy.deepcopy(data)
-        loader_data["name"] = name
-
-        return cls.model_validate(obj=loader_data)
 
     def node(self, name: str) -> Node:
         """Get the Node model with pass the specific node name."""
