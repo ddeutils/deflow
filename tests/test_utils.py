@@ -14,7 +14,7 @@ def test_get_data(test_path: Path):
         "schedule": "@daily",
         "start_date": "2025-01-01",
         "tags": ["example", "cm"],
-        "dir_path": test_path / "v2/conf/pipeline/p_pipe_cm_d",
+        "conf_dir": test_path / "v2/conf/pipeline/p_pipe_cm_d",
     }
     print(data["children"])
     print(data)

@@ -8,7 +8,7 @@ from ddeutil.io import YamlEnvFl, is_ignored, read_ignore
 from .__types import DictData
 
 
-def get_data(name: str, path: Path):
+def get_data(name: str, path: Path) -> DictData:
     """Get configuration data that store on an input config path.
 
     :param name: (str)
@@ -39,15 +39,15 @@ def get_data(name: str, path: Path):
     if target_dir is None:
         raise FileNotFoundError(f"Does not found dir name: {name!r}")
 
+    # NOTE: merge ignore templates together.
     sub_ignore: list[str] = read_ignore(target_dir / ".confignore")
     all_ignore: list[str] = list(set(merge_list(ignore, sub_ignore)))
 
     conf_data: Optional[DictData] = None
-    metadata: DictData = {"dir_path": target_dir}
+    metadata: DictData = {"conf_dir": target_dir}
     child_paths: list[str] = []
     for file in target_dir.rglob("*"):
         if is_ignored(file, all_ignore):
-            print("ignore")
             continue
 
         if file.stem == "config":
@@ -64,7 +64,6 @@ def get_data(name: str, path: Path):
             str(file.relative_to(path)).split(name)[-1].lstrip(os.sep)
         )
         child_paths.append(relate_path_str)
-        # print(file.relative_to(path))
 
     if not conf_data:
         raise FileNotFoundError("Config file does not exists.")
@@ -72,6 +71,7 @@ def get_data(name: str, path: Path):
     return {
         "conf": conf_data | metadata,
         "children": child_paths,
+        "path": path,
     }
 
 

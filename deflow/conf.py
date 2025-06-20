@@ -45,6 +45,10 @@ class Config:
     def version(self) -> str:
         return env("CORE_VERSION", "v1")
 
+    @property
+    def env(self) -> str:
+        return env("CORE_ENV", "test")
+
 
 config = Config()
 

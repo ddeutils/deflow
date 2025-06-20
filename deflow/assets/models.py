@@ -2,7 +2,7 @@ import copy
 from datetime import datetime
 from pathlib import Path
 from textwrap import dedent
-from typing import Callable, ClassVar, Literal, Union
+from typing import Callable, ClassVar, Literal, Optional, Union
 
 from ddeutil.workflow import get_dt_now
 from pydantic import BaseModel, Field
@@ -20,9 +20,13 @@ class AbstractModel(BaseModel):
     """Abstract model for any data framework model."""
 
     get_data: ClassVar[GetConfigFunc] = get_data
+    check_type: ClassVar[Optional[str]] = None
 
     conf_dir: Path = Field(description="A dir path of this config data.")
     name: str = Field(description="A config name.")
+    type: str = Field(
+        description="A type of config. It should be the same as model name."
+    )
     desc: str = Field(
         default=None,
         description=(
@@ -36,7 +40,7 @@ class AbstractModel(BaseModel):
             "A created datetime of this config data when loading from " "file."
         ),
     )
-    updated_dt: datetime = Field(
+    updated_at: datetime = Field(
         default_factory=get_dt_now,
         description=(
             "A updated datetime of this config data when loading from " "file."
@@ -66,19 +70,31 @@ class AbstractModel(BaseModel):
         :param name: (str) A pipeline name that want to search from config path.
         :param path: (Path) A config path.
 
-
         :rtype: Self
         """
         data: DictData = cls.get_data(name=name, path=path)
+        if (t := data["conf"].get("type")) != (cls.check_type or cls.__name__):
+            raise ValueError(
+                f"Type {t!r} does not match with "
+                f"{(cls.check_type or cls.__name__)!r}."
+            )
 
-        if (t := data.pop("type")) != cls.__name__:
-            raise ValueError(f"Type {t!r} does not match with {cls}")
-
-        loader_data: DictData = copy.deepcopy(data)
-        loader_data["name"] = name
-
+        loader_data: DictData = copy.deepcopy(data["conf"])
         return cls.model_validate(obj=loader_data)
+
+    def get_variable(self, env: str) -> DictData:
+        import yaml
+
+        variable = Variable.model_validate(
+            obj=yaml.safe_load((self.conf_dir / "variables.yml").open())
+        )
+        return variable.get_env(env)
 
 
 class Variable(BaseModel):
     stages: dict[str, dict[str, Union[str, int]]] = Field(default_factory=dict)
+
+    def get_env(self, env: str) -> DictData:
+        if env not in self.stages:
+            raise ValueError
+        return self.stages[env]
