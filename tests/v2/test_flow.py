@@ -17,7 +17,7 @@ def test_flow_run(test_path: Path):
         version="v2",
         extras={
             "deflow_registry_caller": ["tests.v2"],
-            "deflow_conf_path": test_path / "conf/v2",
+            "deflow_conf_path": test_path / "v2/conf",
         },
     )
     rs: Result = flow.run(mode="N")

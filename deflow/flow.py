@@ -49,6 +49,8 @@ def workflow_factory(
         },
         **(extras or {}),
     }
+    # NOTE: Get the current audit path for override with name of metadata
+    #   config, it will add `/{metadata}={name}` to the end of the URL path.
     current_audit_url_path: str = workflow_config.audit_url.path
     if version == "v1":
         return Workflow.from_conf(
@@ -162,3 +164,8 @@ class Flow:
 
     def ui(self) -> str:
         """Return graph of this flow from the config data."""
+
+    def docs(self) -> str:
+        """Return markdown statement that was generated base on version of data
+        framework.
+        """

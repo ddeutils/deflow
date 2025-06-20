@@ -4,7 +4,7 @@ from deflow.assets.v1.core.utils import get_stream
 
 
 def test_v1_utils_get_stream(test_path: Path):
-    data = get_stream(name="s_cm_d", path=test_path / "conf")
+    data = get_stream(name="s_cm_d", path=test_path / "v1/conf")
     assert data == {
         "type": "Stream",
         "date_frequency": {"type": "daily"},
@@ -127,9 +127,3 @@ def test_v1_utils_get_stream(test_path: Path):
             },
         },
     }
-
-
-def test_v1_utils_get_process(test_path):
-    # data = get_process(name="p_first", path=test_path / "conf")
-    # print(data)
-    ...

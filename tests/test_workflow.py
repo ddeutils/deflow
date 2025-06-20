@@ -9,12 +9,13 @@ def test_workflow(test_path):
         extras={
             "conf_path": (
                 test_path.parent / f"deflow/assets/{config.version}/templates"
-            )
+            ),
+            "registry_caller": [f"deflow.assets.{config.version}.core"],
         },
     )
     rs: Result = workflow.execute(
         params={
-            "stream": "s_cm_d",
+            "name": "s_cm_d",
             "run-mode": "N",
         }
     )

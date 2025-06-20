@@ -15,7 +15,7 @@ def test_v1_models_stream():
 
 
 def test_v1_models_stream_from_conf(test_path):
-    stream = Stream.from_conf("s_cm_d", path=test_path / "conf")
+    stream = Stream.from_conf("s_cm_d", path=test_path / "v1/conf")
     print(stream)
     print(stream.priority_group())
     assert sorted(stream.priority_group().keys()) == [1, 2]
@@ -64,5 +64,7 @@ def test_v1_models_process():
 
 
 def test_v1_models_process_direct(test_path):
-    process = Process.from_path("p_first_process_01", path=test_path / "conf")
+    process = Process.from_path(
+        "p_first_process_01", path=test_path / "v1/conf"
+    )
     print(process)
