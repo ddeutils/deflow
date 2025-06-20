@@ -26,9 +26,9 @@ def dotenv_setting() -> None:
         env_str: str = dedent(
             f"""
             WORKFLOW_LOG_TIMEZONE=Asia/Bangkok
-            WORKFLOW_LOG_TRACE_PATH=file:{(OUTSIDE_PATH / "logs/traces").absolute()}
+            WORKFLOW_LOG_TRACE_URL=file:{(OUTSIDE_PATH / "logs/traces").absolute()}
             WORKFLOW_LOG_TRACE_ENABLE_WRITE=true
-            WORKFLOW_LOG_AUDIT_PATH=file:{(OUTSIDE_PATH / "logs/audits").absolute()}
+            WORKFLOW_LOG_AUDIT_URL=file:{(OUTSIDE_PATH / "logs/audits").absolute()}
             WORKFLOW_LOG_AUDIT_ENABLE_WRITE=true
             DEFLOW_CORE_CONF_PATH={(OUTSIDE_PATH / "tests/conf/v1").absolute()}
             DEFLOW_CORE_REGISTRY_CALLER=tests.v1

@@ -7,7 +7,6 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Any, Optional
-from urllib.parse import urlparse
 
 from ddeutil.workflow import Result, Workflow
 from ddeutil.workflow import config as workflow_config
@@ -50,13 +49,14 @@ def workflow_factory(
         },
         **(extras or {}),
     }
+    current_audit_url_path: str = workflow_config.audit_url.path
     if version == "v1":
         return Workflow.from_conf(
             name="stream-workflow",
             extras=extras
             | {
-                "audit_url": urlparse(
-                    workflow_config.audit_url.geturl() + f"/stream={name}"
+                "audit_url": workflow_config.audit_url._replace(
+                    path=current_audit_url_path + f"/stream={name}"
                 ),
             },
         )
@@ -65,8 +65,8 @@ def workflow_factory(
             name="pipeline-workflow",
             extras=extras
             | {
-                "audit_url": urlparse(
-                    workflow_config.audit_url.geturl() + f"/pipeline={name}"
+                "audit_url": workflow_config.audit_url._replace(
+                    path=current_audit_url_path + f"/pipeline={name}"
                 ),
             },
         )
