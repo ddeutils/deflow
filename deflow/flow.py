@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Any, Optional
+from urllib.parse import urlparse
 
 from ddeutil.workflow import Result, Workflow
 from ddeutil.workflow import config as workflow_config
@@ -54,7 +55,9 @@ def workflow_factory(
             name="stream-workflow",
             extras=extras
             | {
-                "audit_path": workflow_config.audit_path / f"stream={name}",
+                "audit_url": urlparse(
+                    workflow_config.audit_url.geturl() + f"/stream={name}"
+                ),
             },
         )
     elif version == "v2":
@@ -62,7 +65,9 @@ def workflow_factory(
             name="pipeline-workflow",
             extras=extras
             | {
-                "audit_path": workflow_config.audit_path / f"pipeline={name}",
+                "audit_url": urlparse(
+                    workflow_config.audit_url.geturl() + f"/pipeline={name}"
+                ),
             },
         )
     raise NotImplementedError(f"Flow version: {version!r} does not implement.")

@@ -3,8 +3,13 @@ from ddeutil.workflow.conf import YamlParser
 
 
 def test_file_load(test_path):
-    loader = YamlParser(name="s_cm_d", path=test_path / "conf/v1")
-    assert loader.data == {
+    loader = YamlParser(name="s_cm_d", path=test_path / "conf/v1", obj="Stream")
+    assert dict(
+        filter(
+            lambda x: x[0] not in ("created_at", "updated_at"),
+            loader.data.items(),
+        )
+    ) == {
         "type": "Stream",
         "frequency": {"type": "daily", "offset": 1},
         "date_frequency": {"type": "daily"},
