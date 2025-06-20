@@ -18,11 +18,17 @@ process-workflow:
           with:
             name: ${{ params.name }}
 
-        - name: "Call Process Routing"
-          uses: tasks/routing-${{ stages.start-process.outputs.routing }}@v1
-          with:
-            process: ${{ stages.start-process.outputs.process }}
-            audit_date: ${{ params.audit-date }}
+#        - name: "Call Process Routing"
+#          uses: tasks/routing-${{ stages.start-process.outputs.routing }}@v1
+#          with:
+#            process: ${{ stages.start-process.outputs.process }}
+#            audit_date: ${{ params.audit-date }}
+
+        - name: Switch routing
+          trigger: routing-${{ stages.start-process.outputs.routing }}-workflow
+          params:
+            name: ${{ params.name }}
+            audit-date: ${{ params.audit-date }}
 
         - name: "Making Data Quality"
           echo: Start run data quality

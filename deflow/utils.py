@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Optional
+from typing import Optional, TypedDict
 
 from ddeutil.core import merge_list
 from ddeutil.io import YamlEnvFl, is_ignored, read_ignore
@@ -8,7 +8,12 @@ from ddeutil.io import YamlEnvFl, is_ignored, read_ignore
 from .__types import DictData
 
 
-def get_data(name: str, path: Path) -> DictData:
+class ConfData(TypedDict):
+    conf: DictData
+    children: list[str]
+
+
+def get_data(name: str, path: Path) -> ConfData:
     """Get configuration data that store on an input config path.
 
     :param name: (str)
@@ -71,7 +76,6 @@ def get_data(name: str, path: Path) -> DictData:
     return {
         "conf": conf_data | metadata,
         "children": child_paths,
-        "path": path,
     }
 
 

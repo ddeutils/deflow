@@ -1,0 +1,45 @@
+routing-1-workflow:
+  type: Workflow
+  params:
+    name: str
+    audit-date: datetime
+  jobs:
+    start-route:
+      stages:
+        - name: "Start route"
+          echo: "Start running from process: ${{ params.name }}"
+
+        - name: "Start run Process"
+          id: start-process
+          uses: tasks/start-process@v1
+          with:
+            name: ${{ params.name }}
+
+        - name: Process file from RAW -> Bronze
+          uses: tasks/routing-1@v1
+          with:
+            process: ${{ stages.start-process.outputs.process }}
+            audit_date: ${{ params.audit-date }}
+
+routing-2-workflow:
+  type: Workflow
+  params:
+    name: str
+    audit-date: datetime
+  jobs:
+    start-route:
+      stages:
+        - name: "Start route"
+          echo: "Start running from process: ${{ params.name }}"
+
+        - name: "Start run Process"
+          id: start-process
+          uses: tasks/start-process@v1
+          with:
+            name: ${{ params.name }}
+
+        - name: Process file from RAW -> Bronze
+          uses: tasks/routing-2@v1
+          with:
+            process: ${{ stages.start-process.outputs.process }}
+            audit_date: ${{ params.audit-date }}

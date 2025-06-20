@@ -10,7 +10,7 @@ from pydantic.functional_validators import field_validator
 from typing_extensions import Self
 
 from ..__types import DictData
-from ..utils import get_data
+from ..utils import ConfData, get_data
 
 RunMode = Literal["N", "R", "F", "T"]
 GetConfigFunc = Callable[[str, Path], DictData]
@@ -64,25 +64,33 @@ class AbstractModel(BaseModel):
         return dedent(data.lstrip("\n"))
 
     @classmethod
-    def from_conf(cls, name: str, path: Path) -> Self:
+    def load_conf(cls, name: str, path: Path) -> ConfData:
         """Construct Pipeline model from an input pipeline name and config path.
 
         :param name: (str) A pipeline name that want to search from config path.
         :param path: (Path) A config path.
 
-        :rtype: Self
+        :rtype: ConfData
         """
-        data: DictData = cls.get_data(name=name, path=path)
+        data: ConfData = cls.get_data(name=name, path=path)
         if (t := data["conf"].get("type")) != (cls.check_type or cls.__name__):
             raise ValueError(
                 f"Type {t!r} does not match with "
                 f"{(cls.check_type or cls.__name__)!r}."
             )
+        return copy.deepcopy(data)
 
-        loader_data: DictData = copy.deepcopy(data["conf"])
-        return cls.model_validate(obj=loader_data)
+    @classmethod
+    def from_conf(cls, name: str, path: Path) -> Self:
+        """
+        :param name: (str) A pipeline name that want to search from config path.
+        :param path: (Path) A config path.
+        :return:
+        """
+        return cls.model_validate(obj=cls.load_conf(name, path=path)["conf"])
 
     def get_variable(self, env: str) -> DictData:
+        """Get variable data."""
         import yaml
 
         variable = Variable.model_validate(
@@ -92,6 +100,8 @@ class AbstractModel(BaseModel):
 
 
 class Variable(BaseModel):
+    """Variable model."""
+
     stages: dict[str, dict[str, Union[str, int]]] = Field(default_factory=dict)
 
     def get_env(self, env: str) -> DictData:

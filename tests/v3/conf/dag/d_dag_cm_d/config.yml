@@ -1,0 +1,7 @@
+config:
+  author: data-team
+
+tasks:
+  - name: task_01
+
+  - name: task_02

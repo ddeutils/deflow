@@ -1,13 +1,13 @@
 import copy
 from pathlib import Path
-from typing import Any, ClassVar, Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 from typing_extensions import Self
 
 from ....__types import DictData
-from ...models import AbstractModel, GetConfigFunc
-from .utils import get_node, get_node_assets, get_pipeline
+from ...models import AbstractModel, ConfData
+from .utils import get_node, get_node_assets
 
 
 class NodeDeps(BaseModel):
@@ -72,8 +72,6 @@ class Lineage(BaseModel):
 class Pipeline(AbstractModel):
     """Pipeline model."""
 
-    get_data: ClassVar[GetConfigFunc] = get_pipeline
-
     name: str = Field(description="A pipeline name.")
     desc: Optional[str] = Field(
         default=None,
@@ -84,6 +82,17 @@ class Pipeline(AbstractModel):
     nodes: dict[str, Node] = Field(
         default_factory=list, description="A list of Node model."
     )
+
+    @classmethod
+    def from_conf(cls, name: str, path: Path) -> Self:
+        load_data: ConfData = cls.load_conf(name, path=path)
+
+        for child in load_data["children"]:
+            print(child)
+
+        return cls.model_validate(
+            obj={"nodes": {"node": {}}, **load_data["conf"]}
+        )
 
     def node(self, name: str) -> Node:
         """Get the Node model with pass the specific node name."""
