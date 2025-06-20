@@ -2,6 +2,28 @@
 
 ## Latest Changes
 
+## 0.0.4
+
+### :sparkles: Features
+
+- :dart: add get_data on utils func.
+- :dart: draft variable for multiple deploy across env.
+- :dart: add ignore filter.
+- :dart: add asset method on node model.
+
+### :black_nib: Code Changes
+
+- :art: add code format for data framework version 1.
+- :art: add code format for data framework version 2.
+
+### :postbox: Dependencies
+
+- :pushpin: update ddeutil-workflow and json-schema.
+
+### :book: Documentations
+
+- :page_facing_up: update readme file.
+
 ## 0.0.3
 
 ### :stars: Highlight Features
