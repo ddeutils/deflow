@@ -175,4 +175,5 @@ cython_debug/
 
 # Workflow
 audits/
+.backup/
 logs/

@@ -86,10 +86,11 @@ class Flow:
     This is the core object for this package that active data pipeline from
     the current data framework version.
 
-    :param name: (str) A main workflow parameter name.
-    :param version: (str) A version of data framework.
-    :param extras: (DictData) An extra parameters that want to override the
-        workflow config.
+    Attributes:
+        name (str): A main workflow parameter name.
+        version (str): A version of data framework.
+        extras (DictData): An extra parameters that want to override the
+            workflow config.
     """
 
     def __init__(
