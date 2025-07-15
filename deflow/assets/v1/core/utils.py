@@ -5,7 +5,6 @@
 # ------------------------------------------------------------------------------
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any, Optional
 
@@ -115,30 +114,23 @@ def get_process(name: str, path: Path) -> DictData:
     ignore = read_ignore(path / ".confignore")
     for file in path.rglob("*"):
 
-        if file.is_file() and file.stem == name:
+        if is_ignored(file, ignore):
+            continue
 
-            if is_ignored(file, ignore):
+        if (
+            file.is_file()
+            and file.stem == name
+            and file.suffix in (".yml", ".yaml")
+        ):
+            data = YamlEnvFl(path=file).read()
+            if name not in data:
                 continue
 
-            if file.suffix in (".yml", ".yaml"):
-                data = YamlEnvFl(path=file).read()
-                if name not in data:
-                    raise NotImplementedError(
-                        f"Process file does not contain key: {name!r},\n"
-                        f"file: {file.absolute()}\n"
-                        f"data: {json.dumps(data, indent=2)}"
-                    )
+            return {
+                "name": name,
+                "group_name": file.parent.name,
+                "stream_name": file.parent.parent.name,
+                **data[name],
+            }
 
-                return {
-                    "name": name,
-                    "group_name": file.parent.name,
-                    "stream_name": file.parent.parent.name,
-                    **data[name],
-                }
-
-            else:
-                raise NotImplementedError(
-                    f"Get process file: {file.name} does not support for file"
-                    f"type: {file.suffix}."
-                )
     raise FileNotFoundError(f"{path}/**/{name}.yml")
