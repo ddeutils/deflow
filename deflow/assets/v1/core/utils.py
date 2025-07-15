@@ -125,6 +125,7 @@ def get_process(name: str, path: Path) -> DictData:
                 if name not in data:
                     raise NotImplementedError(
                         f"Process file does not contain key: {name!r},\n"
+                        f"file: {file.absolute()}\n"
                         f"data: {json.dumps(data, indent=2)}"
                     )
 
