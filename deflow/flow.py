@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Any, Optional
-from urllib.parse import ParseResult, urlparse
 
 from ddeutil.workflow import Result, Workflow
 from ddeutil.workflow import config as workflow_config
@@ -56,27 +55,22 @@ def workflow_factory(
     }
     # NOTE: Get the current audit path for override with name of metadata
     #   config, it will add `/{metadata}={name}` to the end of the URL path.
-    audit_url: ParseResult = urlparse(workflow_config.audit_url)
-    current_audit_url_path: str = audit_url.path
+    audit_conf: dict[str, Any] = workflow_config.audit_conf
     if version == "v1":
+        if audit_conf["type"] == "file":
+            current_audit_url_path: str = audit_conf["path"]
+            audit_conf["path"] = current_audit_url_path + f"/stream={name}"
         return Workflow.from_conf(
             name="stream-workflow",
-            extras=extras
-            | {
-                "audit_url": audit_url._replace(
-                    path=current_audit_url_path + f"/stream={name}"
-                ).geturl(),
-            },
+            extras=extras | {"audit_conf": audit_conf},
         )
     elif version == "v2":
+        if audit_conf["type"] == "file":
+            current_audit_url_path: str = audit_conf["path"]
+            audit_conf["path"] = current_audit_url_path + f"/pipeline={name}"
         return Workflow.from_conf(
             name="pipeline-workflow",
-            extras=extras
-            | {
-                "audit_url": audit_url._replace(
-                    path=current_audit_url_path + f"/pipeline={name}"
-                ).geturl(),
-            },
+            extras=extras | {"audit_conf": audit_conf},
         )
     raise NotImplementedError(f"Flow version: {version!r} does not implement.")
 
