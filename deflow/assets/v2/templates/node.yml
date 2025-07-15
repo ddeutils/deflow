@@ -6,7 +6,10 @@ node-workflow:
 
   params:
     name:
-      desc: "A node name."
+      desc: |
+        A node name that should concat the parent pipeline with format,
+        `{pipeline}.{node}`. If this node value does not match with this format,
+        it will search firstly node data from the config path.
       type: str
     audit-date:
       desc: "An audit datetime of this running workflow."

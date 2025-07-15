@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from deflow.utils import get_data, search_conf_parent_path
+from deflow.utils import get_conf, search_conf_parent_path
 
 from .utils import exclude_created_and_updated
 
@@ -19,8 +19,8 @@ def test_search_conf_parent_path(test_path: Path):
         )
 
 
-def test_get_data(test_path: Path):
-    data = get_data("01", path=test_path / "conf")
+def test_get_conf(test_path: Path):
+    data = get_conf("01", path=test_path / "conf")
     assert exclude_created_and_updated(data["conf"]) == {
         "name": "01",
         "tags": ["demo", "abstract"],

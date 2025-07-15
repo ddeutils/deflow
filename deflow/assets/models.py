@@ -52,7 +52,7 @@ class AbstractModel(BaseModel, ABC):
     )
 
     @field_validator("desc", mode="after")
-    def __dedent_desc__(cls, data: str) -> str:
+    def __dedent_desc(cls, data: str) -> str:
         """Prepare description string that was created on a template.
 
         Args:

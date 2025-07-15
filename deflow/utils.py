@@ -55,8 +55,8 @@ def search_conf_parent_path(
     """Search the parent of config path.
 
     Args:
-        name:
-        path:
+        name (str): A config name.
+        path (Path): A searching path.
         name_key:
 
     Returns:
@@ -103,7 +103,7 @@ def search_conf_parent_path(
     return conf_dir
 
 
-def get_data(name: str, path: Path) -> ConfData:
+def get_conf(name: str, path: Path) -> ConfData:
     """Get configuration data that store on an input config path.
 
     Structure:
@@ -161,6 +161,35 @@ def get_data(name: str, path: Path) -> ConfData:
         "conf": metadata | conf_data,
         "children": child_paths,
     }
+
+
+def get_data(name: str, path: Path) -> DictData:
+    ignore = read_ignore(path / ".confignore")
+    for file in path.rglob("*"):
+
+        if file.is_file() and file.stem == name:
+
+            if is_ignored(file, ignore):
+                continue
+
+            if file.suffix in (".yml", ".yaml"):
+                data = YamlEnvFl(path=file).read()
+                if name != data.get("name", ""):
+                    raise NotImplementedError
+
+                return {
+                    "name": name,
+                    "parent_name": file.parent.name,
+                    "conf_dir": file.parent,
+                    **data,
+                }
+
+            else:
+                raise NotImplementedError(
+                    f"Get node file: {file.name} does not support for file"
+                    f"type: {file.suffix}."
+                )
+    raise FileNotFoundError(f"{path}/**/{name}.yml")
 
 
 def read_conf(path: Path, pass_env: bool = True) -> DictData:

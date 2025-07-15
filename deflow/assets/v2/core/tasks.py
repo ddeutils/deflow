@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from functools import partial
-from typing import Any
+from typing import Any, Optional
 
 from ddeutil.workflow import Result, tag
 
@@ -44,7 +44,7 @@ def get_start_pipeline_info(
     node_priorities: list[list[str]] = pipeline.node_priorities()
 
     result.trace.info(
-        f"... Start Pipeline Info:||"
+        f"... ||Start Pipeline Info:||"
         f"> Pipeline name: {pipeline.name!r}||"
         f"> Node priorities: {node_priorities}"
     )
@@ -72,11 +72,20 @@ def start_node(
     :param extras: (dict[str, Any]) An extra parameters.
     """
     result.trace.info(f"Start get node: {name!r} info")
-    node: Node = Node.from_conf(
-        name=name, path=dynamic("deflow_conf_path", extras=extras)
-    )
+    pipeline_name: Optional[str] = None
+    if "." in name:
+        pipeline_name, name = name.split(".")
+    if pipeline_name:
+        pipeline: Pipeline = Pipeline.from_conf(
+            name=pipeline_name, path=dynamic("deflow_conf_path", extras=extras)
+        )
+        node: Node = pipeline.node(name=name)
+    else:
+        node: Node = Node.from_conf(
+            name=name, path=dynamic("deflow_conf_path", extras=extras)
+        )
     result.trace.info(
-        f"... Start Node Info:||"
+        f"... ||Start Node Info:||"
         f"> Node name: {node.name}||"
         f"> Node operator: {node.operator}||"
         f"> Node task: {node.task}||"

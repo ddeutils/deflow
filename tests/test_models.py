@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 from deflow.__types import DictData
 from deflow.assets.models import AbstractModel
-from deflow.utils import ConfData, get_data
+from deflow.utils import ConfData, get_conf
 
 
 def mock_load_conf(
@@ -34,7 +34,7 @@ class MockAbstractModel(AbstractModel):  # pragma: no cov
 
     @classmethod
     def load_conf(cls, name: str, path: Path) -> DictData:
-        data: ConfData = get_data(name=name, path=path)
+        data: ConfData = get_conf(name=name, path=path)
         if (t := data["conf"].get("type")) != (cls.check_type or cls.__name__):
             raise ValueError(
                 f"Type {t!r} does not match with "

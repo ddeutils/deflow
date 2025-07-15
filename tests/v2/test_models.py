@@ -28,7 +28,12 @@ def test_pipeline_load_ignore(test_path: Path):
 def test_node(test_path: Path):
     node: Node = Node.from_conf(name="n_node_01", path=test_path / "v2/conf")
     assert node.name == "n_node_01"
-    print(node.assets)
+    print(node)
     assert node.assets == ["assets/n_node_01.json"]
     assets = node.asset(node.assets[0])
     print(assets)
+    print()
+
+    node: Node = Node.from_conf(name="n_node_02", path=test_path / "v2/conf")
+    assert node.name == "n_node_02"
+    print(node)

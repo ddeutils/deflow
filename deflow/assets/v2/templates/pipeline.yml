@@ -52,7 +52,7 @@ pipeline-workflow:
                 - name: "Trigger Node Workflow"
                   trigger: node-workflow
                   params:
-                    name: ${{ item }}
+                    name: ${{ params.name }}.${{ item }}
                     audit-date: ${{ stages.get-start-pipeline.outputs.audit-date }}
                     run-mode: ${{ params.run-mode }}
 
