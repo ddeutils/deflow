@@ -1,8 +1,12 @@
-import copy
+"""Abstract model module that will use for all framework core model for
+uniqueness of abstraction that will make it easy to implement and optimize.
+"""
+
+from abc import ABC, abstractmethod
 from datetime import datetime
 from pathlib import Path
 from textwrap import dedent
-from typing import Callable, ClassVar, Literal, Optional, Union
+from typing import Any, Callable, Literal
 
 from ddeutil.workflow import get_dt_now
 from pydantic import BaseModel, Field
@@ -10,17 +14,13 @@ from pydantic.functional_validators import field_validator
 from typing_extensions import Self
 
 from ..__types import DictData
-from ..utils import ConfData, get_data
 
 RunMode = Literal["N", "R", "F", "T"]
 GetConfigFunc = Callable[[str, Path], DictData]
 
 
-class AbstractModel(BaseModel):
+class AbstractModel(BaseModel, ABC):
     """Abstract model for any data framework model."""
-
-    get_data: ClassVar[GetConfigFunc] = get_data
-    check_type: ClassVar[Optional[str]] = None
 
     conf_dir: Path = Field(description="A dir path of this config data.")
     name: str = Field(description="A config name.")
@@ -64,33 +64,28 @@ class AbstractModel(BaseModel):
         return dedent(data.lstrip("\n"))
 
     @classmethod
-    def load_conf(cls, name: str, path: Path) -> ConfData:
-        """Construct Pipeline model from an input pipeline name and config path.
+    @abstractmethod
+    def load_conf(cls, name: str, path: Path) -> DictData:
+        """Load config
 
         :param name: (str) A pipeline name that want to search from config path.
         :param path: (Path) A config path.
 
         :rtype: ConfData
         """
-        data: ConfData = cls.get_data(name=name, path=path)
-        if (t := data["conf"].get("type")) != (cls.check_type or cls.__name__):
-            raise ValueError(
-                f"Type {t!r} does not match with "
-                f"{(cls.check_type or cls.__name__)!r}."
-            )
-        return copy.deepcopy(data)
 
     @classmethod
     def from_conf(cls, name: str, path: Path) -> Self:
-        """
-        :param name: (str) A pipeline name that want to search from config path.
-        :param path: (Path) A config path.
+        """Construct model from an input config name and searching path.
+
+        :param name: (str) A config name that want to search from path.
+        :param path: (Path) A searching path to find this specific config name.
         :return:
         """
-        return cls.model_validate(obj=cls.load_conf(name, path=path)["conf"])
+        return cls.model_validate(obj=cls.load_conf(name, path=path))
 
     def get_variable(self, env: str) -> DictData:
-        """Get variable data."""
+        """Get variable data from this config directory."""
         import yaml
 
         variable = Variable.model_validate(
@@ -102,9 +97,14 @@ class AbstractModel(BaseModel):
 class Variable(BaseModel):
     """Variable model."""
 
-    stages: dict[str, dict[str, Union[str, int]]] = Field(default_factory=dict)
+    type: Literal["Variable"]
+    stages: dict[str, dict[str, Any]] = Field(default_factory=dict)
 
     def get_env(self, env: str) -> DictData:
+        """Get environment variable data."""
         if env not in self.stages:
-            raise ValueError
+            raise ValueError(
+                f"Stage environment: {env!r} does not set on this "
+                f"variable file."
+            )
         return self.stages[env]

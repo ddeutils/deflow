@@ -3,10 +3,12 @@
 # Licensed under the MIT License. See LICENSE in the project root for
 # license information.
 # ------------------------------------------------------------------------------
+"""Flow is the core module."""
 from __future__ import annotations
 
 from datetime import datetime
 from typing import Any, Optional
+from urllib.parse import ParseResult, urlparse
 
 from ddeutil.workflow import Result, Workflow
 from ddeutil.workflow import config as workflow_config
@@ -32,11 +34,14 @@ def workflow_factory(
     """Workflow function for create the Workflow instance base on the version of
     data framework.
 
-    :param name: (str) A name of data pipeline.
-    :param version: (str) A version of data framework.
-    :param extras: An extra parameter that want to override core config values.
+    Args:
+        name (str): A name of data pipeline.
+        version (str): A version of data framework.
+        extras: An extra parameter that want to override core config values.
 
-    :rtype: Workflow
+    Returns:
+        Workflow: A workflow instance that already override config that fit with
+            this package.
     """
     extras: DictData = {
         **{
@@ -51,15 +56,16 @@ def workflow_factory(
     }
     # NOTE: Get the current audit path for override with name of metadata
     #   config, it will add `/{metadata}={name}` to the end of the URL path.
-    current_audit_url_path: str = workflow_config.audit_url.path
+    audit_url: ParseResult = urlparse(workflow_config.audit_url)
+    current_audit_url_path: str = audit_url.path
     if version == "v1":
         return Workflow.from_conf(
             name="stream-workflow",
             extras=extras
             | {
-                "audit_url": workflow_config.audit_url._replace(
+                "audit_url": audit_url._replace(
                     path=current_audit_url_path + f"/stream={name}"
-                ),
+                ).geturl(),
             },
         )
     elif version == "v2":
@@ -67,9 +73,9 @@ def workflow_factory(
             name="pipeline-workflow",
             extras=extras
             | {
-                "audit_url": workflow_config.audit_url._replace(
+                "audit_url": audit_url._replace(
                     path=current_audit_url_path + f"/pipeline={name}"
-                ),
+                ).geturl(),
             },
         )
     raise NotImplementedError(f"Flow version: {version!r} does not implement.")

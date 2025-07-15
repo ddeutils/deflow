@@ -1,0 +1,8 @@
+type: Variable
+stages:
+  dev:
+    user: deflow-dev
+  staging:
+    user: deflow-staging
+  prod:
+    user: deflow

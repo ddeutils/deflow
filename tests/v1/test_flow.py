@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from ddeutil.workflow import Result
+from ddeutil.workflow import SUCCESS, Result
 
 from deflow.flow import Flow
 
@@ -18,6 +18,7 @@ def test_flow_run():
         extras={"deflow_registry_caller": ["tests.v1"]},
     )
     rs: Result = flow.run(mode="N")
+    assert rs.status == SUCCESS
     print(rs.context)
 
 
@@ -28,4 +29,5 @@ def test_flow_run_with_dt():
         extras={"deflow_registry_caller": ["tests.v1"]},
     )
     rs: Result = flow.run(dt=datetime(2025, 5, 15), mode="N")
+    assert rs.status == SUCCESS
     print(rs.context)

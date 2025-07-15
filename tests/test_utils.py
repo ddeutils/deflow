@@ -1,20 +1,36 @@
 from pathlib import Path
 
-from deflow.utils import get_data
+import pytest
+
+from deflow.utils import get_data, search_conf_parent_path
 
 from .utils import exclude_created_and_updated
 
 
+def test_search_conf_parent_path(test_path: Path):
+    assert (
+        search_conf_parent_path("01", path=test_path / "conf")
+        == test_path / "conf/abstract/usage/01"
+    )
+
+    with pytest.raises(FileNotFoundError):
+        search_conf_parent_path(
+            "01", path=test_path / "conf", name_key="app_name"
+        )
+
+
 def test_get_data(test_path: Path):
-    data = get_data("p_pipe_cm_d", path=test_path / "v2/conf")
+    data = get_data("01", path=test_path / "conf")
     assert exclude_created_and_updated(data["conf"]) == {
-        "name": "p_pipe_cm_d",
-        "type": "Pipeline",
-        "owner": "data-team",
-        "schedule": "@daily",
-        "start_date": "2025-01-01",
-        "tags": ["example", "cm"],
-        "conf_dir": test_path / "v2/conf/pipeline/p_pipe_cm_d",
+        "name": "01",
+        "tags": ["demo", "abstract"],
+        "type": "AbstractModel",
+        "conf_dir": test_path / "conf/abstract/usage/01",
     }
+    assert [c["path"] for c in data["children"]] == [
+        Path("child_01.yml"),
+        Path("child_02.yml"),
+        Path("child_03.yml"),
+        Path("assets/01.sql"),
+    ]
     print(data["children"])
-    print(data)

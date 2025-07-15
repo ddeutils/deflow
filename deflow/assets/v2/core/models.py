@@ -86,12 +86,18 @@ class Pipeline(AbstractModel):
     @classmethod
     def from_conf(cls, name: str, path: Path) -> Self:
         load_data: ConfData = cls.load_conf(name, path=path)
+        print(load_data)
 
-        for child in load_data["children"]:
-            print(child)
+        # nodes = {}
+        # for child in load_data["children"]:
+        #     load_data["conf"]["conf_dir"] / child
+        #     nodes[] = child
 
         return cls.model_validate(
-            obj={"nodes": {"node": {}}, **load_data["conf"]}
+            obj={
+                "nodes": {},
+                **load_data["conf"],
+            }
         )
 
     def node(self, name: str) -> Node:
