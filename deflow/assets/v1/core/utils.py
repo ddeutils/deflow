@@ -5,6 +5,7 @@
 # ------------------------------------------------------------------------------
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any, Optional
 
@@ -122,7 +123,10 @@ def get_process(name: str, path: Path) -> DictData:
             if file.suffix in (".yml", ".yaml"):
                 data = YamlEnvFl(path=file).read()
                 if name not in data:
-                    raise NotImplementedError
+                    raise NotImplementedError(
+                        f"Process file does not contain key: {name!r},\n"
+                        f"data: {json.dumps(data, indent=2)}"
+                    )
 
                 return {
                     "name": name,
