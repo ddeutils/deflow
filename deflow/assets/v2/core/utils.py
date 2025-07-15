@@ -117,14 +117,14 @@ def get_node(name: str, path: Path) -> DictData:
 
             if file.suffix in (".yml", ".yaml"):
                 data = YamlEnvFl(path=file).read()
-                if name not in data:
+                if name != data.get("name", ""):
                     raise NotImplementedError
 
                 return {
                     "name": name,
                     "pipeline_name": file.parent.name,
                     "conf_dir": file.parent,
-                    **data[name],
+                    **data,
                 }
 
             else:

@@ -1,8 +1,8 @@
-p_pipe_cm_d:
-  type: Pipeline
-  owner: data-team
-  schedule: "@daily"
-  start_date: "2025-01-01"
-  tags:
-    - example
-    - cm
+name: p_pipe_cm_d
+type: Pipeline
+owner: data-team
+schedule: "@daily"
+start_date: "2025-01-01"
+tags:
+  - example
+  - cm

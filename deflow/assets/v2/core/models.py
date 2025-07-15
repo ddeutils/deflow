@@ -6,7 +6,8 @@ from pydantic import BaseModel, Field
 from typing_extensions import Self
 
 from ....__types import DictData
-from ...models import AbstractModel, ConfData
+from ....utils import ConfData, get_data
+from ...models import AbstractModel
 from .utils import get_node, get_node_assets
 
 
@@ -84,18 +85,20 @@ class Pipeline(AbstractModel):
     )
 
     @classmethod
-    def from_conf(cls, name: str, path: Path) -> Self:
-        load_data: ConfData = cls.load_conf(name, path=path)
-        print(load_data)
+    def load_conf(cls, name: str, path: Path) -> Self:
+        """Load configuration data."""
+        load_data: ConfData = get_data(name, path=path)
 
-        # nodes = {}
-        # for child in load_data["children"]:
-        #     load_data["conf"]["conf_dir"] / child
-        #     nodes[] = child
+        nodes: dict[str, Node] = {}
+        for child in load_data["children"]:
+            if child["conf"].get("type", "") != "Node":
+                continue
+            node = Node.model_validate(child["conf"])
+            nodes[node.name] = node
 
         return cls.model_validate(
             obj={
-                "nodes": {},
+                "nodes": nodes,
                 **load_data["conf"],
             }
         )

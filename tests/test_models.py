@@ -45,4 +45,6 @@ class MockAbstractModel(AbstractModel):  # pragma: no cov
 
 def test_abstract_model_inherit(test_path):
     model = MockAbstractModel.from_conf("01", path=test_path / "conf")
+    assert model.name == "01"
+    assert model.tags == ["demo", "abstract"]
     print(model)

@@ -1,13 +1,13 @@
 stages:
   prod:
-    SRC_DB_SQLITE_HOST: ...
-    TGT_TABLE_NAME: ...
-    SRC_DB_SQLITE_PASS: ${ ... }
+    SRC_DB_SQLITE_HOST: foo
+    TGT_TABLE_NAME: foo
+    SRC_DB_SQLITE_PASS: ${ TEST_ENV_FOO }
   staging:
-    SRC_DB_SQLITE_HOST: ...
-    TGT_TABLE_NAME: ...
-    SRC_DB_SQLITE_PASS: ${ ... }
+    SRC_DB_SQLITE_HOST: foo
+    TGT_TABLE_NAME: foo
+    SRC_DB_SQLITE_PASS: ${ TEST_ENV_FOO }
   test:
-    SRC_DB_SQLITE_HOST: ...
-    TGT_TABLE_NAME: ...
-    SRC_DB_SQLITE_PASS: ${ ... }
+    SRC_DB_SQLITE_HOST: foo
+    TGT_TABLE_NAME: foo
+    SRC_DB_SQLITE_PASS: ${ TEST_ENV_FOO }

@@ -130,7 +130,7 @@ def get_data(name: str, path: Path) -> ConfData:
     all_ignore: list[str] = list(set(merge_list(main_ignore, sub_ignore)))
 
     conf_data: Optional[DictData] = None
-    metadata: DictData = {"conf_dir": conf_dir}
+    metadata: DictData = {"conf_dir": conf_dir, "type": "undefined"}
     child_paths: list[ChildData] = []
     for file in conf_dir.rglob("*"):
         if is_ignored(file, all_ignore):
@@ -148,7 +148,7 @@ def get_data(name: str, path: Path) -> ConfData:
 
         child_paths.append(
             {
-                "conf": read_conf(file),
+                "conf": (metadata | read_conf(file)),
                 "path": file.relative_to(conf_dir),
                 "name": file.stem,
             }
@@ -158,7 +158,7 @@ def get_data(name: str, path: Path) -> ConfData:
         raise FileNotFoundError("Config file does not exists.")
 
     return {
-        "conf": conf_data | metadata,
+        "conf": metadata | conf_data,
         "children": child_paths,
     }
 

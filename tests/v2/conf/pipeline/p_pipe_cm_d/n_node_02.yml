@@ -1,18 +1,18 @@
-n_node_02:
-  type: Node
-  operator: import-db
-  task: sqlite
-  upstream:
-    - name: n_node_01
-  params:
-    src_host: https://${SRC_DB_SQLITE_HOST}.sqlite.com
-    src_port: 1211
-    src_database: customer_metric
-    src_user: data-user
-    src_pass: ${SRC_DB_SQLITE_PASS}
-    tgt_table_name: ${TGT_TABLE_NAME}
-    tgt_schema: ...
-    execute_start: "start-date"
-    execute_end: "end-date"
-  assets:
-    - assets/n_node_02.json
+name: n_node_02
+type: Node
+operator: import-db
+task: sqlite
+upstream:
+  - name: n_node_01
+params:
+  src_host: https://${SRC_DB_SQLITE_HOST}.sqlite.com
+  src_port: 1211
+  src_database: customer_metric
+  src_user: data-user
+  src_pass: ${SRC_DB_SQLITE_PASS}
+  tgt_table_name: ${TGT_TABLE_NAME}
+  tgt_schema: ...
+  execute_start: "start-date"
+  execute_end: "end-date"
+assets:
+  - assets/n_node_02.json

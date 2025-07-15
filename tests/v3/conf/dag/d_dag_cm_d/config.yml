@@ -1,7 +1,5 @@
-config:
-  author: data-team
-
+name: d_dag_cm_d
+author: data-team
 tasks:
   - name: task_01
-
   - name: task_02
