@@ -31,7 +31,18 @@ configuration. It called **Metadata Driven Data Workflow**.
 pip install -U deflow
 ```
 
-## :dart: Usage
+**Support data framework version:**
+
+| Version | Supported | Description                                                      |
+|:-------:|:---------:|:-----------------------------------------------------------------|
+|    1    | Progress  | Large scale base on `stream`, `group`, `process`, and `routing`. |
+|    2    | Progress  | Medium scale base on `pipeline`, and `node`.                     |
+|    3    |   Draft   | Lightweight base on `dag`, and `task`.                           |
+
+> [!NOTE]
+> I think it should stop with 3 versions of data framework.
+
+## :dart: Framework
 
 ### Version 1
 
@@ -88,7 +99,6 @@ conf/
  ╰─ .configore
 ```
 
-
 ### Version 3
 
 > [!NOTE]
@@ -96,19 +106,15 @@ conf/
 
 ## :cookie: Configuration
 
+This package configuration:
+
 | Name                            | Component | Default  | Description                                        |
 |:--------------------------------|:---------:|:---------|:---------------------------------------------------|
 | **DEFLOW_CORE_CONF_PATH**       |   CORE    | `./conf` | A config path to get data framework configuration. |
 | **DEFLOW_CORE_VERSION**         |   CORE    | `v1`     | A specific data framework version.                 |
 | **DEFLOW_CORE_REGISTRY_CALLER** |   CORE    | `.`      | A registry of caller function.                     |
 
-**Support data framework version:**
-
-| Version | Supported | Description                                                                |
-|:-------:|:---------:|:---------------------------------------------------------------------------|
-|    1    | Progress  | A data framework that base on `stream`, `group`, `process`, and `routing`. |
-|    2    | Progress  | A data framework that base on `pipeline`, and `node`.                      |
-|    3    |   Draft   | A data framework that base on `dag`, and `task`.                           |
+Relate workflow configuration that will impact this package:
 
 ## 💬 Contribute
 
