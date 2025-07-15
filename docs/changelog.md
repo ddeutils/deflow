@@ -2,6 +2,40 @@
 
 ## Latest Changes
 
+## 0.0.5
+
+### :sparkles: Features
+
+- :dart: update model abstraction module.
+- :dart: update model abstraction module.
+- :dart: add get_data utils.
+
+### :bug: Bug fixes
+
+- :gear: override path on flow object.
+- :gear: adjust dotenv file on ci.
+
+### :black_nib: Code Changes
+
+- :test_tube: update model testcase.
+- :construction: update abstract model for any data framework.
+- :test_tube: adjust log format for pytest.
+- :construction: move testpath to new designed.
+- :construction: ⬆ deps: bump sigstore/gh-action-sigstore-python from 3.0.0 to 3.0.1 (#5)
+
+### :package: Build & Workflow
+
+- :package: bump ddeutil-workflow from 0.0.77 to 0.0.78 (#3)
+- :package: bump python-dotenv from 1.1.0 to 1.1.1 (#4)
+
+### :postbox: Dependencies
+
+- :pushpin: update version ddeutil-workflow==0.0.79.
+
+### :book: Documentations
+
+- :page_facing_up: update readme file.
+
 ## 0.0.4
 
 ### :sparkles: Features
