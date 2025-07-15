@@ -2,7 +2,8 @@ pipeline-workflow:
   type: Workflow
 
   desc: |
-    Pipeline workflow for run all node that config in this pipeline name.
+    A Pipeline workflow for run all node workflow that already config. That mean
+    the pipeline will be the control workflow of group of nodes.
 
   params:
     name:

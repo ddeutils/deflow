@@ -31,18 +31,20 @@ def get_start_pipeline_info(
     """Get Pipeline model information. This function use to validate an input
     pipeline name that exists on the config path.
 
-    :param name: (str) A pipeline name
-    :param result: (Result) A result dataclass for make logging.
-    :param extras: (dict[str, Any]) An extra parameters.
+    Args:
+        name (str): A pipeline name
+        result (Result): A result dataclass for make logging.
+        extras (dict[str, Any]): An extra parameters.
 
-    :rtype: DictData
+    Returns:
+        DictData: A mapping of necessary value that will use on other workflow
+            stages.
     """
     result.trace.info(f"Start get pipeline: {name!r} info.")
     pipeline: Pipeline = Pipeline.from_conf(
         name=name, path=dynamic("deflow_conf_path", extras=extras)
     )
     node_priorities: list[list[str]] = pipeline.node_priorities()
-
     result.trace.info(
         f"... ||Start Pipeline Info:||"
         f"> Pipeline name: {pipeline.name!r}||"
