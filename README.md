@@ -37,14 +37,14 @@ pip install -U deflow
 |:-------:|:---------:|:-----------------------------------------------------------------|
 |    1    | Progress  | Large scale base on `stream`, `group`, `process`, and `routing`. |
 |    2    | Progress  | Medium scale base on `pipeline`, and `node`.                     |
-|    3    |   Draft   | Lightweight base on `dag`, and `task`.                           |
+|    3    | Progress  | Lightweight base on `dag`, and `task`.                           |
 
 > [!NOTE]
 > I think it should stop with 3 versions of data framework.
 
 ## :dart: Framework
 
-### Version 1
+### ⭕ Version 1
 
 > [!NOTE]
 > This project will create the data framework **Version 1** first.
@@ -60,13 +60,13 @@ conf/
  ├─ routes/
  │   ╰─ routing.yml
  ├─ stream/
- │   ╰─ s_stream_01/
- │       ├─ g_group_01.tier.priority/
- │       │   ├─ p_proces_01.yml
- │       │   ╰─ p_proces_02.yml
- │       ├─ g_group_02.tier.priority/
- │       │   ├─ p_proces_01.yml
- │       │   ╰─ p_proces_02.yml
+ │   ╰─ { s_stream_01 }/
+ │       ├─ { g_group_01 }.tier.priority/
+ │       │   ├─ { p_proces_01 }.yml
+ │       │   ╰─ { p_proces_02 }.yml
+ │       ├─ { g_group_02 }.tier.priority/
+ │       │   ├─ { p_proces_01 }.yml
+ │       │   ╰─ { p_proces_02 }.yml
  │       ╰─ config.yml
  ╰─ .configore
 ```
@@ -84,7 +84,7 @@ flow: Result = (
 )
 ```
 
-### Version 2
+### ⭕ Version 2
 
 After initialize your data framework project with **Version 2**, your data pipeline
 config files will store with this file structure:
@@ -92,17 +92,29 @@ config files will store with this file structure:
 ```text
 conf/
  ├─ pipeline/
- │   ╰─ p_pipe_01/
+ │   ╰─ { p_pipe_01 }/
  │       ├─ config.yml
- │       ├─ n_node_01.yml
- │       ╰─ n_node_02.yml
+ │       ├─ { n_node_01 }.yml
+ │       ╰─ { n_node_02 }.yml
  ╰─ .configore
 ```
 
-### Version 3
+### ⭕ Version 3
 
 > [!NOTE]
 > This version is the same DAG and Task strategy like Airflow.
+
+```text
+conf/
+ ├─ dag/
+ │   ╰─ { dag_cm_d }/
+ │       ├─ assets/
+ │       │   ├─ { some-asset }.sql
+ │       │   ╰─ { some-asset }.json
+ │       ├─ config.yml
+ │       ╰─ variables.yml
+ ╰─ .configore
+```
 
 ## :cookie: Configuration
 
