@@ -54,11 +54,11 @@ config files will store with this file structure:
 
 ```text
 conf/
- ├─ conn/
- │   ├─ c_conn_01.yml
- │   ╰─ c_conn_02.yml
  ├─ routes/
  │   ╰─ routing.yml
+ ├─ shared/
+ │   ├─ { c_conn_01 }.yml
+ │   ╰─ { c_conn_02 }.yml
  ├─ stream/
  │   ╰─ { s_stream_01 }/
  │       ├─ { g_group_01 }.tier.priority/
@@ -68,7 +68,7 @@ conf/
  │       │   ├─ { p_proces_01 }.yml
  │       │   ╰─ { p_proces_02 }.yml
  │       ╰─ config.yml
- ╰─ .configore
+ ╰─ .confignore
 ```
 
 You can run the data flow by:
@@ -96,7 +96,7 @@ conf/
  │       ├─ config.yml
  │       ├─ { n_node_01 }.yml
  │       ╰─ { n_node_02 }.yml
- ╰─ .configore
+ ╰─ .confignore
 ```
 
 ### ⭕ Version 3
@@ -113,7 +113,7 @@ conf/
  │       │   ╰─ { some-asset }.json
  │       ├─ config.yml
  │       ╰─ variables.yml
- ╰─ .configore
+ ╰─ .confignore
 ```
 
 ## :cookie: Configuration

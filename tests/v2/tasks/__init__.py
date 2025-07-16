@@ -25,7 +25,7 @@ def operator_import_file(
     :param audit_date: (datetime)
     :param result: (Result)
     """
-    result.trace.info(f"Call: import-file@local with node: {node.name!r}")
+    result.trace.info(f"Call: `import-file@local` with node: {node.name!r}")
     result.trace.info("... This routing is ingest data with file type.")
     result.trace.info(
         f"... Audit date: {audit_date}||> params: {node.params}||"
@@ -47,7 +47,7 @@ def operator_import_db(
     :param audit_date: (datetime)
     :param result: (Result)
     """
-    result.trace.info(f"Call: import-db@sqlite with node: {node.name!r}")
+    result.trace.info(f"Call: `import-db@sqlite` with node: {node.name!r}")
     result.trace.info("... This routing is ingest data with database type.")
     result.trace.info(
         f"... Audit date: {audit_date}||> params: {node.params}||"

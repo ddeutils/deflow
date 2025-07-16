@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from deflow.utils import get_conf, search_conf_parent_path
+from deflow.assets.utils import get_conf, search_conf_parent_path
 
 from .utils import exclude_created_and_updated
 

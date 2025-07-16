@@ -32,6 +32,7 @@ def test_node(test_path: Path):
     node: Node = Node.from_conf(name="n_node_01", path=test_path / "v2/conf")
     assert node.name == "n_node_01"
     print(node)
+    print()
 
     node: Node = Node.from_conf(name="n_node_02", path=test_path / "v2/conf")
     assert node.name == "n_node_02"

@@ -1,3 +1,11 @@
+"""Asset utility module that implement getter function for get config data from
+a searching path.
+
+Functions:
+    check_conf:
+    search_conf_parent_path:
+"""
+
 import json
 from pathlib import Path
 from typing import Any, Optional, TypedDict, Union
@@ -6,7 +14,7 @@ import yaml
 from ddeutil.core import merge_list
 from ddeutil.io import YamlEnvFl, is_ignored, read_ignore
 
-from .__types import DictData
+from deflow.__types import DictData
 
 
 class ChildData(TypedDict):
@@ -28,9 +36,9 @@ def check_conf(name: str, path: Path, name_key: str = "name") -> Optional[Path]:
     """Check this config contain the specific name.
 
     Args:
-        name (str):
-        path:
-        name_key:
+        name (str): A config name that want to check.
+        path (Path):
+        name_key (str, default 'name'):
 
     Returns:
         Path: If it contains the config name. It will return None if it does not
@@ -108,15 +116,15 @@ def get_conf(name: str, path: Path) -> ConfData:
 
     Structure:
 
-        path/
-          |-- folder1/
-          |-- folder1/
-          |-- folder2/
-                |-- data/
-                     |-- config.yml
-                     |-- variable.yml
-                     |-- ...
-          |-- .confignore
+        >>> # path/
+        >>> #  ├─ folder1/
+        >>> #  ├─ folder1/
+        >>> #  ├─ folder2/
+        >>> #  │   |-- data/
+        >>> #  │        |-- config.yml
+        >>> #  │        |-- variable.yml
+        >>> #  │        |-- ...
+        >>> #  ╰─ .confignore
 
     Args:
         name (str):
@@ -164,6 +172,12 @@ def get_conf(name: str, path: Path) -> ConfData:
 
 
 def get_data(name: str, path: Path) -> DictData:
+    """Get the config data with YAML format only.
+
+    Args:
+        name (str):
+        path (Path):
+    """
     ignore = read_ignore(path / ".confignore")
     for file in path.rglob("*"):
 
@@ -199,6 +213,9 @@ def read_conf(path: Path, pass_env: bool = True) -> DictData:
         path (Path): A config file path.
         pass_env (bool): A flag allow this function pass environ variable before
             reading data from config file.
+
+    Returns:
+        DictData: A config data.
     """
     if not path.exists():
         raise FileNotFoundError(f"{path} does not exists.")

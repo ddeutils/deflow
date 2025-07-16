@@ -11,6 +11,11 @@ params:
   src_user: data-user
   src_pass: ${SRC_DB_SQLITE_PASS}
   tgt_table_name: ${TGT_TABLE_NAME}
-  tgt_schema: ...
+  tgt_schema: schema
   execute_start: "start-date"
   execute_end: "end-date"
+  transform: |
+    SELECT *
+    FROM schema.table
+    LIMIT 1000
+    ;

@@ -4,8 +4,9 @@ from typing import cast
 
 from pydantic import BaseModel, Field
 
+from deflow.assets.utils import ConfData, get_conf
+
 from ....__types import DictData
-from ....utils import ConfData, get_conf
 from ...models import AbstractModel
 from .utils import get_assets
 

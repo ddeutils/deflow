@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 from deflow.__types import DictData
 from deflow.assets.models import AbstractModel
-from deflow.utils import ConfData, get_conf
+from deflow.assets.utils import ConfData, get_conf
 
 
 def mock_load_conf(

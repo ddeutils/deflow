@@ -1,6 +1,0 @@
-sqlite:
-  type: Connection
-  ir: Auto
-  service: SQLite
-  host: file://local/path
-  database: database.sqlite

@@ -6,12 +6,11 @@ from pydantic import BaseModel, Field, ValidationError
 from typing_extensions import Literal, Self
 
 from ....__types import DictData
-from ....utils import ConfData, get_conf
 from ...models import AbstractModel
-from .utils import get_node
+from ...utils import ConfData, get_conf, get_data
 
 
-class NodeDeps(BaseModel):
+class Deps(BaseModel):
     name: str
     trigger_rule: Optional[str] = Field(default=None)
 
@@ -23,14 +22,14 @@ class Node(BaseModel):
     trigger or hook external API/SDK.
     """
 
+    type: Literal["Node"] = "Node"
     conf_dir: Path = Field(description="A dir path of this config data.")
     name: str = Field(description="A node name.")
-    type: Literal["Node"]
     pipeline_name: Optional[str] = Field(
         default=None, description="A pipeline name of this node."
     )
     desc: Optional[str] = Field(default=None)
-    upstream: list[NodeDeps] = Field(default_factory=list)
+    upstream: list[Deps] = Field(default_factory=list)
     operator: str = Field(description="An node operator.")
     task: str = Field(description="A node task.")
     params: dict[str, Any] = Field(
@@ -41,7 +40,7 @@ class Node(BaseModel):
     @classmethod
     def from_conf(cls, name: str, path: Path) -> Self:
         """Construct Node model from an input node name and config path."""
-        data: DictData = get_node(name=name, path=path)
+        data: DictData = get_data(name=name, path=path)
 
         if (t := data.get("type", "EMPTY")) != cls.__name__:
             raise ValueError(f"Type {t!r} does not match with {cls}")
@@ -51,15 +50,15 @@ class Node(BaseModel):
 
 
 class Lineage(BaseModel):
-    inlets: list[NodeDeps] = Field(default_factory=list)
-    outlets: list[NodeDeps] = Field(default_factory=list)
+    inlets: list[Deps] = Field(default_factory=list)
+    outlets: list[Deps] = Field(default_factory=list)
 
 
 class Pipeline(AbstractModel):
     """Pipeline model."""
 
+    type: Literal["Pipeline"] = "Pipeline"
     name: str = Field(description="A pipeline name.")
-    type: Literal["Pipeline"]
     desc: Optional[str] = Field(
         default=None,
         description=(
@@ -71,7 +70,7 @@ class Pipeline(AbstractModel):
     )
 
     @classmethod
-    def load_conf(cls, name: str, path: Path) -> Self:
+    def load_conf(cls, name: str, path: Path) -> DictData:
         """Load config data from a specific searching path."""
         load_data: ConfData = get_conf(name, path=path)
 
@@ -86,13 +85,7 @@ class Pipeline(AbstractModel):
                 nodes[node.name] = node
             except ValidationError:
                 continue
-
-        return cls.model_validate(
-            obj={
-                "nodes": nodes,
-                **load_data["conf"],
-            }
-        )
+        return {"nodes": nodes, **load_data["conf"]}
 
     def node(self, name: str) -> Node:
         """Get the Node model with pass the specific node name."""
@@ -105,7 +98,8 @@ class Pipeline(AbstractModel):
     def node_priorities(self) -> list[list[str]]:
         """Generate the Node priorities that convert from its upstream field.
 
-        :rtype: list[list[str]]
+        Returns:
+            list[list[str]]: Order of priority node name.
         """
 
         if not self.nodes:
