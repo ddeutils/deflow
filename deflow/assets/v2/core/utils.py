@@ -5,13 +5,12 @@
 # ------------------------------------------------------------------------------
 from __future__ import annotations
 
-import json
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 
 from ddeutil.io import YamlEnvFl, is_ignored, read_ignore
 
-from ....__types import DictData, ListData
+from ....__types import DictData
 
 
 def get_pipeline(name: str, path: Path) -> DictData:
@@ -79,31 +78,6 @@ def get_pipeline(name: str, path: Path) -> DictData:
             return pipeline_data
 
     raise FileNotFoundError(f"Does not found pipeline: {name!r} at {path}")
-
-
-def get_node_assets(name: str, path: Path) -> Union[DictData, ListData]:
-    """Get the node asset data from a specific path."""
-    data: Union[DictData, ListData] = {}
-    if (file := (path / name)).exists():
-        if file.is_dir():
-            raise NotImplementedError(
-                f"Asset location does not support for dir type, {file}."
-            )
-
-        if file.suffix in (".yml", ".yaml"):
-            data = YamlEnvFl(path=file).read()
-        elif file.suffix in (".json",):
-            data = json.loads(file.read_text(encoding="utf-8"))
-        elif file.suffix in (".sql", ".txt"):
-            data["raw_text"] = file.read_text(encoding="utf-8")
-        else:
-            raise NotImplementedError(
-                f"Asset file format does not support yet, {file}. "
-                f"For the currently, it already support for `json`, `yaml`, "
-                f"and `sql` file formats."
-            )
-
-    return data
 
 
 def get_node(name: str, path: Path) -> DictData:

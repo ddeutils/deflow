@@ -14,5 +14,3 @@ params:
   tgt_schema: ...
   execute_start: "start-date"
   execute_end: "end-date"
-assets:
-  - assets/n_node_02.json

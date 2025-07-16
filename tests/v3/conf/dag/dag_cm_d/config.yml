@@ -1,5 +1,9 @@
 name: dag_cm_d
+type: Dag
 author: data-team
 tasks:
   - name: task_01
+    operator: foo
+
   - name: task_02
+    operator: foo

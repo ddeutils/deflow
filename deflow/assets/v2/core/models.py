@@ -2,13 +2,13 @@ import copy
 from pathlib import Path
 from typing import Any, Optional
 
-from pydantic import BaseModel, Field
-from typing_extensions import Self
+from pydantic import BaseModel, Field, ValidationError
+from typing_extensions import Literal, Self
 
 from ....__types import DictData
 from ....utils import ConfData, get_conf
 from ...models import AbstractModel
-from .utils import get_node, get_node_assets
+from .utils import get_node
 
 
 class NodeDeps(BaseModel):
@@ -25,6 +25,7 @@ class Node(BaseModel):
 
     conf_dir: Path = Field(description="A dir path of this config data.")
     name: str = Field(description="A node name.")
+    type: Literal["Node"]
     pipeline_name: Optional[str] = Field(
         default=None, description="A pipeline name of this node."
     )
@@ -32,37 +33,21 @@ class Node(BaseModel):
     upstream: list[NodeDeps] = Field(default_factory=list)
     operator: str = Field(description="An node operator.")
     task: str = Field(description="A node task.")
-    params: dict[str, Any] = Field(default_factory=dict)
-    assets: list[str] = Field(default_factory=list)
+    params: dict[str, Any] = Field(
+        default_factory=dict,
+        description="An any parameters that want to use on this node.",
+    )
 
     @classmethod
     def from_conf(cls, name: str, path: Path) -> Self:
         """Construct Node model from an input node name and config path."""
         data: DictData = get_node(name=name, path=path)
 
-        if (t := data.pop("type")) != cls.__name__:
+        if (t := data.get("type", "EMPTY")) != cls.__name__:
             raise ValueError(f"Type {t!r} does not match with {cls}")
 
         loader_data: DictData = copy.deepcopy(data)
         return cls.model_validate(obj=loader_data)
-
-    def asset(self, name: str) -> DictData:
-        """Get the asset data with a specific name.
-
-        :param name: (str) An asset name that want to load from the config path.
-        """
-        if name not in self.assets:
-            raise ValueError(f"This asset, {name!r}, does not exists.")
-        return get_node_assets(name, path=self.conf_dir)
-
-    def sync_assets(self) -> DictData:
-        """Return mapping of its asset name and asset data from the conf path.
-
-        :rtype: DictData
-        """
-        return {
-            asset_name: self.asset(asset_name) for asset_name in self.assets
-        }
 
 
 class Lineage(BaseModel):
@@ -74,6 +59,7 @@ class Pipeline(AbstractModel):
     """Pipeline model."""
 
     name: str = Field(description="A pipeline name.")
+    type: Literal["Pipeline"]
     desc: Optional[str] = Field(
         default=None,
         description=(
@@ -86,15 +72,20 @@ class Pipeline(AbstractModel):
 
     @classmethod
     def load_conf(cls, name: str, path: Path) -> Self:
-        """Load configuration data."""
+        """Load config data from a specific searching path."""
         load_data: ConfData = get_conf(name, path=path)
 
+        # NOTE: Start prepare node config data.
         nodes: dict[str, Node] = {}
         for child in load_data["children"]:
-            if child["conf"].get("type", "") != "Node":
+            if child["conf"].get("type", "EMPTY") != Node.__name__:
                 continue
-            node = Node.model_validate(child["conf"])
-            nodes[node.name] = node
+
+            try:
+                node = Node.model_validate(child["conf"])
+                nodes[node.name] = node
+            except ValidationError:
+                continue
 
         return cls.model_validate(
             obj={
@@ -105,6 +96,10 @@ class Pipeline(AbstractModel):
 
     def node(self, name: str) -> Node:
         """Get the Node model with pass the specific node name."""
+        if name not in self.nodes:
+            raise ValueError(
+                f"Node name: {name!r} does not exist or set on this pipline."
+            )
         return self.nodes[name]
 
     def node_priorities(self) -> list[list[str]]:
@@ -165,7 +160,7 @@ class Pipeline(AbstractModel):
 
             current_level = next_level
 
-        # Cycle detection
+        # NOTE: Cycle detection
         if sum(in_degree.values()) > 0:
             raise ValueError("Circular dependency detected")
 

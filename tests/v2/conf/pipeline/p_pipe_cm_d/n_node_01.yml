@@ -5,5 +5,9 @@ task: local
 params:
   execute_start: "start-date"
   execute_end: "end-date"
-assets:
-  - assets/n_node_01.json
+  schema: |
+    {
+      "struct": {
+        "name": {"type": "string", "metadata": null}
+      }
+    }

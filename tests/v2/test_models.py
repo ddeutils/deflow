@@ -12,6 +12,9 @@ def test_pipeline(test_path):
     assert pipeline.name == "p_pipe_cm_d"
     print()
     print(pipeline)
+
+    assert "n_node_01" in pipeline.nodes
+    assert "n_node_02" in pipeline.nodes
     # assert pipeline.node_priorities() == [["n_node_01"], ["n_node_02"]]
 
 
@@ -29,10 +32,6 @@ def test_node(test_path: Path):
     node: Node = Node.from_conf(name="n_node_01", path=test_path / "v2/conf")
     assert node.name == "n_node_01"
     print(node)
-    assert node.assets == ["assets/n_node_01.json"]
-    assets = node.asset(node.assets[0])
-    print(assets)
-    print()
 
     node: Node = Node.from_conf(name="n_node_02", path=test_path / "v2/conf")
     assert node.name == "n_node_02"
