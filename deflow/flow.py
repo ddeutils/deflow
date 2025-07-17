@@ -7,7 +7,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any, Literal, Optional, cast
 
 from ddeutil.workflow import Result, Workflow
 from ddeutil.workflow import config as workflow_config
@@ -16,6 +16,7 @@ from typing_extensions import Self
 from .__types import DictData, TupleStr
 from .conf import ASSETS_PATH, dynamic
 
+Version = Literal["v1", "v2", "v3"]
 RUN_MODES: TupleStr = (
     "N",
     "R",
@@ -91,11 +92,22 @@ class Flow:
         self,
         name: str,
         *,
-        version: Optional[str] = None,
+        version: Optional[Version] = None,
         extras: Optional[DictData] = None,
     ) -> None:
         self.name: str = name
-        self.version: str = dynamic("version", f=version)
+
+        if (_v := dynamic("version", f=cast(str, version))) not in (
+            "v1",
+            "v2",
+            "v3",
+        ):
+            raise ValueError(
+                "Version of data framework should be one of ('v1', 'v2', 'v3') "
+                "only."
+            )
+        self.version: Version = cast(Version, _v)
+
         self.extras: DictData = extras or {}
 
         # NOTE: Factory the workflow from the override params.
@@ -106,17 +118,11 @@ class Flow:
         )
 
     def __repr__(self) -> str:
-        """Override __repr__ method.
-
-        :rtype: str
-        """
+        """Override __repr__ method."""
         return f"{self.__class__.__name__}(name={self.name})"
 
     def __str__(self) -> str:
-        """Override __str__ method.
-
-        :rtype: str
-        """
+        """Override __str__ method."""
         return self.name
 
     def option(self, key: str, value: Any) -> Self:

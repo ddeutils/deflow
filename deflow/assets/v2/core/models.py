@@ -2,6 +2,7 @@ import copy
 from pathlib import Path
 from typing import Any, Optional
 
+from ddeutil.workflow.job import Rule
 from pydantic import BaseModel, Field, ValidationError
 from typing_extensions import Literal, Self
 
@@ -11,8 +12,10 @@ from ...utils import ConfData, get_conf, get_data
 
 
 class Deps(BaseModel):
-    name: str
-    trigger_rule: Optional[str] = Field(default=None)
+    """Dependency model."""
+
+    name: str = Field(description="A node name")
+    trigger_rule: Optional[Rule] = Field(default=None)
 
 
 class Node(BaseModel):
@@ -88,7 +91,14 @@ class Pipeline(AbstractModel):
         return {"nodes": nodes, **load_data["conf"]}
 
     def node(self, name: str) -> Node:
-        """Get the Node model with pass the specific node name."""
+        """Get the Node model with pass the specific node name.
+
+        Args:
+            name (str): A node name.
+
+        Returns:
+            Node: A Node model instance that match with an input name.
+        """
         if name not in self.nodes:
             raise ValueError(
                 f"Node name: {name!r} does not exist or set on this pipline."
@@ -105,27 +115,28 @@ class Pipeline(AbstractModel):
         if not self.nodes:
             return []
 
-        # Build reverse adjacency list and in-degree count in one pass
+        # NOTE: Build reverse adjacency list and in-degree count in one pass
         in_degree: dict[str, int] = {}
-        dependents = {}  # node -> [nodes that depend on it]
 
-        # Initialize
+        # NOTE: node -> [nodes that depend on it]
+        dependents = {}
+
         for node in self.nodes:
             in_degree[node] = 0
             dependents[node] = []
 
-        # Build graph
+        # NOTE: Build graph
         for node, config in self.nodes.items():
             if config.upstream:
                 for upstream in config.upstream:
                     upstream_name = upstream.name
 
-                    # Add upstream node if not seen before
+                    # NOTE: Add upstream node if not seen before
                     if upstream_name not in in_degree:
                         in_degree[upstream_name] = 0
                         dependents[upstream_name] = []
 
-                    # Update relationships
+                    # NOTE: Update relationships
                     in_degree[node] += 1
                     dependents[upstream_name].append(node)
 

@@ -71,19 +71,6 @@ conf/
  ╰─ .confignore
 ```
 
-You can run the data flow by:
-
-```python
-from deflow.flow import Flow
-from ddeutil.workflow import Result
-
-flow: Result = (
-    Flow(name="s_stream_01")
-    .option("conf_paths", ["./data/conf"])
-    .run(mode="N")
-)
-```
-
 ### ⭕ Version 2
 
 After initialize your data framework project with **Version 2**, your data pipeline
@@ -114,6 +101,21 @@ conf/
  │       ├─ config.yml
  │       ╰─ variables.yml
  ╰─ .confignore
+```
+
+## Getting Started
+
+You can run the data flow by:
+
+```python
+from deflow.flow import Flow
+from ddeutil.workflow import Result
+
+flow: Result = (
+    Flow(name="s_stream_01", version="v1")
+    .option("conf_paths", ["./data/conf"])
+    .run(mode="N")
+)
 ```
 
 ## :cookie: Configuration
