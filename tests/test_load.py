@@ -11,6 +11,7 @@ def test_file_load(test_path):
         )
     ) == {
         "type": "Stream",
+        "name": "s_cm_d",
         "frequency": {"type": "daily", "offset": 1},
         "date_frequency": {"type": "daily"},
     }
