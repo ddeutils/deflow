@@ -1,10 +1,76 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Workflow Configuration Schema",
-  "version": "0.0.77",
+  "title": "Workflow Configuration JSON Schema",
+  "version": "0.0.85",
   "$defs": {
+    "AWSBatchArgs": {
+      "description": "AWS Batch arguments.",
+      "properties": {
+        "job_queue_arn": {
+          "description": "AWS Batch job queue ARN",
+          "title": "Job Queue Arn",
+          "type": "string"
+        },
+        "s3_bucket": {
+          "description": "S3 bucket for file storage",
+          "title": "S3 Bucket",
+          "type": "string"
+        },
+        "region_name": {
+          "default": "us-east-1",
+          "description": "AWS region",
+          "title": "Region Name",
+          "type": "string"
+        },
+        "aws_access_key_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "AWS access key ID",
+          "title": "Aws Access Key Id"
+        },
+        "aws_secret_access_key": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "AWS secret access key",
+          "title": "Aws Secret Access Key"
+        },
+        "aws_session_token": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "AWS session token",
+          "title": "Aws Session Token"
+        }
+      },
+      "required": [
+        "job_queue_arn",
+        "s3_bucket"
+      ],
+      "title": "AWSBatchArgs",
+      "type": "object"
+    },
     "ArrayParam": {
-      "description": "Array parameter.",
+      "description": "Array parameter.\n\nThis class provides list/array parameter validation and processing with support\nfor converting various sequence types to lists.",
       "properties": {
         "desc": {
           "anyOf": [
@@ -42,7 +108,7 @@
       "type": "object"
     },
     "BashStage": {
-      "description": "Bash stage executor that execute bash script on the current OS.\nIf your current OS is Windows, it will run on the bash from the current WSL.\nIt will use `bash` for Windows OS and use `sh` for Linux OS.\n\n    This stage has some limitation when it runs shell statement with the\nbuilt-in subprocess package. It does not good enough to use multiline\nstatement. Thus, it will write the `.sh` file before start running bash\ncommand for fix this issue.\n\nData Validate:\n    >>> stage = {\n    ...     \"name\": \"The Shell stage execution\",\n    ...     \"bash\": 'echo \"Hello $FOO\"',\n    ...     \"env\": {\n    ...         \"FOO\": \"BAR\",\n    ...     },\n    ... }",
+      "description": "Bash stage executor that execute bash script on the current OS.\nIf your current OS is Windows, it will run on the bash from the current WSL.\nIt will use `bash` for Windows OS and use `sh` for Linux OS.\n\n    This stage has some limitation when it runs shell statement with the\nbuilt-in subprocess package. It does not good enough to use multiline\nstatement. Thus, it will write the `.sh` file before start running bash\ncommand for fix this issue.\n\nExamples:\n    >>> stage = BaseStage.model_validate({\n    ...     \"id\": \"bash-stage\",\n    ...     \"name\": \"The Shell stage execution\",\n    ...     \"bash\": 'echo \"Hello $FOO\"',\n    ...     \"env\": {\n    ...         \"FOO\": \"BAR\",\n    ...     },\n    ... })",
       "properties": {
         "extras": {
           "additionalProperties": true,
@@ -87,6 +153,9 @@
               "type": "string"
             },
             {
+              "type": "boolean"
+            },
+            {
               "type": "null"
             }
           ],
@@ -96,7 +165,7 @@
         },
         "retry": {
           "default": 0,
-          "description": "A retry number if stage execution get the error.",
+          "description": "A retry number if stage process got the error exclude skip and cancel exception class.",
           "exclusiveMaximum": 20,
           "minimum": 0,
           "title": "Retry",
@@ -124,7 +193,7 @@
       "type": "object"
     },
     "CallStage": {
-      "description": "Call stage executor that call the Python function from registry with tag\ndecorator function in `reusables` module and run it with input arguments.\n\n    This stage is different with PyStage because the PyStage is just run\na Python statement with the `exec` function and pass the current locals and\nglobals before exec that statement. This stage will import the caller\nfunction can call it with an input arguments. So, you can create your\nfunction complexly that you can for your objective to invoked by this stage\nobject.\n\n    This stage is the most powerful stage of this package for run every\nuse-case by a custom requirement that you want by creating the Python\nfunction and adding it to the caller registry value by importer syntax like\n`module.caller.registry` not path style like `module/caller/registry`.\n\nWarning:\n\n    The caller registry to get a caller function should importable by the\ncurrent Python execution pointer.\n\nData Validate:\n    >>> stage = {\n    ...     \"name\": \"Task stage execution\",\n    ...     \"uses\": \"tasks/function-name@tag-name\",\n    ...     \"args\": {\"arg01\": \"BAR\", \"kwarg01\": 10},\n    ... }",
+      "description": "Call stage executor that call the Python function from registry with tag\ndecorator function in `reusables` module and run it with input arguments.\n\n    This stage is different with PyStage because the PyStage is just run\na Python statement with the `exec` function and pass the current locals and\nglobals before exec that statement. This stage will import the caller\nfunction can call it with an input arguments. So, you can create your\nfunction complexly that you can for your objective to invoked by this stage\nobject.\n\n    This stage is the most powerful stage of this package for run every\nuse-case by a custom requirement that you want by creating the Python\nfunction and adding it to the caller registry value by importer syntax like\n`module.caller.registry` not path style like `module/caller/registry`.\n\nWarning:\n\n    The caller registry to get a caller function should importable by the\ncurrent Python execution pointer.\n\nExamples:\n    >>> stage = CallStage.model_validate({\n    ...     \"id\": \"call-stage\",\n    ...     \"name\": \"Task stage execution\",\n    ...     \"uses\": \"tasks/function-name@tag-name\",\n    ...     \"args\": {\"arg01\": \"BAR\", \"kwarg01\": 10},\n    ... })",
       "properties": {
         "extras": {
           "additionalProperties": true,
@@ -169,6 +238,9 @@
               "type": "string"
             },
             {
+              "type": "boolean"
+            },
+            {
               "type": "null"
             }
           ],
@@ -178,7 +250,7 @@
         },
         "retry": {
           "default": 0,
-          "description": "A retry number if stage execution get the error.",
+          "description": "A retry number if stage process got the error exclude skip and cancel exception class.",
           "exclusiveMaximum": 20,
           "minimum": 0,
           "title": "Retry",
@@ -204,7 +276,7 @@
       "type": "object"
     },
     "CaseStage": {
-      "description": "Case stage executor that execute all stages if the condition was matched.\n\nData Validate:\n    >>> stage = {\n    ...     \"name\": \"If stage execution.\",\n    ...     \"case\": \"${{ param.test }}\",\n    ...     \"match\": [\n    ...         {\n    ...             \"case\": \"1\",\n    ...             \"stages\": [\n    ...                 {\n    ...                     \"name\": \"Stage case 1\",\n    ...                     \"eche\": \"Hello case 1\",\n    ...                 },\n    ...             ],\n    ...         },\n    ...         {\n    ...             \"case\": \"_\",\n    ...             \"stages\": [\n    ...                 {\n    ...                     \"name\": \"Stage else\",\n    ...                     \"eche\": \"Hello case else\",\n    ...                 },\n    ...             ],\n    ...         },\n    ...     ],\n    ... }",
+      "description": "Case stage executor that execute all stages if the condition was matched.\n\nExamples:\n    >>> stage = CaseStage.model_validate({\n    ...     \"id\": \"case-stage\",\n    ...     \"name\": \"If stage execution.\",\n    ...     \"case\": \"${{ param.test }}\",\n    ...     \"match\": [\n    ...         {\n    ...             \"case\": \"1\",\n    ...             \"stages\": [\n    ...                 {\n    ...                     \"name\": \"Stage case 1\",\n    ...                     \"eche\": \"Hello case 1\",\n    ...                 },\n    ...             ],\n    ...         },\n    ...         {\n    ...             \"case\": \"_\",\n    ...             \"stages\": [\n    ...                 {\n    ...                     \"name\": \"Stage else\",\n    ...                     \"eche\": \"Hello case else\",\n    ...                 },\n    ...             ],\n    ...         },\n    ...     ],\n    ... })\n\n    >>> stage = CaseStage.model_validate({\n    ...     \"id\": \"case-stage\",\n    ...     \"name\": \"If stage execution.\",\n    ...     \"case\": \"${{ param.test }}\",\n    ...     \"match\": [\n    ...         {\n    ...             \"case\": \"1\",\n    ...             \"stages\": [\n    ...                 {\n    ...                     \"name\": \"Stage case 1\",\n    ...                     \"eche\": \"Hello case 1\",\n    ...                 },\n    ...             ],\n    ...         },\n    ...         {\n    ...             \"else\": [\n    ...                 {\n    ...                     \"name\": \"Stage else\",\n    ...                     \"eche\": \"Hello case else\",\n    ...                 },\n    ...             ],\n    ...         },\n    ...     ],\n    ... })",
       "properties": {
         "extras": {
           "additionalProperties": true,
@@ -249,20 +321,15 @@
               "type": "string"
             },
             {
+              "type": "boolean"
+            },
+            {
               "type": "null"
             }
           ],
           "default": null,
           "description": "A stage condition statement to allow stage executable. This field alise with `if` field.",
           "title": "If"
-        },
-        "retry": {
-          "default": 0,
-          "description": "A retry number if stage execution get the error.",
-          "exclusiveMaximum": 20,
-          "minimum": 0,
-          "title": "Retry",
-          "type": "integer"
         },
         "case": {
           "description": "A case condition for routing.",
@@ -272,7 +339,14 @@
         "match": {
           "description": "A list of Match model that should not be an empty list.",
           "items": {
-            "$ref": "#/$defs/Match"
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Match"
+              },
+              {
+                "$ref": "#/$defs/Else"
+              }
+            ]
           },
           "title": "Match",
           "type": "array"
@@ -293,7 +367,7 @@
       "type": "object"
     },
     "ChoiceParam": {
-      "description": "Choice parameter.",
+      "description": "Choice parameter.\n\nThis class provides choice parameter validation and processing with support\nfor predefined options. If no value is provided, it returns the first option.",
       "properties": {
         "desc": {
           "anyOf": [
@@ -345,6 +419,161 @@
       "title": "ChoiceParam",
       "type": "object"
     },
+    "ContainerArgs": {
+      "description": "Container arguments.",
+      "properties": {
+        "image": {
+          "description": "Docker image to use",
+          "title": "Image",
+          "type": "string"
+        },
+        "container_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Container name",
+          "title": "Container Name"
+        },
+        "volumes": {
+          "anyOf": [
+            {
+              "items": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Volume mounts",
+          "title": "Volumes"
+        },
+        "environment": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Environment variables",
+          "title": "Environment"
+        },
+        "network": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Network configuration",
+          "title": "Network"
+        },
+        "resources": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Resource limits",
+          "title": "Resources"
+        },
+        "working_dir": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": "/app",
+          "description": "Working directory",
+          "title": "Working Dir"
+        },
+        "user": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "User to run as",
+          "title": "User"
+        },
+        "command": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Override default command",
+          "title": "Command"
+        },
+        "timeout": {
+          "default": 3600,
+          "description": "Execution timeout in seconds",
+          "title": "Timeout",
+          "type": "integer"
+        },
+        "remove": {
+          "default": true,
+          "description": "Remove container after execution",
+          "title": "Remove",
+          "type": "boolean"
+        },
+        "docker_host": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Docker host URL",
+          "title": "Docker Host"
+        }
+      },
+      "required": [
+        "image"
+      ],
+      "title": "ContainerArgs",
+      "type": "object"
+    },
     "Crontab": {
       "description": "Cron event model wrapping CronJob functionality.\n\nA Pydantic model that encapsulates crontab scheduling functionality with\nvalidation and datetime generation capabilities.\n\nAttributes:\n    cronjob: CronJob instance for schedule validation and datetime generation.\n    tz: Timezone string value (alias: timezone).",
       "properties": {
@@ -356,7 +585,7 @@
         },
         "timezone": {
           "default": "UTC",
-          "description": "A timezone string value.",
+          "description": "A timezone string value that will pass to ZoneInfo.",
           "enum": [
             "Africa/Abidjan",
             "Africa/Accra",
@@ -974,7 +1203,7 @@
       "type": "object"
     },
     "CrontabValue": {
-      "description": "Crontab model using interval-based specification.\n\nAttributes:\n    interval: Scheduling interval ('daily', 'weekly', 'monthly').\n    day: Day specification for weekly/monthly schedules.\n    time: Time of day in 'HH:MM' format.",
+      "description": "Crontab model using interval-based specification.\n\nAttributes:\n    interval: (Interval)\n        A scheduling interval string ('daily', 'weekly', 'monthly').\n    day: (str, default None)\n        Day specification for weekly/monthly schedules.\n    time: Time of day in 'HH:MM' format.",
       "properties": {
         "extras": {
           "additionalProperties": true,
@@ -984,7 +1213,7 @@
         },
         "timezone": {
           "default": "UTC",
-          "description": "A timezone string value.",
+          "description": "A timezone string value that will pass to ZoneInfo.",
           "enum": [
             "Africa/Abidjan",
             "Africa/Accra",
@@ -1590,6 +1819,7 @@
           "type": "string"
         },
         "interval": {
+          "description": "A scheduling interval string.",
           "enum": [
             "daily",
             "weekly",
@@ -1612,6 +1842,8 @@
         },
         "time": {
           "default": "00:00",
+          "description": "A time of day that pass with format 'HH:MM'.",
+          "pattern": "\\d{2}:\\d{2}",
           "title": "Time",
           "type": "string"
         }
@@ -1633,7 +1865,7 @@
         },
         "timezone": {
           "default": "UTC",
-          "description": "A timezone string value.",
+          "description": "A timezone string value that will pass to ZoneInfo.",
           "enum": [
             "Africa/Abidjan",
             "Africa/Accra",
@@ -2239,15 +2471,19 @@
           "type": "string"
         },
         "cronjob": {
+          "description": "A Cronjob object that use for validate and generate datetime.",
           "title": "Cronjob",
           "type": "string"
         }
       },
+      "required": [
+        "cronjob"
+      ],
       "title": "CrontabYear",
       "type": "object"
     },
     "DateParam": {
-      "description": "Date parameter model.",
+      "description": "Date parameter model.\n\nThis class provides date parameter validation and processing with support\nfor various input formats including ISO date strings, datetime objects,\nand date objects.",
       "properties": {
         "desc": {
           "anyOf": [
@@ -2285,7 +2521,7 @@
       "type": "object"
     },
     "DatetimeParam": {
-      "description": "Datetime parameter model.",
+      "description": "Datetime parameter model.\n\nThis class provides datetime parameter validation and processing with support\nfor various input formats including ISO datetime strings, datetime objects,\nand date objects. All datetime values are normalized to UTC timezone.",
       "properties": {
         "desc": {
           "anyOf": [
@@ -2323,7 +2559,7 @@
       "type": "object"
     },
     "DecimalParam": {
-      "description": "Decimal parameter.",
+      "description": "Decimal parameter.\n\nThis class provides decimal parameter validation and processing with precision\ncontrol for financial calculations and exact decimal arithmetic.",
       "properties": {
         "desc": {
           "anyOf": [
@@ -2438,12 +2674,23 @@
               "type": "string"
             },
             {
+              "type": "boolean"
+            },
+            {
               "type": "null"
             }
           ],
           "default": null,
           "description": "A stage condition statement to allow stage executable. This field alise with `if` field.",
           "title": "If"
+        },
+        "retry": {
+          "default": 0,
+          "description": "A retry number if stage process got the error exclude skip and cancel exception class.",
+          "exclusiveMaximum": 20,
+          "minimum": 0,
+          "title": "Retry",
+          "type": "integer"
         },
         "image": {
           "description": "A Docker image url with tag that want to run.",
@@ -2482,8 +2729,72 @@
       "title": "DockerStage",
       "type": "object"
     },
+    "Else": {
+      "description": "Else model for the Case Stage.",
+      "properties": {
+        "else": {
+          "description": "A list of stage that does not match any case.",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ForEachStage"
+              },
+              {
+                "$ref": "#/$defs/UntilStage"
+              },
+              {
+                "$ref": "#/$defs/ParallelStage"
+              },
+              {
+                "$ref": "#/$defs/CaseStage"
+              },
+              {
+                "$ref": "#/$defs/TriggerStage"
+              },
+              {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/BashStage"
+                  },
+                  {
+                    "$ref": "#/$defs/CallStage"
+                  },
+                  {
+                    "$ref": "#/$defs/VirtualPyStage"
+                  },
+                  {
+                    "$ref": "#/$defs/PyStage"
+                  },
+                  {
+                    "$ref": "#/$defs/RaiseStage"
+                  },
+                  {
+                    "$ref": "#/$defs/DockerStage"
+                  },
+                  {
+                    "$ref": "#/$defs/TriggerStage"
+                  },
+                  {
+                    "$ref": "#/$defs/EmptyStage"
+                  }
+                ],
+                "description": "An action stage model that allow to use with nested-stage model."
+              }
+            ],
+            "description": "A stage models that already implemented on this package."
+          },
+          "title": "Else",
+          "type": "array"
+        }
+      },
+      "required": [
+        "else"
+      ],
+      "title": "Else",
+      "type": "object"
+    },
     "EmptyStage": {
-      "description": "Empty stage for logging and debugging workflows.\n\nEmptyStage is a utility stage that performs no actual work but provides\nlogging output and optional delays. It's commonly used for:\n- Debugging workflow execution flow\n- Adding informational messages to workflows\n- Creating delays between stages\n- Testing template parameter resolution\n\nThe stage outputs the echo message to stdout and can optionally sleep\nfor a specified duration, making it useful for workflow timing control\nand debugging scenarios.\n\nAttributes:\n    echo (str, optional): Message to display during execution\n    sleep (float): Duration to sleep after logging (0-1800 seconds)\n\nExample:\n    ```yaml\n    stages:\n      - name: \"Workflow Started\"\n        echo: \"Beginning data processing workflow\"\n        sleep: 2\n\n      - name: \"Debug Parameters\"\n        echo: \"Processing file: ${{ params.filename }}\"\n    ```\n\n    ```python\n    stage = EmptyStage(\n        name=\"Status Update\",\n        echo=\"Processing completed successfully\",\n        sleep=1.0\n    )\n    ```",
+      "description": "Empty stage for logging and debugging workflows.\n\nEmptyStage is a utility stage that performs no actual work but provides\nlogging output and optional delays. It's commonly used for:\n    - Debugging workflow execution flow\n    - Adding informational messages to workflows\n    - Creating delays between stages\n    - Testing template parameter resolution\n\nThe stage outputs the echo message to stdout and can optionally sleep\nfor a specified duration, making it useful for workflow timing control\nand debugging scenarios.\n\nExamples:\n    >>> stage = EmptyStage.model_validate({\n    ...     \"id\": \"empty-stage\",\n    ...     \"name\": \"Status Update\",\n    ...     \"echo\": \"Processing completed successfully\",\n    ...     \"sleep\": 1.0,\n    ... })",
       "properties": {
         "extras": {
           "additionalProperties": true,
@@ -2528,6 +2839,9 @@
               "type": "string"
             },
             {
+              "type": "boolean"
+            },
+            {
               "type": "null"
             }
           ],
@@ -2545,12 +2859,12 @@
             }
           ],
           "default": null,
-          "description": "A message that want to show on the stdout.",
+          "description": "A message that want to display on the stdout during execution. By default, it do not show any message.",
           "title": "Echo"
         },
         "sleep": {
           "default": 0,
-          "description": "A second value to sleep before start execution. This value should gather or equal 0, and less than 1800 seconds.",
+          "description": "A duration in second value to sleep after logging. This value should between 0 - 1800 seconds.",
           "exclusiveMaximum": 1800,
           "minimum": 0,
           "title": "Sleep",
@@ -2564,7 +2878,7 @@
       "type": "object"
     },
     "Event": {
-      "description": "Event model.",
+      "description": "Event model with comprehensive trigger support.\n\nSupports multiple types of event triggers including cron scheduling,\nfile monitoring, webhooks, database changes, sensor-based triggers,\npolling-based triggers, message queue events, stream processing events,\nbatch processing events, data quality events, API rate limiting events,\ndata lineage events, ML pipeline events, data catalog events,\ninfrastructure events, compliance events, and business events.",
       "properties": {
         "schedule": {
           "description": "A list of Cron schedule.",
@@ -2598,7 +2912,7 @@
       "type": "object"
     },
     "FloatParam": {
-      "description": "Float parameter.",
+      "description": "Float parameter.\n\nThis class provides float parameter validation and processing with precision\ncontrol for rounding float values to a specified number of decimal places.",
       "properties": {
         "desc": {
           "anyOf": [
@@ -2646,7 +2960,7 @@
       "type": "object"
     },
     "ForEachStage": {
-      "description": "For-Each stage executor that execute all stages with each item in the\nforeach list.\n\n    This stage is not the low-level stage model because it runs\nmulti-stages in this stage execution.\n\nData Validate:\n    >>> stage = {\n    ...     \"name\": \"For-each stage execution\",\n    ...     \"foreach\": [1, 2, 3]\n    ...     \"stages\": [\n    ...         {\n    ...             \"name\": \"Echo stage\",\n    ...             \"echo\": \"Start run with item ${{ item }}\"\n    ...         },\n    ...     ],\n    ... }",
+      "description": "For-Each stage executor that execute all stages with each item in the\nforeach list.\n\n    This stage is not the low-level stage model because it runs\nmulti-stages in this stage execution.\n\nExamples:\n    >>> stage = ForEachStage.model_validate({\n    ...     \"id\": \"foreach-stage\",\n    ...     \"name\": \"For-each stage execution\",\n    ...     \"foreach\": [1, 2, 3]\n    ...     \"stages\": [\n    ...         {\n    ...             \"name\": \"Echo stage\",\n    ...             \"echo\": \"Start run with item ${{ item }}\"\n    ...         },\n    ...     ],\n    ... })",
       "properties": {
         "extras": {
           "additionalProperties": true,
@@ -2691,20 +3005,15 @@
               "type": "string"
             },
             {
+              "type": "boolean"
+            },
+            {
               "type": "null"
             }
           ],
           "default": null,
           "description": "A stage condition statement to allow stage executable. This field alise with `if` field.",
           "title": "If"
-        },
-        "retry": {
-          "default": 0,
-          "description": "A retry number if stage execution get the error.",
-          "exclusiveMaximum": 20,
-          "minimum": 0,
-          "title": "Retry",
-          "type": "integer"
         },
         "foreach": {
           "anyOf": [
@@ -2722,6 +3031,10 @@
             },
             {
               "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
             }
           ],
           "description": "A items for passing to stages via ${{ item }} template parameter.",
@@ -2731,18 +3044,6 @@
           "description": "A list of stage that will run with each item in the `foreach` field.",
           "items": {
             "anyOf": [
-              {
-                "$ref": "#/$defs/DockerStage"
-              },
-              {
-                "$ref": "#/$defs/BashStage"
-              },
-              {
-                "$ref": "#/$defs/CallStage"
-              },
-              {
-                "$ref": "#/$defs/TriggerStage"
-              },
               {
                 "$ref": "#/$defs/ForEachStage"
               },
@@ -2756,16 +3057,36 @@
                 "$ref": "#/$defs/CaseStage"
               },
               {
-                "$ref": "#/$defs/VirtualPyStage"
+                "$ref": "#/$defs/TriggerStage"
               },
               {
-                "$ref": "#/$defs/PyStage"
-              },
-              {
-                "$ref": "#/$defs/RaiseStage"
-              },
-              {
-                "$ref": "#/$defs/EmptyStage"
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/BashStage"
+                  },
+                  {
+                    "$ref": "#/$defs/CallStage"
+                  },
+                  {
+                    "$ref": "#/$defs/VirtualPyStage"
+                  },
+                  {
+                    "$ref": "#/$defs/PyStage"
+                  },
+                  {
+                    "$ref": "#/$defs/RaiseStage"
+                  },
+                  {
+                    "$ref": "#/$defs/DockerStage"
+                  },
+                  {
+                    "$ref": "#/$defs/TriggerStage"
+                  },
+                  {
+                    "$ref": "#/$defs/EmptyStage"
+                  }
+                ],
+                "description": "An action stage model that allow to use with nested-stage model."
               }
             ],
             "description": "A stage models that already implemented on this package."
@@ -2795,8 +3116,60 @@
       "title": "ForEachStage",
       "type": "object"
     },
+    "GCPBatchArgs": {
+      "description": "Google Cloud Batch arguments.",
+      "properties": {
+        "project_id": {
+          "description": "Google Cloud project ID",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "region": {
+          "description": "Google Cloud region",
+          "title": "Region",
+          "type": "string"
+        },
+        "gcs_bucket": {
+          "description": "Google Cloud Storage bucket",
+          "title": "Gcs Bucket",
+          "type": "string"
+        },
+        "credentials_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Path to service account credentials",
+          "title": "Credentials Path"
+        },
+        "machine_type": {
+          "default": "e2-standard-4",
+          "description": "Machine type",
+          "title": "Machine Type",
+          "type": "string"
+        },
+        "max_parallel_tasks": {
+          "default": 1,
+          "description": "Maximum parallel tasks",
+          "title": "Max Parallel Tasks",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "project_id",
+        "region",
+        "gcs_bucket"
+      ],
+      "title": "GCPBatchArgs",
+      "type": "object"
+    },
     "IntParam": {
-      "description": "Integer parameter.",
+      "description": "Integer parameter.\n\nThis class provides integer parameter validation and processing with support\nfor converting various numeric types to integers.",
       "properties": {
         "desc": {
           "anyOf": [
@@ -2839,7 +3212,7 @@
       "type": "object"
     },
     "Job": {
-      "description": "Job execution container for stage orchestration.\n\nThe Job model represents a logical unit of work containing multiple stages\nthat execute sequentially. Jobs support matrix strategies for parameterized\nexecution, dependency management, conditional execution, and multienvironment\ndeployment.\n\nJobs are the primary execution units within workflows, providing:\n- Stage lifecycle management\n- Execution environment abstraction\n- Matrix strategy support for parallel execution\n- Dependency resolution via job needs\n- Output coordination between stages\n\nAttributes:\n    id (str, optional): Unique job identifier within workflow\n    desc (str, optional): Job description in Markdown format\n    runs_on (RunsOnModel): Execution environment configuration\n    condition (str, optional): Conditional execution expression\n    stages (list[Stage]): Ordered list of stages to execute\n    trigger_rule (Rule): Rule for handling job dependencies\n    needs (list[str]): List of prerequisite job IDs\n    strategy (Strategy): Matrix strategy for parameterized execution\n    extras (dict): Additional configuration parameters\n\nExample:\n    ```python\n    job = Job(\n        id=\"data-processing\",\n        desc=\"Process daily data files\",\n        runs_on=OnLocal(),\n        stages=[\n            EmptyStage(name=\"Start\", echo=\"Processing started\"),\n            PyStage(name=\"Process\", run=\"process_data()\"),\n            EmptyStage(name=\"Complete\", echo=\"Processing finished\")\n        ],\n        strategy=Strategy(\n            matrix={'env': ['dev', 'prod']},\n            max_parallel=2\n        )\n    )\n    ```",
+      "description": "Job execution container for stage orchestration.\n\nThe Job model represents a logical unit of work containing multiple stages\nthat execute sequentially. Jobs support matrix strategies for parameterized\nexecution, dependency management, conditional execution, and multienvironment\ndeployment.\n\nExample:\n    >>> from ddeutil.workflow.stages import EmptyStage, PyStage\n    >>> job = Job(\n    ...     id=\"data-processing\",\n    ...     desc=\"Process daily data files\",\n    ...     runs_on=OnLocal(),\n    ...     stages=[\n    ...         EmptyStage(name=\"Start\", echo=\"Processing started\"),\n    ...         PyStage(name=\"Process\", run=\"process_data()\"),\n    ...         EmptyStage(name=\"Complete\", echo=\"Processing finished\")\n    ...     ],\n    ...     strategy=Strategy(\n    ...         matrix={'env': ['dev', 'prod']},\n    ...         max_parallel=2\n    ...     )\n    ... )",
       "properties": {
         "id": {
           "anyOf": [
@@ -2868,18 +3241,35 @@
           "title": "Desc"
         },
         "runs-on": {
-          "description": "A target node for this job to use for execution.",
-          "oneOf": [
+          "anyOf": [
             {
-              "$ref": "#/$defs/OnSelfHosted"
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/OnSelfHosted"
+                },
+                {
+                  "$ref": "#/$defs/OnDocker"
+                },
+                {
+                  "$ref": "#/$defs/OnLocal"
+                },
+                {
+                  "$ref": "#/$defs/OnContainer"
+                },
+                {
+                  "$ref": "#/$defs/OnAWSBatch"
+                },
+                {
+                  "$ref": "#/$defs/OnGCPBatch"
+                }
+              ]
             },
             {
-              "$ref": "#/$defs/OnDocker"
-            },
-            {
-              "$ref": "#/$defs/OnLocal"
+              "const": "local",
+              "type": "string"
             }
           ],
+          "description": "A target node for this job to use for execution.",
           "title": "Runs-On"
         },
         "if": {
@@ -2900,18 +3290,6 @@
           "items": {
             "anyOf": [
               {
-                "$ref": "#/$defs/DockerStage"
-              },
-              {
-                "$ref": "#/$defs/BashStage"
-              },
-              {
-                "$ref": "#/$defs/CallStage"
-              },
-              {
-                "$ref": "#/$defs/TriggerStage"
-              },
-              {
                 "$ref": "#/$defs/ForEachStage"
               },
               {
@@ -2924,22 +3302,50 @@
                 "$ref": "#/$defs/CaseStage"
               },
               {
-                "$ref": "#/$defs/VirtualPyStage"
+                "$ref": "#/$defs/TriggerStage"
               },
               {
-                "$ref": "#/$defs/PyStage"
-              },
-              {
-                "$ref": "#/$defs/RaiseStage"
-              },
-              {
-                "$ref": "#/$defs/EmptyStage"
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/BashStage"
+                  },
+                  {
+                    "$ref": "#/$defs/CallStage"
+                  },
+                  {
+                    "$ref": "#/$defs/VirtualPyStage"
+                  },
+                  {
+                    "$ref": "#/$defs/PyStage"
+                  },
+                  {
+                    "$ref": "#/$defs/RaiseStage"
+                  },
+                  {
+                    "$ref": "#/$defs/DockerStage"
+                  },
+                  {
+                    "$ref": "#/$defs/TriggerStage"
+                  },
+                  {
+                    "$ref": "#/$defs/EmptyStage"
+                  }
+                ],
+                "description": "An action stage model that allow to use with nested-stage model."
               }
             ],
             "description": "A stage models that already implemented on this package."
           },
           "title": "Stages",
           "type": "array"
+        },
+        "retry": {
+          "default": 0,
+          "description": "A retry number if job route execution got the error exclude skip and cancel exception class.",
+          "exclusiveMaximum": 20,
+          "minimum": 0,
+          "title": "Retry",
+          "type": "integer"
         },
         "trigger-rule": {
           "$ref": "#/$defs/Rule",
@@ -2969,7 +3375,7 @@
       "type": "object"
     },
     "MapParam": {
-      "description": "Map parameter.",
+      "description": "Map parameter.\n\nThis class provides dictionary/mapping parameter validation and processing\nwith support for converting string representations to dictionaries.",
       "properties": {
         "desc": {
           "anyOf": [
@@ -3026,18 +3432,6 @@
           "items": {
             "anyOf": [
               {
-                "$ref": "#/$defs/DockerStage"
-              },
-              {
-                "$ref": "#/$defs/BashStage"
-              },
-              {
-                "$ref": "#/$defs/CallStage"
-              },
-              {
-                "$ref": "#/$defs/TriggerStage"
-              },
-              {
                 "$ref": "#/$defs/ForEachStage"
               },
               {
@@ -3050,16 +3444,36 @@
                 "$ref": "#/$defs/CaseStage"
               },
               {
-                "$ref": "#/$defs/VirtualPyStage"
+                "$ref": "#/$defs/TriggerStage"
               },
               {
-                "$ref": "#/$defs/PyStage"
-              },
-              {
-                "$ref": "#/$defs/RaiseStage"
-              },
-              {
-                "$ref": "#/$defs/EmptyStage"
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/BashStage"
+                  },
+                  {
+                    "$ref": "#/$defs/CallStage"
+                  },
+                  {
+                    "$ref": "#/$defs/VirtualPyStage"
+                  },
+                  {
+                    "$ref": "#/$defs/PyStage"
+                  },
+                  {
+                    "$ref": "#/$defs/RaiseStage"
+                  },
+                  {
+                    "$ref": "#/$defs/DockerStage"
+                  },
+                  {
+                    "$ref": "#/$defs/TriggerStage"
+                  },
+                  {
+                    "$ref": "#/$defs/EmptyStage"
+                  }
+                ],
+                "description": "An action stage model that allow to use with nested-stage model."
               }
             ],
             "description": "A stage models that already implemented on this package."
@@ -3075,14 +3489,43 @@
       "title": "Match",
       "type": "object"
     },
+    "OnAWSBatch": {
+      "description": "Runs-on AWS Batch.",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/RunsOn",
+          "default": "aws_batch"
+        },
+        "with": {
+          "$ref": "#/$defs/AWSBatchArgs"
+        }
+      },
+      "required": [
+        "with"
+      ],
+      "title": "OnAWSBatch",
+      "type": "object"
+    },
+    "OnContainer": {
+      "description": "Runs-on Container.",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/RunsOn",
+          "default": "container"
+        },
+        "with": {
+          "$ref": "#/$defs/ContainerArgs"
+        }
+      },
+      "title": "OnContainer",
+      "type": "object"
+    },
     "OnDocker": {
       "description": "Runs-on Docker container.",
       "properties": {
         "type": {
-          "const": "docker",
-          "default": "docker",
-          "title": "Type",
-          "type": "string"
+          "$ref": "#/$defs/RunsOn",
+          "default": "docker"
         },
         "with": {
           "$ref": "#/$defs/DockerArgs"
@@ -3091,14 +3534,29 @@
       "title": "OnDocker",
       "type": "object"
     },
+    "OnGCPBatch": {
+      "description": "Runs-on Google Cloud Batch.",
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/RunsOn",
+          "default": "gcp_batch"
+        },
+        "with": {
+          "$ref": "#/$defs/GCPBatchArgs"
+        }
+      },
+      "required": [
+        "with"
+      ],
+      "title": "OnGCPBatch",
+      "type": "object"
+    },
     "OnLocal": {
       "description": "Runs-on local.",
       "properties": {
         "type": {
-          "const": "local",
-          "default": "local",
-          "title": "Type",
-          "type": "string"
+          "$ref": "#/$defs/RunsOn",
+          "default": "local"
         },
         "with": {
           "additionalProperties": true,
@@ -3114,10 +3572,8 @@
       "description": "Runs-on self-hosted.",
       "properties": {
         "type": {
-          "const": "self_hosted",
-          "default": "self_hosted",
-          "title": "Type",
-          "type": "string"
+          "$ref": "#/$defs/RunsOn",
+          "default": "self_hosted"
         },
         "with": {
           "$ref": "#/$defs/SelfHostedArgs"
@@ -3130,7 +3586,7 @@
       "type": "object"
     },
     "ParallelStage": {
-      "description": "Parallel stage executor that execute branch stages with multithreading.\nThis stage let you set the fix branches for running child stage inside it on\nmultithread pool.\n\n    This stage is not the low-level stage model because it runs multi-stages\nin this stage execution.\n\nData Validate:\n    >>> stage = {\n    ...     \"name\": \"Parallel stage execution.\",\n    ...     \"parallel\": {\n    ...         \"branch01\": [\n    ...             {\n    ...                 \"name\": \"Echo first stage\",\n    ...                 \"echo\": \"Start run with branch 1\",\n    ...                 \"sleep\": 3,\n    ...             },\n    ...             {\n    ...                 \"name\": \"Echo second stage\",\n    ...                 \"echo\": \"Start run with branch 1\",\n    ...             },\n    ...         ],\n    ...         \"branch02\": [\n    ...             {\n    ...                 \"name\": \"Echo first stage\",\n    ...                 \"echo\": \"Start run with branch 2\",\n    ...                 \"sleep\": 1,\n    ...             },\n    ...         ],\n    ...     }\n    ... }",
+      "description": "Parallel stage executor that execute branch stages with multithreading.\nThis stage let you set the fix branches for running child stage inside it on\nmultithread pool.\n\n    This stage is not the low-level stage model because it runs multi-stages\nin this stage execution.\n\nExamples:\n    >>> stage = ParallelStage.model_validate({\n    ...     \"id\": \"parallel-stage\",\n    ...     \"name\": \"Parallel stage execution.\",\n    ...     \"parallel\": {\n    ...         \"branch01\": [\n    ...             {\n    ...                 \"name\": \"Echo first stage\",\n    ...                 \"echo\": \"Start run with branch 1\",\n    ...                 \"sleep\": 3,\n    ...             },\n    ...             {\n    ...                 \"name\": \"Echo second stage\",\n    ...                 \"echo\": \"Start run with branch 1\",\n    ...             },\n    ...         ],\n    ...         \"branch02\": [\n    ...             {\n    ...                 \"name\": \"Echo first stage\",\n    ...                 \"echo\": \"Start run with branch 2\",\n    ...                 \"sleep\": 1,\n    ...             },\n    ...         ],\n    ...     }\n    ... })",
       "properties": {
         "extras": {
           "additionalProperties": true,
@@ -3175,6 +3631,9 @@
               "type": "string"
             },
             {
+              "type": "boolean"
+            },
+            {
               "type": "null"
             }
           ],
@@ -3182,30 +3641,10 @@
           "description": "A stage condition statement to allow stage executable. This field alise with `if` field.",
           "title": "If"
         },
-        "retry": {
-          "default": 0,
-          "description": "A retry number if stage execution get the error.",
-          "exclusiveMaximum": 20,
-          "minimum": 0,
-          "title": "Retry",
-          "type": "integer"
-        },
         "parallel": {
           "additionalProperties": {
             "items": {
               "anyOf": [
-                {
-                  "$ref": "#/$defs/DockerStage"
-                },
-                {
-                  "$ref": "#/$defs/BashStage"
-                },
-                {
-                  "$ref": "#/$defs/CallStage"
-                },
-                {
-                  "$ref": "#/$defs/TriggerStage"
-                },
                 {
                   "$ref": "#/$defs/ForEachStage"
                 },
@@ -3219,16 +3658,36 @@
                   "$ref": "#/$defs/CaseStage"
                 },
                 {
-                  "$ref": "#/$defs/VirtualPyStage"
+                  "$ref": "#/$defs/TriggerStage"
                 },
                 {
-                  "$ref": "#/$defs/PyStage"
-                },
-                {
-                  "$ref": "#/$defs/RaiseStage"
-                },
-                {
-                  "$ref": "#/$defs/EmptyStage"
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/BashStage"
+                    },
+                    {
+                      "$ref": "#/$defs/CallStage"
+                    },
+                    {
+                      "$ref": "#/$defs/VirtualPyStage"
+                    },
+                    {
+                      "$ref": "#/$defs/PyStage"
+                    },
+                    {
+                      "$ref": "#/$defs/RaiseStage"
+                    },
+                    {
+                      "$ref": "#/$defs/DockerStage"
+                    },
+                    {
+                      "$ref": "#/$defs/TriggerStage"
+                    },
+                    {
+                      "$ref": "#/$defs/EmptyStage"
+                    }
+                  ],
+                  "description": "An action stage model that allow to use with nested-stage model."
                 }
               ],
               "description": "A stage models that already implemented on this package."
@@ -3240,12 +3699,17 @@
           "type": "object"
         },
         "max-workers": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
           "default": 2,
           "description": "The maximum multi-thread pool worker size for execution parallel. This value should be gather or equal than 1, and less than 20.",
-          "exclusiveMaximum": 20,
-          "minimum": 1,
-          "title": "Max-Workers",
-          "type": "integer"
+          "title": "Max-Workers"
         }
       },
       "required": [
@@ -3256,7 +3720,7 @@
       "type": "object"
     },
     "PyStage": {
-      "description": "Python stage that running the Python statement with the current globals\nand passing an input additional variables via `exec` built-in function.\n\n    This stage allow you to use any Python object that exists on the globals\nsuch as import your installed package.\n\nWarning:\n\n    The exec build-in function is very dangerous. So, it should use the `re`\nmodule to validate exec-string before running or exclude the `os` package\nfrom the current globals variable.\n\nData Validate:\n    >>> stage = {\n    ...     \"name\": \"Python stage execution\",\n    ...     \"run\": 'print(f\"Hello {VARIABLE}\")',\n    ...     \"vars\": {\n    ...         \"VARIABLE\": \"WORLD\",\n    ...     },\n    ... }",
+      "description": "Python stage that running the Python statement with the current globals\nand passing an input additional variables via `exec` built-in function.\n\n    This stage allow you to use any Python object that exists on the globals\nsuch as import your installed package.\n\nWarning:\n\n    The exec build-in function is very dangerous. So, it should use the `re`\nmodule to validate exec-string before running or exclude the `os` package\nfrom the current globals variable.\n\nExamples:\n    >>> stage = PyStage.model_validate({\n    ...     \"id\": \"py-stage\",\n    ...     \"name\": \"Python stage execution\",\n    ...     \"run\": 'print(f\"Hello {VARIABLE}\")',\n    ...     \"vars\": {\n    ...         \"VARIABLE\": \"WORLD\",\n    ...     },\n    ... })",
       "properties": {
         "extras": {
           "additionalProperties": true,
@@ -3301,6 +3765,9 @@
               "type": "string"
             },
             {
+              "type": "boolean"
+            },
+            {
               "type": "null"
             }
           ],
@@ -3310,7 +3777,7 @@
         },
         "retry": {
           "default": 0,
-          "description": "A retry number if stage execution get the error.",
+          "description": "A retry number if stage process got the error exclude skip and cancel exception class.",
           "exclusiveMaximum": 20,
           "minimum": 0,
           "title": "Retry",
@@ -3336,7 +3803,7 @@
       "type": "object"
     },
     "RaiseStage": {
-      "description": "Raise error stage executor that raise `StageError` that use a message\nfield for making error message before raise.\n\nData Validate:\n    >>> stage = {\n    ...     \"name\": \"Raise stage\",\n    ...     \"raise\": \"raise this stage\",\n    ... }",
+      "description": "Raise error stage executor that raise `StageError` that use a message\nfield for making error message before raise.\n\nExamples:\n    >>> stage = RaiseStage.model_validate({\n    ...     \"id\": \"raise-stage\",\n    ...     \"name\": \"Raise stage\",\n    ...     \"raise\": \"raise this stage\",\n    ... })",
       "properties": {
         "extras": {
           "additionalProperties": true,
@@ -3379,6 +3846,9 @@
           "anyOf": [
             {
               "type": "string"
+            },
+            {
+              "type": "boolean"
             },
             {
               "type": "null"
@@ -3415,6 +3885,21 @@
       "title": "Rule",
       "type": "string"
     },
+    "RunsOn": {
+      "description": "Runs-On enum object.",
+      "enum": [
+        "local",
+        "self_hosted",
+        "azure_batch",
+        "aws_batch",
+        "gcp_batch",
+        "cloud_batch",
+        "docker",
+        "container"
+      ],
+      "title": "RunsOn",
+      "type": "string"
+    },
     "SelfHostedArgs": {
       "description": "Self-Hosted arguments.",
       "properties": {
@@ -3439,7 +3924,7 @@
       "type": "object"
     },
     "StrParam": {
-      "description": "String parameter.",
+      "description": "String parameter.\n\nThis class provides string parameter validation and processing with support\nfor converting various input types to strings.",
       "properties": {
         "desc": {
           "anyOf": [
@@ -3491,12 +3976,17 @@
           "type": "boolean"
         },
         "max-parallel": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ],
           "default": 1,
           "description": "The maximum number of executor thread pool that want to run parallel. This value should gather than 0 and less than 10.",
-          "exclusiveMaximum": 10,
-          "exclusiveMinimum": 0,
-          "title": "Max-Parallel",
-          "type": "integer"
+          "title": "Max-Parallel"
         },
         "matrix": {
           "additionalProperties": {
@@ -3560,7 +4050,7 @@
       "type": "object"
     },
     "TriggerStage": {
-      "description": "Trigger workflow executor stage that run an input trigger Workflow\nexecute method. This is the stage that allow you to create the reusable\nWorkflow template with dynamic parameters.\n\nData Validate:\n    >>> stage = {\n    ...     \"name\": \"Trigger workflow stage execution\",\n    ...     \"trigger\": 'workflow-name-for-loader',\n    ...     \"params\": {\"run-date\": \"2024-08-01\", \"source\": \"src\"},\n    ... }",
+      "description": "Trigger workflow executor stage that run an input trigger Workflow\nexecute method. This is the stage that allow you to create the reusable\nWorkflow template with dynamic parameters.\n\n    This stage does not allow to pass the workflow model directly to the\ntrigger field. A trigger workflow name should exist on the config path only.\n\nExamples:\n    >>> stage = TriggerStage.model_validate({\n    ...     \"id\": \"trigger-stage\",\n    ...     \"name\": \"Trigger workflow stage execution\",\n    ...     \"trigger\": 'workflow-name-for-loader',\n    ...     \"params\": {\"run-date\": \"2024-08-01\", \"source\": \"src\"},\n    ... })",
       "properties": {
         "extras": {
           "additionalProperties": true,
@@ -3605,6 +4095,9 @@
               "type": "string"
             },
             {
+              "type": "boolean"
+            },
+            {
               "type": "null"
             }
           ],
@@ -3614,7 +4107,7 @@
         },
         "retry": {
           "default": 0,
-          "description": "A retry number if stage execution get the error.",
+          "description": "A retry number if stage process got the error exclude skip and cancel exception class.",
           "exclusiveMaximum": 20,
           "minimum": 0,
           "title": "Retry",
@@ -3640,7 +4133,7 @@
       "type": "object"
     },
     "UntilStage": {
-      "description": "Until stage executor that will run stages in each loop until it valid\nwith stop loop condition.\n\n    This stage is not the low-level stage model because it runs\nmulti-stages in this stage execution.\n\nData Validate:\n    >>> stage = {\n    ...     \"name\": \"Until stage execution\",\n    ...     \"item\": 1,\n    ...     \"until\": \"${{ item }} > 3\"\n    ...     \"stages\": [\n    ...         {\n    ...             \"name\": \"Start increase item value.\",\n    ...             \"run\": (\n    ...                 \"item = ${{ item }}\\n\"\n    ...                 \"item += 1\\n\"\n    ...             )\n    ...         },\n    ...     ],\n    ... }",
+      "description": "Until stage executor that will run stages in each loop until it valid\nwith stop loop condition.\n\n    This stage is not the low-level stage model because it runs\nmulti-stages in this stage execution.\n\nExamples:\n    >>> stage = UntilStage.model_validate({\n    ...     \"id\": \"until-stage\",\n    ...     \"name\": \"Until stage execution\",\n    ...     \"item\": 1,\n    ...     \"until\": \"${{ item }} > 3\"\n    ...     \"stages\": [\n    ...         {\n    ...             \"name\": \"Start increase item value.\",\n    ...             \"run\": (\n    ...                 \"item = ${{ item }}\\n\"\n    ...                 \"item += 1\\n\"\n    ...             )\n    ...         },\n    ...     ],\n    ... })",
       "properties": {
         "extras": {
           "additionalProperties": true,
@@ -3685,20 +4178,15 @@
               "type": "string"
             },
             {
+              "type": "boolean"
+            },
+            {
               "type": "null"
             }
           ],
           "default": null,
           "description": "A stage condition statement to allow stage executable. This field alise with `if` field.",
           "title": "If"
-        },
-        "retry": {
-          "default": 0,
-          "description": "A retry number if stage execution get the error.",
-          "exclusiveMaximum": 20,
-          "minimum": 0,
-          "title": "Retry",
-          "type": "integer"
         },
         "item": {
           "anyOf": [
@@ -3726,43 +4214,40 @@
           "items": {
             "anyOf": [
               {
-                "$ref": "#/$defs/DockerStage"
-              },
-              {
                 "$ref": "#/$defs/BashStage"
               },
               {
                 "$ref": "#/$defs/CallStage"
               },
               {
+                "$ref": "#/$defs/PyStage"
+              },
+              {
+                "$ref": "#/$defs/VirtualPyStage"
+              },
+              {
+                "$ref": "#/$defs/RaiseStage"
+              },
+              {
+                "$ref": "#/$defs/DockerStage"
+              },
+              {
                 "$ref": "#/$defs/TriggerStage"
+              },
+              {
+                "$ref": "#/$defs/EmptyStage"
+              },
+              {
+                "$ref": "#/$defs/CaseStage"
               },
               {
                 "$ref": "#/$defs/ForEachStage"
               },
               {
                 "$ref": "#/$defs/UntilStage"
-              },
-              {
-                "$ref": "#/$defs/ParallelStage"
-              },
-              {
-                "$ref": "#/$defs/CaseStage"
-              },
-              {
-                "$ref": "#/$defs/VirtualPyStage"
-              },
-              {
-                "$ref": "#/$defs/PyStage"
-              },
-              {
-                "$ref": "#/$defs/RaiseStage"
-              },
-              {
-                "$ref": "#/$defs/EmptyStage"
               }
             ],
-            "description": "A stage models that already implemented on this package."
+            "description": "A nested-stage allow list that able to use on the NestedStage model."
           },
           "title": "Stages",
           "type": "array"
@@ -3829,6 +4314,9 @@
               "type": "string"
             },
             {
+              "type": "boolean"
+            },
+            {
               "type": "null"
             }
           ],
@@ -3838,7 +4326,7 @@
         },
         "retry": {
           "default": 0,
-          "description": "A retry number if stage execution get the error.",
+          "description": "A retry number if stage process got the error exclude skip and cancel exception class.",
           "exclusiveMaximum": 20,
           "minimum": 0,
           "title": "Retry",
@@ -3857,7 +4345,7 @@
         },
         "version": {
           "default": "3.9",
-          "description": "A Python version that want to run.",
+          "description": "A Python version that want to run. It will use supported version of this package by default, 3.9.",
           "title": "Version",
           "type": "string"
         },
@@ -3899,6 +4387,12 @@
           "default": null,
           "description": "A workflow name.",
           "title": "Name"
+        },
+        "type": {
+          "const": "Workflow",
+          "description": "A type of workflow template that should be `Workflow`.",
+          "title": "Type",
+          "type": "string"
         },
         "desc": {
           "anyOf": [
@@ -4004,12 +4498,6 @@
           "description": "A updated datetime of this workflow template when loading from file.",
           "format": "date-time",
           "title": "Updated Dt",
-          "type": "string"
-        },
-        "type": {
-          "const": "Workflow",
-          "description": "A type of workflow template.",
-          "title": "Type",
           "type": "string"
         }
       },
