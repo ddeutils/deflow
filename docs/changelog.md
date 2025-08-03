@@ -2,6 +2,37 @@
 
 ## Latest Changes
 
+## 0.0.6
+
+### :sparkles: Features
+
+- :dart: v2: update node deps rule.
+- :dart: move get_node function to utils function.
+- :dart: add data framework version 3.
+
+### :bug: Bug fixes
+
+- :gear: adjust workflow config base on version change.
+- :gear: update logging for test on ci 3.
+- :gear: update logging for test on ci 2.
+- :gear: update logging for test on ci.
+- :gear: passing pipeline name with node name.
+- :gear: change env var for testing on ci.
+
+### :package: Build & Workflow
+
+- :toolbox: remove python dev version on tests workflow.
+
+### :postbox: Dependencies
+
+- :pushpin: update version of ddeutil-workflow to 0.0.85.
+- :pushpin: update ddeutil-workflow version to 0.0.80.
+
+### :book: Documentations
+
+- :page_facing_up: update readme file.
+- :page_facing_up: update readme file.
+
 ## 0.0.5
 
 ### :sparkles: Features
